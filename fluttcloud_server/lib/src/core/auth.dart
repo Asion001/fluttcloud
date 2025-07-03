@@ -20,8 +20,8 @@ Future<void> initializeAuth() async {
     },
     onUserCreated: (session, userInfo) async {
       // Set first user as admin if no other users exist.
-      final users = await session.db.count<UserInfo>();
-      if (users == 1) {
+      final usersCount = await session.db.count<UserInfo>();
+      if (usersCount == 1) {
         await userInfo.updateScopes(session, {...userInfo.scopes, Scope.admin});
         session.log(
           'User ${userInfo.userName} (${userInfo.email}) is set as admin.',
