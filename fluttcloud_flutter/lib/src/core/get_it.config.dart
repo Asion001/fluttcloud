@@ -12,6 +12,9 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../features/server_config/controllers/server_config_controller.dart'
+    as _i138;
+import 'controllers/storage.dart' as _i770;
 import 'controllers/toast_controller.dart' as _i278;
 import 'router.dart' as _i216;
 import 'serverpod_client.dart' as _i193;
@@ -23,12 +26,14 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    await gh.factoryAsync<_i193.Serverpod>(() {
-      final i = _i193.Serverpod();
-      return i.init().then((_) => i);
-    }, preResolve: true);
+    gh.singleton<_i193.Serverpod>(() => _i193.Serverpod());
     gh.singleton<_i278.ToastController>(() => _i278.ToastController());
     gh.singleton<_i216.AppRouter>(() => _i216.AppRouter());
+    gh.singleton<_i770.Storage>(() => _i770.Storage());
+    await gh.singletonAsync<_i138.ServerConfigController>(() {
+      final i = _i138.ServerConfigController();
+      return i.init().then((_) => i);
+    }, preResolve: true);
     return this;
   }
 }

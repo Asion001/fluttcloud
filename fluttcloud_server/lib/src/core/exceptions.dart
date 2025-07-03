@@ -11,3 +11,10 @@ class UserNotFoundException implements Exception {
   @override
   String toString() => 'User not found';
 }
+
+class NotFoundException implements Exception {
+  const NotFoundException();
+
+  @override
+  String toString() => 'Not found';
+}

@@ -77,4 +77,6 @@ class ToastController {
   ToastificationConfig get config {
     return const ToastificationConfig(maxToastLimit: 3);
   }
+
+  static ToastController get I => getIt<ToastController>();
 }

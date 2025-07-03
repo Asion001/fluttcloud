@@ -271,3 +271,7 @@ extension SessionExt on Session {
 extension UserInfoExt on UserInfo? {
   bool get isAdmin => this?.scopes.contains(Scope.admin) ?? false;
 }
+
+extension AuthenticationInfoExt on AuthenticationInfo? {
+  bool get isAdmin => this?.scopes.contains(Scope.admin) ?? false;
+}

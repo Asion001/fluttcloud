@@ -11,8 +11,25 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i3;
-import 'protocol.dart' as _i4;
+import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i3;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i4;
+import 'protocol.dart' as _i5;
+
+/// {@category Endpoint}
+class EndpointFiles extends _i1.EndpointRef {
+  EndpointFiles(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'files';
+
+  _i2.Stream<_i3.FsEntry> list({String? serverFolderPath}) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.FsEntry>, _i3.FsEntry>(
+        'files',
+        'list',
+        {'serverFolderPath': serverFolderPath},
+        {},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointUser extends _i1.EndpointRef {
@@ -31,10 +48,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i3.Caller(client);
+    auth = _i4.Caller(client);
   }
 
-  late final _i3.Caller auth;
+  late final _i4.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -53,7 +70,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i4.Protocol(),
+          _i5.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -63,16 +80,22 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    files = EndpointFiles(this);
     user = EndpointUser(this);
     modules = Modules(this);
   }
+
+  late final EndpointFiles files;
 
   late final EndpointUser user;
 
   late final Modules modules;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'user': user};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'files': files,
+        'user': user,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>

@@ -6,24 +6,24 @@
 
 # Configuration for the main API server.
 apiServer:
-  port: 8080
-  publicHost: api.examplepod.com
-  publicPort: 443
-  publicScheme: https
+  port: 8095
+  publicHost: localhost
+  publicPort: 8095
+  publicScheme: http
 
 # Configuration for the Insights server.
 insightsServer:
-  port: 8081
-  publicHost: insights.examplepod.com
-  publicPort: 443
-  publicScheme: https
+  port: 8096
+  publicHost: localhost
+  publicPort: 8096
+  publicScheme: http
 
 # Configuration for the web server.
 webServer:
-  port: 8082
-  publicHost: app.examplepod.com
-  publicPort: 443
-  publicScheme: https
+  port: 8097
+  publicHost: localhost
+  publicPort: 8097
+  publicScheme: http
 
 # This is the database setup for your servers. The default for the Google Cloud
 # Engine Terraform configuration is to connect on a private IP address.
@@ -34,7 +34,7 @@ database:
   port: 5432
   name: serverpod
   user: postgres
-  requireSsl: true
+  requireSsl: false
   #isUnixSocket: true # defaults to false
 
 # This is the setup for Redis. The default for the Google Cloud Engine Terraform
@@ -51,9 +51,9 @@ redis:
 maxRequestSize: 524288 # The maximum size of requests allowed in bytes
 
 sessionLogs:
-  consoleEnabled: false
+  consoleEnabled: true
+  consoleLogFormat: text # Defaults to "json", options are "text" or "json"
 # persistentEnabled: true
-# consoleLogFormat: json # Defaults to "json", options are "text" or "json"
 
 # futureCallExecutionEnabled: true # Defaults to true
 

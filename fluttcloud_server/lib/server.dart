@@ -1,7 +1,7 @@
-import 'package:fluttcloud_server/src/core/auth.dart';
+import 'package:fluttcloud_server/src/core/server_init.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 import 'package:fluttcloud_server/src/generated/protocol.dart';
-import 'package:fluttcloud_server/src/web/routes/root.dart';
+import 'package:fluttcloud_server/src/web/static_server.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
 
@@ -18,16 +18,14 @@ Future<void> run(List<String> args) async {
     authenticationHandler: auth.authenticationHandler,
   );
 
-  await initializeAuth();
+  await serverInit();
 
-  // Setup a default page at the web root.
-  pod.webServer.addRoute(RouteRoot(), '/');
-  pod.webServer.addRoute(RouteRoot(), '/index.html');
-  // Serve all files in the /static directory.
-  pod.webServer.addRoute(
-    RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),
-    '/*',
+  final routeStaticDirectory = RouteStaticServer(
+    serverDirectory: 'app',
+    basePath: '/',
+    serveAsRootPath: '/index.html',
   );
+  pod.webServer.addRoute(routeStaticDirectory, '/*');
 
   // Start the server.
   await pod.start();

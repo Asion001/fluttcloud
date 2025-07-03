@@ -1,0 +1,8 @@
+class: FsEntry
+fields:
+  fullpath: String
+  serverFullpath: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  size: int?
+  type: FsEntryType

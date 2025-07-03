@@ -17,12 +17,19 @@ class AppRouter extends RootStackRouter {
         page: HomeTabsRoute.page,
         path: '/',
         initial: true,
-        guards: [AuthGuard()],
+        guards: _privateGuards,
       ),
-      AutoRoute(page: ProfileRoute.page, path: '/profile'),
+      AutoRoute(
+        page: ProfileRoute.page,
+        path: '/profile',
+        guards: _privateGuards,
+      ),
       AutoRoute(page: LoginRoute.page, path: '/login'),
+      AutoRoute(page: ServerPickerRoute.page, path: '/server-config'),
     ];
   }
+
+  List<AutoRouteGuard> get _privateGuards => [ServerConfigGuard(), AuthGuard()];
 
   static AppRouter get I => getIt<AppRouter>();
 
@@ -89,7 +96,7 @@ class BlurDialogRoute<R> extends CustomRoute<R> {
 class AuthGuard extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    final isSignedIn = Serverpod.I.sessionManager.isSignedIn;
+    final isSignedIn = Serverpod.I.isSignedIn;
     if (isSignedIn) {
       // if user is authenticated we continue
       resolver.next();
@@ -98,6 +105,24 @@ class AuthGuard extends AutoRouteGuard {
       // tip: use resolver.redirectUntil to have the redirected route
       // automatically removed from the stack when the resolver is completed
       resolver.redirectUntil(LoginRoute(onLoginSuccess: resolver.next));
+    }
+  }
+}
+
+class ServerConfigGuard extends AutoRouteGuard {
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
+    final isServerUrlSet = getIt<ServerConfigController>().isServerUrlSet;
+    if (isServerUrlSet) {
+      // if user is authenticated we continue
+      resolver.next();
+    } else {
+      // we redirect the user to our login page
+      // tip: use resolver.redirectUntil to have the redirected route
+      // automatically removed from the stack when the resolver is completed
+      resolver.redirectUntil(
+        ServerPickerRoute(onServerUrlChanged: resolver.next),
+      );
     }
   }
 }

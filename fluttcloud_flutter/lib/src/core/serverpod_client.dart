@@ -3,24 +3,31 @@ import 'package:fluttcloud_flutter/common_imports.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
-@injectable
+@singleton
 class Serverpod {
-  late final Client client;
-  late SessionManager sessionManager;
+  Client? _client;
+  SessionManager? _sessionManager;
+
+  Client get client => _client!;
+  SessionManager get sessionManager => _sessionManager!;
 
   static Serverpod get I => getIt<Serverpod>();
 
-  @PostConstruct(preResolve: true)
-  Future<void> init() async {
-    client = Client(
-      Env.serverUrl.toString(),
+  bool get isSignedIn => _sessionManager?.isSignedIn ?? false;
+
+  Future<void> init(Uri serverUrl) async {
+    _client?.close();
+    _client = Client(
+      serverUrl.toString(),
       authenticationKeyManager: FlutterAuthenticationKeyManager(),
     )..connectivityMonitor = FlutterConnectivityMonitor();
 
     // The session manager keeps track of the signed-in state of the user. You
     // can query it to see if the user is currently signed in and get
     // information about the user.
-    sessionManager = SessionManager(caller: client.modules.auth);
+    await _sessionManager?.signOutDevice();
+    _sessionManager?.dispose();
+    _sessionManager = SessionManager(caller: _client!.modules.auth);
 
     await sessionManager.initialize();
 

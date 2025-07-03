@@ -10,7 +10,15 @@ class LoginScreen extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.login_screen_title.tr())),
+      appBar: AppBar(
+        title: Text(LocaleKeys.login_screen_title.tr()),
+        actions: [
+          IconButton(
+            onPressed: () => ServerPickerRoute().push<void>(context),
+            icon: const Icon(Icons.settings),
+          ),
+        ],
+      ),
       body: SignInWithEmailButton(
         caller: Serverpod.I.client.modules.auth,
         onSignedIn: onLoginSuccess,

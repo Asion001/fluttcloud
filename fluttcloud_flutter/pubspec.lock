@@ -330,7 +330,7 @@ packages:
     source: hosted
     version: "3.0.0"
   envied:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: envied
       sha256: a4e2b1d0caa479b5d61332ae516518c175a6d09328a35a0bc0a53894cc5d7e4d
@@ -1125,7 +1125,7 @@ packages:
     source: hosted
     version: "2.9.1"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       sha256: "6e8bf70b7fef813df4e9a36f658ac46d107db4b4cfe1048b477d4e453a8159f5"

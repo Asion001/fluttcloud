@@ -14,6 +14,7 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
+import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i4;
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -100,6 +101,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _FilesEndpoint files;
+
   late final _UserEndpoint user;
 }
 
@@ -110,10 +113,57 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    files = _FilesEndpoint(
+      endpoints,
+      serializationManager,
+    );
     user = _UserEndpoint(
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _FilesEndpoint {
+  _FilesEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Stream<_i4.FsEntry> list(
+    _i1.TestSessionBuilder sessionBuilder, {
+    String? serverFolderPath,
+  }) {
+    var _localTestStreamManager = _i1.TestStreamManager<_i4.FsEntry>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+          endpoint: 'files',
+          method: 'list',
+        );
+        var _localCallContext =
+            await _endpointDispatch.getMethodStreamCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'list',
+          arguments: {'serverFolderPath': serverFolderPath},
+          requestedInputStreams: [],
+          serializationManager: _serializationManager,
+        );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
   }
 }
 

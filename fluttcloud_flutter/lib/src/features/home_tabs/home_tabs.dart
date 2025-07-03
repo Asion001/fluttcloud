@@ -11,7 +11,7 @@ class HomeTabsScreen extends WatchingWidget {
       body: MaxSizeContainer(
         child: Scaffold(
           appBar: AppBar(leading: const ProfileBtn()),
-          body: const SizedBox(),
+          body: const FileList(),
         ),
       ),
     );

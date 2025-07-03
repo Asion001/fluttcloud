@@ -1,0 +1,5 @@
+enum: FsEntryType
+values:
+  - file
+  - directory
+  - symlink

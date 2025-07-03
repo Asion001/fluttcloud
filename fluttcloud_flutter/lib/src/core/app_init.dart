@@ -33,7 +33,6 @@ class AppInit {
     final parameters = {
       'Version': packageInfo.version,
       'Build number': packageInfo.buildNumber,
-      'Api Domain': Env.serverUrl.toString(),
       if (kIsWasm || kIsWeb) 'WASM': kIsWasm,
     };
 

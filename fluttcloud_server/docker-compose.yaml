@@ -39,6 +39,24 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
 
+  fluttcloud:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    environment:
+      - SERVERPOD_RUN_MODE=production
+      - SERVERPOD_REDIS_HOST=redis_test
+      - SERVERPOD_DATABASE_HOST=postgres_test
+      - SERVERPOD_PASSWORD_database=S5naKgCB1nuFlhdbz3IidRUhFs7tXIML
+      - SERVERPOD_PASSWORD_redis=pZ4BBWuClW_zVDJ2NC3Z12VLVvRE6Mho
+      - SERVERPOD_DATABASE_NAME=fluttcloud_test
+    ports:
+      - 8095:8095
+      - 8096:8096
+      - 8097:8097
+    volumes:
+      - /mnt/storage:/data:ro
+
 volumes:
   fluttcloud_data:
   fluttcloud_test_data:

@@ -10,20 +10,54 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../endpoinds/user_endpoint.dart' as _i2;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
+import '../endpoinds/files_endpoint.dart' as _i2;
+import '../endpoinds/user_endpoint.dart' as _i3;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i4;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'user': _i2.UserEndpoint()
+      'files': _i2.FilesEndpoint()
+        ..initialize(
+          server,
+          'files',
+          null,
+        ),
+      'user': _i3.UserEndpoint()
         ..initialize(
           server,
           'user',
           null,
-        )
+        ),
     };
+    connectors['files'] = _i1.EndpointConnector(
+      name: 'files',
+      endpoint: endpoints['files']!,
+      methodConnectors: {
+        'list': _i1.MethodStreamConnector(
+          name: 'list',
+          params: {
+            'serverFolderPath': _i1.ParameterDescription(
+              name: 'serverFolderPath',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            )
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['files'] as _i2.FilesEndpoint).list(
+            session,
+            serverFolderPath: params['serverFolderPath'],
+          ),
+        )
+      },
+    );
     connectors['user'] = _i1.EndpointConnector(
       name: 'user',
       endpoint: endpoints['user']!,
@@ -41,13 +75,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['user'] as _i2.UserEndpoint).deleteMyUserProfile(
+              (endpoints['user'] as _i3.UserEndpoint).deleteMyUserProfile(
             session,
             params['userId'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i3.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);
   }
 }
