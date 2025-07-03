@@ -1,0 +1,16 @@
+{
+  "duration": {
+    "h": "h",
+    "m": "m",
+    "s": "s"
+  },
+  "no": "No",
+  "yes": "Yes",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "info": "Info",
+  "warning": "Warning"
+}

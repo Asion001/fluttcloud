@@ -1,0 +1,13 @@
+name: fluttcloud_client
+description: Starting point for a Serverpod client.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  serverpod_client: 2.9.1
+  serverpod_auth_client: 2.9.1

@@ -1,0 +1,55 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "fluttcloud_flutter",
+            "cwd": "fluttcloud_flutter",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "fluttcloud_flutter (WEB)",
+            "cwd": "fluttcloud_flutter",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "toolArgs": [
+                "-d",
+                "chrome",
+                "--web-port",
+                "10000",
+                "--web-experimental-hot-reload"
+            ]
+        },
+        {
+            "name": "fluttcloud_flutter (profile mode)",
+            "cwd": "fluttcloud_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "fluttcloud_flutter (release mode)",
+            "cwd": "fluttcloud_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+        },
+        {
+            "name": "fluttcloud_server",
+            "cwd": "fluttcloud_server",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/main.dart",
+            "args": [
+                "--apply-migrations"
+            ],
+        }
+    ]
+}
