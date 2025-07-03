@@ -25,7 +25,7 @@ class _AppState extends State<App> {
     return ToastificationWrapper(
       config: getIt<ToastController>().config,
       child: MaterialApp.router(
-        title: 'OpenQuester',
+        title: 'FluttCloud',
         restorationScopeId: 'app',
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,

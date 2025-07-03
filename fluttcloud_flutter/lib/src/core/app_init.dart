@@ -1,7 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:fluttcloud_flutter/src/core/env.dart';
-import 'package:fluttcloud_flutter/src/core/get_it.dart';
-import 'package:fluttcloud_flutter/src/core/logger.dart';
+import 'package:fluttcloud_flutter/common_imports.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -21,7 +18,7 @@ class AppInit {
     // ignore: prefer_const_constructors because it`s throw error during build
     setUrlStrategy(PathUrlStrategy());
 
-    configureDependencies();
+    await configureDependencies();
 
     logger.i(await getInitInfo());
   }

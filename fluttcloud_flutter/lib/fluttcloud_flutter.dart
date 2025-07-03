@@ -29,5 +29,8 @@ export 'src/core/ui/ui_mode_utils.dart';
 export 'src/core/utils/extensions.dart';
 export 'src/core/utils/utils.dart';
 export 'src/features/home_tabs/home_tabs.dart';
+export 'src/features/login/view/login_screen.dart';
+export 'src/features/profile/view/profile_btn.dart';
+export 'src/features/profile/view/profile_screen.dart';
 export 'src/ui/fields/password_fields.dart';
 export 'src/ui/image_provider.dart';

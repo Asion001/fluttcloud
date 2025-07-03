@@ -12,5 +12,12 @@
   "error": "Error",
   "success": "Success",
   "info": "Info",
-  "warning": "Warning"
+  "warning": "Warning",
+  "login_screen": {
+    "title": "Login"
+  },
+  "profile_screen": {
+    "title": "Profile",
+    "delete_account": "Delete Account"
+  }
 }

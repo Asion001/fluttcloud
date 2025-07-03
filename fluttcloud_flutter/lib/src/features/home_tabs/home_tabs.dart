@@ -7,6 +7,13 @@ class HomeTabsScreen extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: MaxSizeContainer(child: SizedBox()));
+    return Scaffold(
+      body: MaxSizeContainer(
+        child: Scaffold(
+          appBar: AppBar(leading: const ProfileBtn()),
+          body: const SizedBox(),
+        ),
+      ),
+    );
   }
 }

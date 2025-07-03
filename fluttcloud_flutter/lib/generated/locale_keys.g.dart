@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const duration_h = 'duration.h';
   static const duration_m = 'duration.m';
   static const duration_s = 'duration.s';
@@ -16,4 +16,10 @@ abstract class LocaleKeys {
   static const success = 'success';
   static const info = 'info';
   static const warning = 'warning';
+  static const login_screen_title = 'login_screen.title';
+  static const login_screen = 'login_screen';
+  static const profile_screen_title = 'profile_screen.title';
+  static const profile_screen_delete_account = 'profile_screen.delete_account';
+  static const profile_screen = 'profile_screen';
+
 }
