@@ -11,8 +11,6 @@ on:
         required: true
       ANDROID_KEYSTORE_BASE64:
         required: true
-      WINDOWS_SIGN_CERT:
-        required: true
 
     inputs:
       DEPLOY_PROD:
