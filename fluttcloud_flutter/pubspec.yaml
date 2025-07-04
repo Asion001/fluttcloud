@@ -56,6 +56,7 @@ dev_dependencies:
   test: ^1.25.15
   flutter_gen_runner: ^5.10.0
   very_good_analysis: ^7.0.0
+  inno_bundle: ^0.9.0
 
 flutter:
   uses-material-design: true
@@ -66,3 +67,11 @@ flutter_gen:
   output: lib/generated/
   integrations:
     flutter_svg: true
+
+inno_bundle:
+  id: a326a4b0-58e1-11f0-a862-dbeb970b3c46
+  publisher: asion
+  name: FluttCloud
+  admin: false
+  languages:
+    - english
