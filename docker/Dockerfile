@@ -43,7 +43,7 @@ COPY --from=build /app/migrations/ migrations/
 COPY --from=build /app/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
 
 # Copy app files
-COPY --from=flutter_build /app/fluttcloud_flutter/build/web/* web/app/
+COPY --from=flutter_build /app/fluttcloud_flutter/build/web/ web/app/
 
 # Expose ports
 EXPOSE 8080
