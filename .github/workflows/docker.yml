@@ -48,6 +48,8 @@ jobs:
 
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v5
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
         with:
           push: true
           file: ./docker/Dockerfile

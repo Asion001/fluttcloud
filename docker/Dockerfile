@@ -35,7 +35,6 @@ COPY --from=build /app/bin/server server
 
 # Copy configuration files and resources
 COPY --from=build /app/config/ config/
-COPY --from=build /app/web/ web/
 COPY --from=build /app/migrations/ migrations/
 
 # This file is required to enable the endpoint log filter in Insights.
