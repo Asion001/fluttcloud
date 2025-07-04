@@ -1,4 +1,5 @@
 import 'package:fluttcloud_server/common_imports.dart';
+import 'package:fluttcloud_server/src/core/env.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
@@ -34,6 +35,13 @@ Future<void> initializeAuth() async {
       if (userInfo.fullName.isEmptyOrNull) {
         await userInfo.changeFullName(session, userInfo.userName ?? '');
       }
+    },
+    onUserWillBeCreated: (session, userInfo, method) async {
+      // Allow only admins to register
+      final usersCount = await session.db.count<UserInfo>();
+      if (usersCount >= 1 && !allowRegistration) return false;
+
+      return true;
     },
   );
   AuthConfig.set(authConfig);
