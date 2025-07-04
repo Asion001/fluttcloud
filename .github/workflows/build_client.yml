@@ -1,0 +1,120 @@
+name: Build Client
+
+on:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
+      ANDROID_KEYSTORE_BASE64:
+        required: true
+      WINDOWS_SIGN_CERT:
+        required: true
+
+    inputs:
+      DEPLOY_PROD:
+        type: boolean
+        default: false
+
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build client (Web & Android)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./fluttcloud_client
+    env:
+      DONT_USE_PURO: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17 + Gradle cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: "17"
+          cache: gradle
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+          make pre_run
+
+      - name: Build Web
+        run: flutter build web --no-web-resources-cdn --build-number $GITHUB_RUN_NUMBER --wasm
+
+      - name: Publish Web Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-app
+          path: ./fluttcloud_client/build/web/
+
+      - name: Decode and setup Android keystore
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Build Android APKs
+        run: |
+          flutter build apk --release --build-number $GITHUB_RUN_NUMBER
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ vars.ANDROID_KEYSTORE_PATH }}
+          ANDROID_KEY_ALIAS_NAME: ${{ vars.ANDROID_KEY_ALIAS_NAME }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Publish Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-app
+          path: ./fluttcloud_client/build/app/outputs/flutter-apk/*.apk
+
+  build_windows:
+    name: Build client (Windows)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./fluttcloud_client
+    env:
+      DONT_USE_PURO: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+          choco install make -y
+          make pre_run
+
+      - name: Build and create bundle
+        run: |
+          flutter build windows --release --build-number ${{ github.run_number	}}
+          dart run inno_bundle:build --release --no-app
+
+      - name: Publish Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-app
+          path: ./fluttcloud_client/build/windows/x64/installer/Release/*-Installer.exe

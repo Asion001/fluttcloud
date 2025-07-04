@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    uses: ./.github/workflows/test.yml
+
+  build_client:
+    needs: [tests]
+    uses: ./.github/workflows/build_client.yml
+    secrets: inherit
+    with:
+      DEPLOY_PROD: true
+
+  build_docker:
+    needs: [tests]
+    uses: ./.github/workflows/docker.yml
+    with:
+      DEPLOY_PROD: true
+    permissions:
+      contents: read
+      packages: write
+
+  publish_release:
+    name: Publish GitHub Release & Deploy Web
+    needs: [build_client, build_docker, tests]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Android APKs
+        uses: actions/download-artifact@v4
+        with:
+          name: android-app
+          path: android/
+
+      - name: Download Windows binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-app
+          path: windows/
+
+      - name: Download Web binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: web-app
+          path: web/
+
+      # ––––– Determine the tag we’re releasing –––––
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Set LATEST_TAG env var
+        id: tag
+        run: |
+          echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      # ––––– Generate release notes from CHANGELOG.md –––––
+      - name: Generate changelog for ${{ env.LATEST_TAG }}
+        id: changelog
+        uses: endaft/action-changelog@v0.0.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exclude_types: other,doc,chore
+
+      # ––––– Create GitHub Release –––––
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.LATEST_TAG }}
+          prerelease: false
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: |
+            android/**/*.apk
+            windows/**

@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  pull_request:
+
+jobs:
+  test_client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./fluttcloud_client
+    env:
+      DONT_USE_PURO: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+      - run: make pre_run
+      - run: dart analyze --fatal-infos lib/
+      - run: dart run scripts/run_format_exception.dart
+      - run: dart format lib --set-exit-if-changed
+
+  test_server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./fluttcloud_server
+    env:
+      DONT_USE_PURO: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: make pre_run
+      - run: dart analyze --fatal-infos lib/
+      - run: dart run scripts/run_format_exception.dart
+      - run: dart format lib --set-exit-if-changed
