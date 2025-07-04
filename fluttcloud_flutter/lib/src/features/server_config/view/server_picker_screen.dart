@@ -36,8 +36,8 @@ class _ServerPickerScreenState extends State<ServerPickerScreen> {
 
     getIt<ServerConfigController>().setServerUrl(url);
     ToastController.I.show(
-      context,
-      title: LocaleKeys.server_picker_screen_url_saved.tr(args: [url]),
+      LocaleKeys.server_picker_screen_url_saved.tr(args: [url]),
+      type: ToastType.success,
     );
     widget.onServerUrlChanged?.call();
   }

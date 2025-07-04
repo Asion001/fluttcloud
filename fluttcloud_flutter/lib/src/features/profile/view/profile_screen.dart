@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
         title: Text(LocaleKeys.profile_screen_title.tr()),
         actions: [
           IconButton(
-            onPressed: sessionManager.signOutDevice,
+            onPressed: Serverpod.I.logout,
             icon: const Icon(Icons.logout),
           ),
         ],

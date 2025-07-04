@@ -15,10 +15,29 @@ class Serverpod {
 
   bool get isSignedIn => _sessionManager?.isSignedIn ?? false;
 
+  Future<void> logout() async {
+    try {
+      await _sessionManager?.signOutDevice();
+    } catch (_) {}
+    await _sessionManager?.keyManager.remove();
+    _sessionManager?.dispose();
+    _sessionManager = null;
+
+    _client?.close();
+    _client = null;
+
+    await getIt<ServerConfigController>().deleteConfig();
+    await AppRouter.I.replaceAll([const HomeTabsRoute()]);
+  }
+
   Future<void> init(Uri serverUrl) async {
     _client?.close();
+
+    final url = serverUrl.toString().endsWith('/')
+        ? serverUrl.toString()
+        : '$serverUrl/';
     _client = Client(
-      serverUrl.toString(),
+      url,
       authenticationKeyManager: FlutterAuthenticationKeyManager(),
     )..connectivityMonitor = FlutterConnectivityMonitor();
 
@@ -32,7 +51,7 @@ class Serverpod {
     await sessionManager.initialize();
 
     sessionManager.addListener(() {
-      if (!sessionManager.isSignedIn) {
+      if (!isSignedIn) {
         AppRouter.I.replaceAll([const HomeTabsRoute()]);
       }
     });

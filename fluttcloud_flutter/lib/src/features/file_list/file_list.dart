@@ -35,11 +35,7 @@ class _FileListState extends State<FileList> {
         .list(serverFolderPath: currentPath)
         .listen(
           _addFile,
-          onDone: () {
-            // Optionally handle completion
-            logger.d('File fetching completed');
-            completer.complete();
-          },
+          onDone: completer.complete,
           onError: (Object? error) {
             // Handle error, e.g., show a snackbar or dialog
             logger.e('Error fetching files: $error');
