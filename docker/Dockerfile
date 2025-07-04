@@ -51,4 +51,4 @@ EXPOSE 8081
 EXPOSE 8082
 
 # Define the entrypoint command
-ENTRYPOINT ["./server", "--apply-migrations"]
+ENTRYPOINT ["./server", "--apply-migrations", "--mode", "production"]
