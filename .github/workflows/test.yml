@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./fluttcloud_client
+        working-directory: ./fluttcloud_flutter
     env:
       DONT_USE_PURO: true
     steps:
@@ -19,7 +19,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          flutter-version-file: ./fluttcloud_flutter/pubspec.yaml
           cache: true
       - run: flutter pub get
       - run: make pre_run

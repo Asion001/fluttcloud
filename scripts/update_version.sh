@@ -19,7 +19,7 @@ fi
 echo "Using version: $VERSION"
 
 # Update client pubspec.yaml with the new version.
-PUBSPEC_FILE="fluttcloud_client/pubspec.yaml"
+PUBSPEC_FILE="fluttcloud_flutter/pubspec.yaml"
 if grep -q "^version: $VERSION" "$PUBSPEC_FILE"; then
   echo "Version in $PUBSPEC_FILE is already up to date."
 else

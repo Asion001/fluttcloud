@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./fluttcloud_client
+        working-directory: ./fluttcloud_flutter
     env:
       DONT_USE_PURO: true
     steps:
@@ -46,7 +46,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          flutter-version-file: ./fluttcloud_flutter/pubspec.yaml
           cache: true
 
       - name: Install dependencies
@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-app
-          path: ./fluttcloud_client/build/web/
+          path: ./fluttcloud_flutter/build/web/
 
       - name: Decode and setup Android keystore
         run: |
@@ -82,14 +82,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-app
-          path: ./fluttcloud_client/build/app/outputs/flutter-apk/*.apk
+          path: ./fluttcloud_flutter/build/app/outputs/flutter-apk/*.apk
 
   build_windows:
     name: Build client (Windows)
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ./fluttcloud_client
+        working-directory: ./fluttcloud_flutter
     env:
       DONT_USE_PURO: true
     steps:
@@ -99,7 +99,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: ./fluttcloud_client/pubspec.yaml
+          flutter-version-file: ./fluttcloud_flutter/pubspec.yaml
           cache: true
 
       - name: Install dependencies
@@ -117,4 +117,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-app
-          path: ./fluttcloud_client/build/windows/x64/installer/Release/*-Installer.exe
+          path: ./fluttcloud_flutter/build/windows/x64/installer/Release/*-Installer.exe
