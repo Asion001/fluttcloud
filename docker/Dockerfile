@@ -16,11 +16,13 @@ COPY fluttcloud_client fluttcloud_client
 
 WORKDIR /app/fluttcloud_flutter
 
-ENV BUILD_NUMBER=0
-
 # Install dependencies and build the Flutter web application
 RUN flutter pub get
-RUN flutter build web --release --no-web-resources-cdn --build-number $BUILD_NUMBER --wasm
+
+ARG BUILD_NUMBER=0
+ENV BUILD_NUMBER=${BUILD_NUMBER}
+
+RUN flutter build web --release --no-web-resources-cdn --build-number ${BUILD_NUMBER} --wasm
 
 
 # Final stage
