@@ -9,7 +9,7 @@ class HomeTabsScreen extends WatchingWidget {
   Widget build(BuildContext context) {
     final controller = getIt<FileListController>();
     final canPop = watchPropertyValue(
-      (FileListController value) => value.currentPath != '/',
+      (FileListController value) => value.currentPath == '/',
     );
 
     return Scaffold(
