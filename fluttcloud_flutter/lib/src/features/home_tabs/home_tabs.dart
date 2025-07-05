@@ -22,7 +22,7 @@ class HomeTabsScreen extends WatchingWidget {
                   .split('/')
                   .sublist(0, controller.currentPath.split('/').length - 1)
                   .join('/');
-              await controller.fetchFiles(path);
+              await controller.fetchFiles(path: path);
               return;
             }
           },
@@ -33,8 +33,9 @@ class HomeTabsScreen extends WatchingWidget {
                 preferredSize: Size.fromHeight(42),
                 child: FilesBar(),
               ),
+              title: Text(LocaleKeys.flutcloud.tr()),
             ),
-            body: const FileList(),
+            body: const SafeArea(child: FileList()),
           ),
         ),
       ),

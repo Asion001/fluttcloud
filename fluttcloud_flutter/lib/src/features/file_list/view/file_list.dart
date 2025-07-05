@@ -25,7 +25,7 @@ class FileList extends WatchingWidget {
               ).paddingAll(8).center()
             else
               RefreshIndicator(
-                onRefresh: controller.fetchFiles,
+                onRefresh: () => controller.fetchFiles(useCache: false),
                 child: ListView.builder(
                   itemCount: files.length,
                   itemBuilder: (context, index) {
@@ -48,7 +48,7 @@ class FileList extends WatchingWidget {
   void Function()? _getOnTapFunc(BuildContext context, FsEntry file) {
     return switch (file.type) {
       FsEntryType.directory => () => getIt<FileListController>().fetchFiles(
-        file.serverFullpath,
+        path: file.serverFullpath,
       ),
       FsEntryType.file => () => FilePreview(file: file).show(context),
       FsEntryType.symlink => null,

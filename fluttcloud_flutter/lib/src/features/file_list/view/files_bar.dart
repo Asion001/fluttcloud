@@ -11,25 +11,31 @@ class FilesBar extends WatchingWidget {
     final currentPath = controller.currentPath;
     final fetchFiles = controller.fetchFiles;
     final fileCount = controller.files.length;
+    final backBtnVisible = currentPath != '/';
 
     return Row(
       children: [
         Visibility.maintain(
-          visible: currentPath != '/',
+          visible: backBtnVisible,
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              final path = currentPath == '/'
-                  ? null
-                  : currentPath
-                        .split('/')
-                        .sublist(0, currentPath.split('/').length - 1)
-                        .join('/');
-              fetchFiles(path);
-            },
+            onPressed: !backBtnVisible
+                ? null
+                : () {
+                    final path = currentPath == '/'
+                        ? null
+                        : currentPath
+                              .split('/')
+                              .sublist(0, currentPath.split('/').length - 1)
+                              .join('/');
+                    fetchFiles(path: path);
+                  },
           ),
         ),
-        IconButton(icon: const Icon(Icons.refresh), onPressed: fetchFiles),
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () => fetchFiles(useCache: false),
+        ),
         TextButton(
           onPressed: () {
             Clipboard.setData(ClipboardData(text: currentPath));
@@ -41,9 +47,10 @@ class FilesBar extends WatchingWidget {
           child: Text(
             currentPath,
             style: Theme.of(context).textTheme.bodyMedium,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ).paddingSymmetric(horizontal: 16),
-        ),
-        const Spacer(),
+        ).expand(),
         Text(LocaleKeys.items.plural(fileCount)),
       ],
     ).paddingRight(16);

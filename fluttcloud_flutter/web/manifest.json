@@ -1,6 +1,6 @@
 {
-    "name": "fluttcloud_flutter",
-    "short_name": "fluttcloud_flutter",
+    "name": "FluttCloud",
+    "short_name": "FluttCloud",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

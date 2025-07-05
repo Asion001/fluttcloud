@@ -9,7 +9,10 @@ import 'package:path/path.dart';
 import 'package:serverpod/serverpod.dart';
 
 class FilesEndpoint extends Endpoint {
-  Stream<FsEntry> list(Session session, {String? serverFolderPath}) async* {
+  Stream<FsEntry> list(
+    Session session, {
+    String? serverFolderPath,
+  }) async* {
     await _validateAccess(session);
 
     final directory = Directory(
@@ -24,7 +27,8 @@ class FilesEndpoint extends Endpoint {
     final stream = directory.list(followLinks: false);
 
     await for (final entity in stream) {
-      yield _convertToFsEntry(session, entity, directory);
+      final fsEntry = _convertToFsEntry(session, entity, directory);
+      yield fsEntry;
     }
   }
 

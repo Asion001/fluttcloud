@@ -3,6 +3,7 @@
 // ignore_for_file: constant_identifier_names
 
 abstract class  LocaleKeys {
+  static const flutcloud = 'flutcloud';
   static const duration_h = 'duration.h';
   static const duration_m = 'duration.m';
   static const duration_s = 'duration.s';

@@ -53,8 +53,9 @@ class _ServerPickerScreenState extends State<ServerPickerScreen> {
     return MaxSizeContainer(
       child: Scaffold(
         appBar: AppBar(title: Text(LocaleKeys.server_picker_screen_title.tr())),
-        body: Padding(
+        body: Container(
           padding: 16.all,
+          constraints: const BoxConstraints(maxWidth: 400),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -62,7 +63,7 @@ class _ServerPickerScreenState extends State<ServerPickerScreen> {
                 controller: _controller,
                 decoration: InputDecoration(
                   labelText: LocaleKeys.server_picker_screen_server_url.tr(),
-                  hintText: 'https://your-server.com',
+                  hintText: 'https://your-api-server.com',
                   errorText: _errorText,
                   border: const OutlineInputBorder(),
                 ),
@@ -76,7 +77,7 @@ class _ServerPickerScreenState extends State<ServerPickerScreen> {
               ),
             ],
           ),
-        ),
+        ).center(),
       ),
     );
   }

@@ -6,38 +6,76 @@ import 'package:flutter/material.dart';
 
 @singleton
 class FileListController extends ChangeNotifier {
-  List<FsEntry> files = [];
+  final List<FsEntry> files = [];
   String currentPath = '/';
   String? errorMessage;
 
-  Future<void> fetchFiles([String? path]) async {
+  Future<void> fetchFiles({bool useCache = true, String? path}) async {
     files.clear();
 
     final lastPath = currentPath;
-    currentPath = path.isEmptyOrNull ? '/' : path ?? currentPath;
+    currentPath = path ?? currentPath;
     if (currentPath.isEmptyOrNull) currentPath = '/';
 
     notifyListeners();
 
-    // Allows to wait for stream completion
-    final completer = Completer<void>();
+    final cachedFiles = _cachedFiles[currentPath];
+    if (useCache && cachedFiles != null) {
+      files.addAll(cachedFiles);
+      _sortFiles();
+      notifyListeners();
+    }
 
-    Serverpod.I.client.files
-        .list(serverFolderPath: currentPath)
-        .listen(
-          _addFile,
-          onDone: completer.complete,
-          onError: (Object? error) {
-            // Handle error, e.g., show a snackbar or dialog
-            logger.e('Error fetching files: $error');
-            ToastController.I.show(error.toString());
-            completer.complete();
-            currentPath = lastPath.isEmptyOrNull ? '/' : lastPath;
-          },
-          cancelOnError: true,
-        );
+    final stream = Serverpod.I.client.files.list(
+      serverFolderPath: currentPath,
+    );
 
-    await completer.future;
+    final tmpFiles = <FsEntry>[];
+
+    final sub = _listenToStream(
+      stream: stream,
+      lastPath: lastPath,
+      onData: (fsEntry) {
+        // If useCache is true, add to tmpFiles and then update files
+        // If useCache is false, add directly to files one by one
+        tmpFiles.add(fsEntry);
+        if (!useCache || cachedFiles == null) {
+          _addFile(fsEntry);
+        }
+      },
+    );
+
+    await sub.asFuture<void>();
+    try {
+      await sub.cancel();
+    } catch (_) {}
+
+    if (useCache) {
+      files
+        ..clear()
+        ..addAll(tmpFiles);
+      _sortFiles();
+      notifyListeners();
+    }
+
+    _cachedFiles[currentPath] = List<FsEntry>.from(files);
+  }
+
+  StreamSubscription<FsEntry> _listenToStream({
+    required Stream<FsEntry> stream,
+    required String lastPath,
+    required void Function(FsEntry) onData,
+  }) {
+    return stream.listen(
+      onData,
+      onError: (Object? error) {
+        // Handle error, e.g., show a snackbar or dialog
+        logger.e('Error fetching files: $error');
+        ToastController.I.show(error.toString());
+        currentPath = lastPath.isEmptyOrNull ? '/' : lastPath;
+      },
+      cancelOnError: true,
+    );
   }
 
   void _addFile(FsEntry file) {
@@ -46,16 +84,20 @@ class FileListController extends ChangeNotifier {
     if (parentPath.isEmptyOrNull) parentPath = '/';
     if (parentPath != currentPath) return;
 
-    files
-      ..add(file)
-      ..sort((a, b) {
-        return a.type == FsEntryType.directory &&
-                b.type != FsEntryType.directory
-            ? -1
-            : a.type != FsEntryType.directory && b.type == FsEntryType.directory
-            ? 1
-            : a.fullpath.compareTo(b.fullpath);
-      });
+    files.add(file);
+    _sortFiles();
     notifyListeners();
   }
+
+  void _sortFiles() {
+    files.sort((a, b) {
+      return a.type == FsEntryType.directory && b.type != FsEntryType.directory
+          ? -1
+          : a.type != FsEntryType.directory && b.type == FsEntryType.directory
+          ? 1
+          : a.fullpath.compareTo(b.fullpath);
+    });
+  }
+
+  final Map<String, List<FsEntry>> _cachedFiles = {};
 }
