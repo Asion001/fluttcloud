@@ -37,6 +37,13 @@ jobs:
           name: web-app
           path: fluttcloud_server/web/app
 
+      - name: List web build directory
+        run: |
+          echo "Current directory:"
+          ls -l
+          echo "Web app directory:"
+          ls -lR fluttcloud_server/web/app
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
