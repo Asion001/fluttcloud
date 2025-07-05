@@ -35,7 +35,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-app
-          path: fluttcloud_flutter/build/web
+          path: fluttcloud_server/web/app
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

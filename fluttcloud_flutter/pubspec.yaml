@@ -42,6 +42,11 @@ dependencies:
   shared_preferences: ^2.5.3
   path: ^1.9.1
   dio: ^5.8.0+1
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.1
+  chewie: ^1.12.1
+  video_player: ^2.10.0
+  fvp: ^0.33.0
 
 dev_dependencies:
   flutter_lints: ^6.0.0

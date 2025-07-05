@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppInit {
@@ -19,6 +20,8 @@ class AppInit {
     setUrlStrategy(PathUrlStrategy());
 
     await configureDependencies();
+
+    fvp.registerWith();
 
     logger.i(await getInitInfo());
   }

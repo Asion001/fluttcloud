@@ -35,5 +35,8 @@
   "file_type_not_supported": "File type not supported for preview",
   "modified": "Modified",
   "created": "Created",
-  "size": "Size"
+  "size": "Size",
+  "downloading": "Downloading",
+  "file": "File",
+  "download_finished": "Download finished"
 }

@@ -29,6 +29,6 @@ class _TextPreviewState extends State<TextPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(data);
+    return SingleChildScrollView(child: SelectableText(data));
   }
 }

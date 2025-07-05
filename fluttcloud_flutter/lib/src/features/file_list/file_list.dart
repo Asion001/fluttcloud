@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
-import 'package:fluttcloud_flutter/src/features/file_list/file_tile.dart';
-import 'package:fluttcloud_flutter/src/features/file_list/files_bar.dart';
 import 'package:flutter/material.dart';
 
 class FileList extends StatefulWidget {
