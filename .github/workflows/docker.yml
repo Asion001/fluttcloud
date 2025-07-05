@@ -60,7 +60,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List web build directory
-        run: ls -lR fluttcloud_flutter/build/web
+        run: ls -lR fluttcloud_server/web/app
 
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v5
