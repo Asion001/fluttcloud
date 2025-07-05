@@ -13,7 +13,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Copy web app
-COPY --from=build /app/web /app/
+COPY --from=build /app/web/ /app/web/
 
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
