@@ -76,7 +76,7 @@ class FilesEndpoint extends Endpoint {
     final webServerUri = Uri(
       scheme: session.serverpod.config.webServer?.publicScheme,
       host: session.serverpod.config.webServer?.publicHost,
-      port: session.serverpod.config.webServer?.port,
+      port: session.serverpod.config.webServer?.publicPort,
     );
     final privateSharePath = [privateShareLinkPrefix, serverFullpath].join();
     final privateShareUrl = webServerUri

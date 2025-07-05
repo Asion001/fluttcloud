@@ -7,24 +7,6 @@ COPY fluttcloud_server .
 RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
-
-FROM ghcr.io/cirruslabs/flutter:stable AS flutter_build
-WORKDIR /app
-# Copy Flutter project files
-COPY fluttcloud_flutter fluttcloud_flutter
-COPY fluttcloud_client fluttcloud_client
-
-WORKDIR /app/fluttcloud_flutter
-
-# Install dependencies and build the Flutter web application
-RUN flutter pub get
-
-ARG BUILD_NUMBER=0
-ENV BUILD_NUMBER=${BUILD_NUMBER}
-
-RUN flutter build web --release --no-web-resources-cdn --build-number ${BUILD_NUMBER} --wasm
-
-
 # Final stage
 FROM alpine:latest
 WORKDIR /app
@@ -43,7 +25,7 @@ COPY --from=build /app/migrations/ migrations/
 COPY --from=build /app/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
 
 # Copy app files
-COPY --from=flutter_build /app/fluttcloud_flutter/build/web/ web/app/
+COPY fluttcloud_flutter/build/web web/app/
 
 # Expose ports
 EXPOSE 8080

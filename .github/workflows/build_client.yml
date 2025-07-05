@@ -3,6 +3,11 @@ name: Build Client
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      ONLY_WEB:
+        type: boolean
+        description: "Build only the web client"
+        default: false
   workflow_call:
     secrets:
       ANDROID_KEYSTORE_PASSWORD:
@@ -11,15 +16,13 @@ on:
         required: true
       ANDROID_KEYSTORE_BASE64:
         required: true
-
     inputs:
       DEPLOY_PROD:
         type: boolean
         default: false
-
-  push:
-    branches:
-      - main
+      ONLY_WEB:
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -62,12 +65,14 @@ jobs:
           path: ./fluttcloud_flutter/build/web/
 
       - name: Decode and setup Android keystore
+        if: ${{ !inputs.ONLY_WEB || inputs.ONLY_WEB == false }}
         run: |
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Build Android APKs
+        if: ${{ !inputs.ONLY_WEB || inputs.ONLY_WEB == false }}
         run: |
           flutter build apk --release --build-number $GITHUB_RUN_NUMBER
         env:
@@ -77,6 +82,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       - name: Publish Android Artifacts
+        if: ${{ !inputs.ONLY_WEB || inputs.ONLY_WEB == false }}
         uses: actions/upload-artifact@v4
         with:
           name: android-app
@@ -85,6 +91,7 @@ jobs:
   build_windows:
     name: Build client (Windows)
     runs-on: windows-latest
+    if: ${{ !inputs.ONLY_WEB || inputs.ONLY_WEB == false }}
     defaults:
       run:
         working-directory: ./fluttcloud_flutter
