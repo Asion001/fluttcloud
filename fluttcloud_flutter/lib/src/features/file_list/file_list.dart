@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
+import 'package:fluttcloud_flutter/src/features/file_list/file_tile.dart';
+import 'package:fluttcloud_flutter/src/features/file_list/files_bar.dart';
 import 'package:flutter/material.dart';
 
 class FileList extends StatefulWidget {
@@ -72,7 +74,7 @@ class _FileListState extends State<FileList> {
       children: [
         Column(
           children: [
-            _FilesBar(currentPath: currentPath, fetchFiles: _fetchFiles),
+            FilesBar(currentPath: currentPath, fetchFiles: _fetchFiles),
             if (errorMessage != null)
               Text(
                 errorMessage!,
@@ -88,10 +90,8 @@ class _FileListState extends State<FileList> {
 
                     return InkWell(
                       borderRadius: 16.circular,
-                      onTap: file.type == FsEntryType.directory
-                          ? () => _fetchFiles(file.serverFullpath)
-                          : null,
-                      child: _FileTile(file: file),
+                      onTap: _getOnTapFunc(file),
+                      child: FileTile(file: file),
                     ).paddingSymmetric(horizontal: 8, vertical: 2);
                   },
                 ),
@@ -101,53 +101,12 @@ class _FileListState extends State<FileList> {
       ],
     );
   }
-}
 
-class _FileTile extends StatelessWidget {
-  const _FileTile({required this.file});
-  final FsEntry file;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(file.fullpath.split('/').last),
-        subtitle: Text(file.type.name),
-      ),
-    );
-  }
-}
-
-class _FilesBar extends StatelessWidget {
-  const _FilesBar({required this.currentPath, required this.fetchFiles});
-  final String? currentPath;
-  final Future<void> Function([String? path]) fetchFiles;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Visibility.maintain(
-          visible: currentPath != '/' && currentPath != null,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              final path = currentPath == '/'
-                  ? null
-                  : currentPath!
-                        .split('/')
-                        .sublist(0, currentPath!.split('/').length - 1)
-                        .join('/');
-              fetchFiles(path);
-            },
-          ),
-        ),
-        IconButton(icon: const Icon(Icons.refresh), onPressed: fetchFiles),
-        Text(
-          currentPath ?? '/',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ).paddingSymmetric(horizontal: 16),
-      ],
-    );
+  void Function()? _getOnTapFunc(FsEntry file) {
+    return switch (file.type) {
+      FsEntryType.directory => () => _fetchFiles(file.serverFullpath),
+      FsEntryType.file => () => FilePreview(file: file).show(context),
+      FsEntryType.symlink => null,
+    };
   }
 }

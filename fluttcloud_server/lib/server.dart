@@ -1,6 +1,8 @@
+import 'package:fluttcloud_server/src/core/env.dart';
 import 'package:fluttcloud_server/src/core/server_init.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 import 'package:fluttcloud_server/src/generated/protocol.dart';
+import 'package:fluttcloud_server/src/web/file_server.dart';
 import 'package:fluttcloud_server/src/web/static_server.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
@@ -24,6 +26,11 @@ Future<void> run(List<String> args) async {
     serverDirectory: 'app',
     basePath: '/',
     serveAsRootPath: '/index.html',
+  );
+
+  pod.webServer.addRoute(
+    AuthenticatedFileServer(urlPrefix: privateShareLinkPrefix),
+    '$privateShareLinkPrefix/*',
   );
   pod.webServer.addRoute(routeStaticDirectory, '/*');
 

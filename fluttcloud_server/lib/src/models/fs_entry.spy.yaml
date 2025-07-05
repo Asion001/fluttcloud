@@ -6,3 +6,5 @@ fields:
   updatedAt: DateTime
   size: int?
   type: FsEntryType
+  privateShareUrl: String
+  contentType: FsEntryContentType

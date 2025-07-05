@@ -1,25 +1,9 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:fluttcloud_server/src/web/content_type_mapping.dart';
 import 'package:path/path.dart' as p;
 import 'package:serverpod/serverpod.dart';
-
-final _contentTypeMapping = <String, ContentType>{
-  '.js': ContentType('text', 'javascript'),
-  '.mjs': ContentType('text', 'javascript'),
-  '.json': ContentType('application', 'json'),
-  '.wsam': ContentType('application', 'wasm'),
-  '.wasm': ContentType('application', 'wasm'),
-  '.css': ContentType('text', 'css'),
-  '.png': ContentType('image', 'png'),
-  '.jpg': ContentType('image', 'jpeg'),
-  '.jpeg': ContentType('image', 'jpeg'),
-  '.svg': ContentType('image', 'svg+xml'),
-  '.ttf': ContentType('application', 'x-font-ttf'),
-  '.woff': ContentType('application', 'x-font-woff'),
-  '.mp3': ContentType('audio', 'mpeg'),
-  '.pdf': ContentType('application', 'pdf'),
-};
 
 /// A path pattern to match, and the max age that paths that match the pattern
 /// should be cached for, in seconds.
@@ -120,10 +104,12 @@ class RouteStaticServer extends Route {
 
       // Set content type.
       extension = extension.toLowerCase();
-      final contentType = _contentTypeMapping[extension];
+      final contentType = contentTypeMapping[extension];
       if (contentType != null) {
         request.response.headers.contentType = contentType;
       }
+
+      request.response.headers.chunkedTransferEncoding = true;
 
       // Get the max age for the path
       final pathCacheMaxAge =
@@ -144,15 +130,27 @@ class RouteStaticServer extends Route {
             : 'max-age=${pathCacheMaxAge.inSeconds}',
       );
 
-      var filePath = path.startsWith('/') ? path.substring(1) : path;
-      filePath = 'web/$filePath';
-
-      final fileContents = await File(filePath).readAsBytes();
-      request.response.add(fileContents);
+      final fileContents = await _getFile(path);
+      if (fileContents == null) return false;
+      await request.response.addStream(fileContents);
       return true;
     } catch (e) {
       // Couldn't find or load file.
-      return false;
+      // Return index.html
+      final fileContents = await _getFile('/index.html');
+      if (fileContents == null) return false;
+      await request.response.addStream(fileContents);
+      return true;
     }
+  }
+
+  Future<Stream<List<int>>?> _getFile(String path) async {
+    var filePath = path.startsWith('/') ? path.substring(1) : path;
+    filePath = 'web/$filePath';
+
+    final file = File(filePath);
+    if (!file.existsSync()) return null;
+
+    return file.openRead();
   }
 }

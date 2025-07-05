@@ -12,6 +12,8 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../features/file_download/controllers/file_download_controller.dart'
+    as _i632;
 import '../features/server_config/controllers/server_config_controller.dart'
     as _i138;
 import 'controllers/storage.dart' as _i770;
@@ -28,12 +30,15 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.singleton<_i193.Serverpod>(() => _i193.Serverpod());
     gh.singleton<_i278.ToastController>(() => _i278.ToastController());
-    gh.singleton<_i216.AppRouter>(() => _i216.AppRouter());
     gh.singleton<_i770.Storage>(() => _i770.Storage());
+    gh.singleton<_i216.AppRouter>(() => _i216.AppRouter());
     await gh.singletonAsync<_i138.ServerConfigController>(() {
       final i = _i138.ServerConfigController();
       return i.init().then((_) => i);
     }, preResolve: true);
+    gh.singleton<_i632.FileDownloadController>(
+      () => _i632.FileDownloadController(),
+    );
     return this;
   }
 }

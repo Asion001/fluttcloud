@@ -1,0 +1,7 @@
+enum: FsEntryContentType
+values:
+  - text
+  - image
+  - video
+  - audio
+  - binary

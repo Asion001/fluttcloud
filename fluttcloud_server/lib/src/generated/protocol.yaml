@@ -1,4 +1,5 @@
 files:
   - list:
+  - getPrivateUri:
 user:
   - deleteMyUserProfile:

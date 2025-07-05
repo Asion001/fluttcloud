@@ -29,6 +29,13 @@ class EndpointFiles extends _i1.EndpointRef {
         {'serverFolderPath': serverFolderPath},
         {},
       );
+
+  _i2.Future<Uri> getPrivateUri(String serverFilePath) =>
+      caller.callServerEndpoint<Uri>(
+        'files',
+        'getPrivateUri',
+        {'serverFilePath': serverFilePath},
+      );
 }
 
 /// {@category Endpoint}

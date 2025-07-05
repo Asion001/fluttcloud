@@ -5,10 +5,9 @@ else
 PURO_CMD = puro
 endif
 
-pre_build: pre_build_packages pre_run gen_indexes format 
+pre_build: pre_run gen_indexes format 
 
 pre_run: gen_files gen_locale 
-
 
 ifeq ($(DART_PACKAGE),true)
 gen_locale:

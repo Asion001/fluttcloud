@@ -7,6 +7,9 @@ final filesDirectoryPath =
     Platform.environment['FILES_DIRECTORY_PATH'] ?? '/data';
 final filesDirectory = Directory(filesDirectoryPath);
 
+final privateShareLinkPrefix =
+    Platform.environment['PRIVATE_SHARE_LINK_PREFIX'] ?? '/share/root';
+
 /// Allows registration of new users,
 /// if its false registration allowed only for first user who will become admin
 ///

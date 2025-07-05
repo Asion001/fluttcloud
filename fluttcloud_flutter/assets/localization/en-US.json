@@ -30,5 +30,10 @@
     "server_url": "Server URL",
     "url_saved": "Server URL {} saved successfully.",
     "url_invalid": "Please enter a valid server URL."
-  }
+  },
+  "download": "Download",
+  "file_type_not_supported": "File type not supported for preview",
+  "modified": "Modified",
+  "created": "Created",
+  "size": "Size"
 }
