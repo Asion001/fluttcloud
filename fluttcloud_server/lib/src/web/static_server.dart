@@ -130,21 +130,22 @@ class RouteStaticServer extends Route {
             : 'max-age=${pathCacheMaxAge.inSeconds}',
       );
 
-      final fileContents = await _getFile(path);
+      final fileContents =
+          (await _getFile(path)) ?? await _getFile('/index.html');
+
       if (fileContents == null) return false;
+
       await request.response.addStream(fileContents);
       return true;
     } catch (e) {
-      // Couldn't find or load file.
-      // Return index.html
-      final fileContents = await _getFile('/index.html');
-      if (fileContents == null) return false;
-      await request.response.addStream(fileContents);
-      return true;
+      return false;
     }
   }
 
   Future<Stream<List<int>>?> _getFile(String path) async {
+    // Check if the path is absolute
+    if (!p.isAbsolute(path)) return null;
+
     var filePath = path.startsWith('/') ? path.substring(1) : path;
     filePath = 'web/$filePath';
 
