@@ -58,7 +58,7 @@ class FileListController extends ChangeNotifier {
       notifyListeners();
     }
 
-    _cachedFiles[currentPath] = List<FsEntry>.from(files);
+    _cachedFiles[lastPath] = List<FsEntry>.from(files);
   }
 
   StreamSubscription<FsEntry> _listenToStream({
