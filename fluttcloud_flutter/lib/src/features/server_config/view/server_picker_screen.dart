@@ -50,29 +50,32 @@ class _ServerPickerScreenState extends State<ServerPickerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.server_picker_screen_title.tr())),
-      body: Padding(
-        padding: 16.all,
-        child: Column(
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: LocaleKeys.server_picker_screen_server_url.tr(),
-                hintText: 'https://your-server.com',
-                errorText: _errorText,
-                border: const OutlineInputBorder(),
+    return MaxSizeContainer(
+      child: Scaffold(
+        appBar: AppBar(title: Text(LocaleKeys.server_picker_screen_title.tr())),
+        body: Padding(
+          padding: 16.all,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.server_picker_screen_server_url.tr(),
+                  hintText: 'https://your-server.com',
+                  errorText: _errorText,
+                  border: const OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.url,
+                autofillHints: const [AutofillHints.url],
               ),
-              keyboardType: TextInputType.url,
-              autofillHints: const [AutofillHints.url],
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveServerUrl,
-              child: Text(LocaleKeys.save.tr()),
-            ),
-          ],
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveServerUrl,
+                child: Text(LocaleKeys.save.tr()),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ class: FsEntry
 fields:
   fullpath: String
   serverFullpath: String
+  parentPath: String
   createdAt: DateTime
   updatedAt: DateTime
   size: int?

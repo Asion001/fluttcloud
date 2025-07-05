@@ -23,6 +23,9 @@ on:
       ONLY_WEB:
         type: boolean
         default: false
+  push:
+    branches:
+      - main
 
 jobs:
   build:

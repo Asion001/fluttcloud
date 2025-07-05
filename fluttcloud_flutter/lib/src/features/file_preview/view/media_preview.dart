@@ -75,7 +75,7 @@ class _MediaPreviewState extends State<MediaPreview> {
       constraints: const BoxConstraints(minWidth: 300, minHeight: 300),
       margin: 16.all,
       child: loading
-          ? const CircularProgressIndicator().center()
+          ? const CircularProgressIndicator()
           : AspectRatio(
               aspectRatio: videoPlayerController.value.aspectRatio,
               child: Chewie(controller: chewieController),

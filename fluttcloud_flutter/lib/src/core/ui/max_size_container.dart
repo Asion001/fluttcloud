@@ -5,7 +5,7 @@ class MaxSizeContainer extends StatelessWidget {
   const MaxSizeContainer({
     required this.child,
     super.key,
-    this.maxWidth = UiModeUtils.large,
+    this.maxWidth = UiModeUtils.medium,
   });
   final Widget child;
   final double maxWidth;

@@ -18,6 +18,7 @@ abstract class FsEntry
   FsEntry._({
     required this.fullpath,
     required this.serverFullpath,
+    required this.parentPath,
     required this.createdAt,
     required this.updatedAt,
     this.size,
@@ -29,6 +30,7 @@ abstract class FsEntry
   factory FsEntry({
     required String fullpath,
     required String serverFullpath,
+    required String parentPath,
     required DateTime createdAt,
     required DateTime updatedAt,
     int? size,
@@ -41,6 +43,7 @@ abstract class FsEntry
     return FsEntry(
       fullpath: jsonSerialization['fullpath'] as String,
       serverFullpath: jsonSerialization['serverFullpath'] as String,
+      parentPath: jsonSerialization['parentPath'] as String,
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt:
@@ -56,6 +59,8 @@ abstract class FsEntry
   String fullpath;
 
   String serverFullpath;
+
+  String parentPath;
 
   DateTime createdAt;
 
@@ -75,6 +80,7 @@ abstract class FsEntry
   FsEntry copyWith({
     String? fullpath,
     String? serverFullpath,
+    String? parentPath,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? size,
@@ -87,6 +93,7 @@ abstract class FsEntry
     return {
       'fullpath': fullpath,
       'serverFullpath': serverFullpath,
+      'parentPath': parentPath,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       if (size != null) 'size': size,
@@ -101,6 +108,7 @@ abstract class FsEntry
     return {
       'fullpath': fullpath,
       'serverFullpath': serverFullpath,
+      'parentPath': parentPath,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       if (size != null) 'size': size,
@@ -122,6 +130,7 @@ class _FsEntryImpl extends FsEntry {
   _FsEntryImpl({
     required String fullpath,
     required String serverFullpath,
+    required String parentPath,
     required DateTime createdAt,
     required DateTime updatedAt,
     int? size,
@@ -131,6 +140,7 @@ class _FsEntryImpl extends FsEntry {
   }) : super._(
           fullpath: fullpath,
           serverFullpath: serverFullpath,
+          parentPath: parentPath,
           createdAt: createdAt,
           updatedAt: updatedAt,
           size: size,
@@ -146,6 +156,7 @@ class _FsEntryImpl extends FsEntry {
   FsEntry copyWith({
     String? fullpath,
     String? serverFullpath,
+    String? parentPath,
     DateTime? createdAt,
     DateTime? updatedAt,
     Object? size = _Undefined,
@@ -156,6 +167,7 @@ class _FsEntryImpl extends FsEntry {
     return FsEntry(
       fullpath: fullpath ?? this.fullpath,
       serverFullpath: serverFullpath ?? this.serverFullpath,
+      parentPath: parentPath ?? this.parentPath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       size: size is int? ? size : this.size,

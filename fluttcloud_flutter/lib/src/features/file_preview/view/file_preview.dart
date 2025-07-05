@@ -1,6 +1,5 @@
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
-import 'package:fluttcloud_flutter/src/features/file_preview/view/media_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
@@ -38,7 +37,7 @@ class FilePreview extends StatelessWidget {
               FsEntryContentType.text => TextPreview(uri: uri),
               FsEntryContentType.video => MediaPreview(uri: uri),
               FsEntryContentType.audio => MediaPreview(uri: uri),
-              _ => _JustoDownloadFile(uri: uri),
+              _ => _JustDownloadFile(uri: uri),
             }.flexible(),
           ],
         ).paddingAll(8),
@@ -47,8 +46,8 @@ class FilePreview extends StatelessWidget {
   }
 }
 
-class _JustoDownloadFile extends StatelessWidget {
-  const _JustoDownloadFile({required this.uri});
+class _JustDownloadFile extends StatelessWidget {
+  const _JustDownloadFile({required this.uri});
   final Uri uri;
 
   @override

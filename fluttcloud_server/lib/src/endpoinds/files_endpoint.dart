@@ -24,7 +24,7 @@ class FilesEndpoint extends Endpoint {
     final stream = directory.list(followLinks: false);
 
     await for (final entity in stream) {
-      yield _convertToFsEntry(session, entity);
+      yield _convertToFsEntry(session, entity, directory);
     }
   }
 
@@ -56,7 +56,11 @@ class FilesEndpoint extends Endpoint {
     }
   }
 
-  FsEntry _convertToFsEntry(Session session, FileSystemEntity entity) {
+  FsEntry _convertToFsEntry(
+    Session session,
+    FileSystemEntity entity,
+    Directory parent,
+  ) {
     final path = entity.absolute.path;
     final serverFullpath = path.replaceFirst(filesDirectoryPath, '');
     final stat = entity.statSync();
@@ -89,6 +93,7 @@ class FilesEndpoint extends Endpoint {
     return FsEntry(
       fullpath: path,
       serverFullpath: serverFullpath,
+      parentPath: parent.absolute.path.replaceFirst(filesDirectoryPath, ''),
       type: type,
       size: stat.size,
       updatedAt: stat.modified,

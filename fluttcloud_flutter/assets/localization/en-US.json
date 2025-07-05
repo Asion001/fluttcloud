@@ -38,5 +38,10 @@
   "size": "Size",
   "downloading": "Downloading",
   "file": "File",
-  "download_finished": "Download finished"
+  "download_finished": "Download finished",
+  "items": {
+    "one": "{} item",
+    "other": "{} items"
+  },
+  "copied_to_clipboard": "{} copied to clipboard"
 }
