@@ -11,6 +11,9 @@ RUN dart compile exe bin/main.dart -o bin/server
 FROM alpine:latest
 WORKDIR /app
 
+# Copy app files
+COPY fluttcloud_flutter/build/web/ web/app/
+
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
 
@@ -24,8 +27,7 @@ COPY --from=build /app/migrations/ migrations/
 # This file is required to enable the endpoint log filter in Insights.
 COPY --from=build /app/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
 
-# Copy app files
-COPY fluttcloud_flutter/build/web web/app/
+
 
 # Expose ports
 EXPOSE 8080

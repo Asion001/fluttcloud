@@ -33,9 +33,6 @@ jobs:
           name: web-app
           path: ./fluttcloud_flutter/build/web
 
-      - name: Display structure of downloaded files
-        run: ls -R ./fluttcloud_flutter/build/web
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
