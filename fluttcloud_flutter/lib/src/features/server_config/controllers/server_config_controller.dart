@@ -19,8 +19,8 @@ class ServerConfigController extends ChangeNotifier {
 
     notifyListeners();
 
-    Storage.I.put(StorageKey.serverUrl.name, _serverUrl!);
-    getIt<Serverpod>().init(Uri.parse(_serverUrl!));
+    Storage.I.put(StorageKey.serverUrl.name, serverUrl!);
+    getIt<Serverpod>().init(Uri.parse(serverUrl!));
   }
 
   Future<void> deleteConfig() async {
