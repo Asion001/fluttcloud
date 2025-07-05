@@ -143,9 +143,6 @@ class RouteStaticServer extends Route {
   }
 
   Future<Stream<List<int>>?> _getFile(String path) async {
-    // Check if the path is absolute
-    if (!p.isAbsolute(path)) return null;
-
     var filePath = path.startsWith('/') ? path.substring(1) : path;
     filePath = 'web/$filePath';
 
