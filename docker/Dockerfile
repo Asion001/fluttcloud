@@ -13,7 +13,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Copy app files
-COPY fluttcloud_flutter/build/web/ web/app/
+COPY fluttcloud_flutter/build/web web/app
 
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
