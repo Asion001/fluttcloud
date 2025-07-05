@@ -12,6 +12,9 @@ RUN dart compile exe bin/main.dart -o bin/server
 FROM alpine:latest
 WORKDIR /app
 
+# Copy web app
+COPY --from=build /app/web /app/
+
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
 
