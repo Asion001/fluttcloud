@@ -11,6 +11,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-docker
+  cancel-in-progress: true
+
 jobs:
   build_client:
     uses: ./.github/workflows/build_client.yml
@@ -58,9 +62,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: List web build directory
-        run: ls -lR fluttcloud_server/web/app
 
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v5
