@@ -17,6 +17,8 @@ import '../features/file_download/controllers/file_download_controller.dart'
 import '../features/file_list/controllers/file_list_controller.dart' as _i677;
 import '../features/server_config/controllers/server_config_controller.dart'
     as _i138;
+import '../features/share_links/controller/share_links_controller.dart'
+    as _i322;
 import 'controllers/storage.dart' as _i770;
 import 'controllers/toast_controller.dart' as _i278;
 import 'router.dart' as _i216;
@@ -40,6 +42,9 @@ extension GetItInjectableX on _i174.GetIt {
     }, preResolve: true);
     gh.singleton<_i632.FileDownloadController>(
       () => _i632.FileDownloadController(),
+    );
+    gh.singleton<_i322.ShareLinksController>(
+      () => _i322.ShareLinksController(),
     );
     return this;
   }

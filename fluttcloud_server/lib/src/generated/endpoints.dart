@@ -11,8 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoinds/files_endpoint.dart' as _i2;
-import '../endpoinds/user_endpoint.dart' as _i3;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i4;
+import '../endpoinds/links_endpoint.dart' as _i3;
+import '../endpoinds/user_endpoint.dart' as _i4;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i5;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -24,7 +25,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'files',
           null,
         ),
-      'user': _i3.UserEndpoint()
+      'links': _i3.LinksEndpoint()
+        ..initialize(
+          server,
+          'links',
+          null,
+        ),
+      'user': _i4.UserEndpoint()
         ..initialize(
           server,
           'user',
@@ -76,6 +83,108 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['links'] = _i1.EndpointConnector(
+      name: 'links',
+      endpoint: endpoints['links']!,
+      methodConnectors: {
+        'create': _i1.MethodConnector(
+          name: 'create',
+          params: {
+            'serverPath': _i1.ParameterDescription(
+              name: 'serverPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'deleteAfter': _i1.ParameterDescription(
+              name: 'deleteAfter',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['links'] as _i3.LinksEndpoint).create(
+            session,
+            serverPath: params['serverPath'],
+            deleteAfter: params['deleteAfter'],
+          ),
+        ),
+        'list': _i1.MethodConnector(
+          name: 'list',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['links'] as _i3.LinksEndpoint).list(
+            session,
+            userId: params['userId'],
+          ),
+        ),
+        'update': _i1.MethodConnector(
+          name: 'update',
+          params: {
+            'linkId': _i1.ParameterDescription(
+              name: 'linkId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'serverPath': _i1.ParameterDescription(
+              name: 'serverPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'deleteAfter': _i1.ParameterDescription(
+              name: 'deleteAfter',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'linkPrefix': _i1.ParameterDescription(
+              name: 'linkPrefix',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['links'] as _i3.LinksEndpoint).update(
+            session,
+            linkId: params['linkId'],
+            serverPath: params['serverPath'],
+            deleteAfter: params['deleteAfter'],
+            linkPrefix: params['linkPrefix'],
+          ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'linkId': _i1.ParameterDescription(
+              name: 'linkId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['links'] as _i3.LinksEndpoint).delete(
+            session,
+            params['linkId'],
+          ),
+        ),
+      },
+    );
     connectors['user'] = _i1.EndpointConnector(
       name: 'user',
       endpoint: endpoints['user']!,
@@ -93,13 +202,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['user'] as _i3.UserEndpoint).deleteMyUserProfile(
+              (endpoints['user'] as _i4.UserEndpoint).deleteMyUserProfile(
             session,
             params['userId'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i5.Endpoints()..initializeEndpoints(server);
   }
 }

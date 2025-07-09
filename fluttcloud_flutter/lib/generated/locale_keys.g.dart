@@ -42,5 +42,8 @@ abstract class  LocaleKeys {
   static const download_finished = 'download_finished';
   static const items = 'items';
   static const copied_to_clipboard = 'copied_to_clipboard';
+  static const link_sharing_created = 'link_sharing.created';
+  static const link_sharing_create_share_link = 'link_sharing.create_share_link';
+  static const link_sharing = 'link_sharing';
 
 }

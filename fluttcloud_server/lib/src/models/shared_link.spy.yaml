@@ -1,0 +1,21 @@
+class: SharedLink
+table: shared_link
+fields:
+  ### User id
+  createdBy: int, relation(parent=serverpod_user_info, onDelete=Cascade)
+
+  ### Path to file or folder to share
+  serverPath: String
+
+  ### Link prefix. Example: https://domain.com/share/{linkPrefix}
+  linkPrefix: String
+
+  ### If set - link will be delete after this date
+  deleteAfter: DateTime?
+
+indexes:
+  shared_link_created_by_idx:
+    fields: createdBy
+  shared_link_prefix_idx:
+    fields: linkPrefix
+    unique: true

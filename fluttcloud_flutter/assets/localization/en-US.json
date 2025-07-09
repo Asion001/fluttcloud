@@ -44,5 +44,9 @@
     "one": "{} item",
     "other": "{} items"
   },
-  "copied_to_clipboard": "{} copied to clipboard"
+  "copied_to_clipboard": "{} copied to clipboard",
+  "link_sharing": {
+    "created": "Link created and copied",
+    "create_share_link": "Create share link for {}?"
+  }
 }

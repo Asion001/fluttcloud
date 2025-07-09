@@ -12,8 +12,9 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i3;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i4;
-import 'protocol.dart' as _i5;
+import 'package:fluttcloud_client/src/protocol/shared_link.dart' as _i4;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
+import 'protocol.dart' as _i6;
 
 /// {@category Endpoint}
 class EndpointFiles extends _i1.EndpointRef {
@@ -39,6 +40,58 @@ class EndpointFiles extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointLinks extends _i1.EndpointRef {
+  EndpointLinks(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'links';
+
+  /// Returns full share url
+  _i2.Future<String> create({
+    required String serverPath,
+    DateTime? deleteAfter,
+  }) =>
+      caller.callServerEndpoint<String>(
+        'links',
+        'create',
+        {
+          'serverPath': serverPath,
+          'deleteAfter': deleteAfter,
+        },
+      );
+
+  _i2.Future<List<_i4.SharedLink>> list({int? userId}) =>
+      caller.callServerEndpoint<List<_i4.SharedLink>>(
+        'links',
+        'list',
+        {'userId': userId},
+      );
+
+  _i2.Future<void> update({
+    required int linkId,
+    required String serverPath,
+    required DateTime? deleteAfter,
+    required String? linkPrefix,
+  }) =>
+      caller.callServerEndpoint<void>(
+        'links',
+        'update',
+        {
+          'linkId': linkId,
+          'serverPath': serverPath,
+          'deleteAfter': deleteAfter,
+          'linkPrefix': linkPrefix,
+        },
+      );
+
+  _i2.Future<void> delete(int linkId) => caller.callServerEndpoint<void>(
+        'links',
+        'delete',
+        {'linkId': linkId},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointUser extends _i1.EndpointRef {
   EndpointUser(_i1.EndpointCaller caller) : super(caller);
 
@@ -55,10 +108,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i4.Caller(client);
+    auth = _i5.Caller(client);
   }
 
-  late final _i4.Caller auth;
+  late final _i5.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -77,7 +130,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i5.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -88,11 +141,14 @@ class Client extends _i1.ServerpodClientShared {
               disconnectStreamsOnLostInternetConnection,
         ) {
     files = EndpointFiles(this);
+    links = EndpointLinks(this);
     user = EndpointUser(this);
     modules = Modules(this);
   }
 
   late final EndpointFiles files;
+
+  late final EndpointLinks links;
 
   late final EndpointUser user;
 
@@ -101,6 +157,7 @@ class Client extends _i1.ServerpodClientShared {
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'files': files,
+        'links': links,
         'user': user,
       };
 

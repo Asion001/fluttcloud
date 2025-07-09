@@ -15,9 +15,12 @@ import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
 import 'fs_entry.dart' as _i4;
 import 'fs_entry_content_type.dart' as _i5;
 import 'fs_entry_type.dart' as _i6;
+import 'shared_link.dart' as _i7;
+import 'package:fluttcloud_server/src/generated/shared_link.dart' as _i8;
 export 'fs_entry.dart';
 export 'fs_entry_content_type.dart';
 export 'fs_entry_type.dart';
+export 'shared_link.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -27,6 +30,99 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'shared_link',
+      dartName: 'SharedLink',
+      schema: 'public',
+      module: 'fluttcloud',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'shared_link_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdBy',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'serverPath',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'linkPrefix',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deleteAfter',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'shared_link_fk_0',
+          columns: ['createdBy'],
+          referenceTable: 'serverpod_user_info',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'shared_link_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'shared_link_created_by_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'createdBy',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'shared_link_prefix_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'linkPrefix',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
   ];
@@ -46,6 +142,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i6.FsEntryType) {
       return _i6.FsEntryType.fromJson(data) as T;
     }
+    if (t == _i7.SharedLink) {
+      return _i7.SharedLink.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i4.FsEntry?>()) {
       return (data != null ? _i4.FsEntry.fromJson(data) : null) as T;
     }
@@ -54,6 +153,13 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == _i1.getType<_i6.FsEntryType?>()) {
       return (data != null ? _i6.FsEntryType.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.SharedLink?>()) {
+      return (data != null ? _i7.SharedLink.fromJson(data) : null) as T;
+    }
+    if (t == List<_i8.SharedLink>) {
+      return (data as List).map((e) => deserialize<_i8.SharedLink>(e)).toList()
+          as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -76,6 +182,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (data is _i6.FsEntryType) {
       return 'FsEntryType';
+    }
+    if (data is _i7.SharedLink) {
+      return 'SharedLink';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -103,6 +212,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'FsEntryType') {
       return deserialize<_i6.FsEntryType>(data['data']);
     }
+    if (dataClassName == 'SharedLink') {
+      return deserialize<_i7.SharedLink>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _i2.Protocol().deserializeByClassName(data);
@@ -127,6 +239,10 @@ class Protocol extends _i1.SerializationManagerServer {
       if (table != null) {
         return table;
       }
+    }
+    switch (t) {
+      case _i7.SharedLink:
+        return _i7.SharedLink.t;
     }
     return null;
   }

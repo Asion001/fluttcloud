@@ -1,5 +1,10 @@
 files:
   - list:
   - getPrivateUri:
+links:
+  - create:
+  - list:
+  - update:
+  - delete:
 user:
   - deleteMyUserProfile:

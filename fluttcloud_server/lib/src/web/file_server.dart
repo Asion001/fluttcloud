@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io' show ContentType, File, HttpRequest, HttpStatus;
 
 import 'package:fluttcloud_server/src/core/env.dart';
+import 'package:fluttcloud_server/src/generated/shared_link.dart';
 import 'package:fluttcloud_server/src/utils/extensions.dart';
 import 'package:fluttcloud_server/src/web/content_type_mapping.dart';
 import 'package:path/path.dart';
@@ -14,7 +15,7 @@ class RawFileServer extends Route {
   @override
   Future<bool> handleCall(Session session, HttpRequest request) async {
     try {
-      final file = await _getFile(session, request);
+      final file = await _getFile(session, request.requestedUri.path);
 
       if (file == null) {
         request.response.statusCode = HttpStatus.notFound;
@@ -26,6 +27,7 @@ class RawFileServer extends Route {
           contentTypeMapping[extension(file.path)] ?? ContentType.binary;
       request.response.headers.chunkedTransferEncoding = true;
       request.response.headers.contentLength = file.statSync().size;
+      _addExtraHeaders(request, file);
 
       await request.response.addStream(file.openRead());
       return true;
@@ -40,14 +42,16 @@ class RawFileServer extends Route {
     }
   }
 
-  Future<File?> _getFile(Session session, HttpRequest request) async {
-    final path = Uri.decodeFull(
-      request.requestedUri.path,
-    ).replaceFirst(urlPrefix, '');
+  void _addExtraHeaders(HttpRequest request, File file) {}
 
-    final file = File([filesDirectoryPath, path].join());
+  Future<File?> _getFile(Session session, String requestPath) async {
+    final path = Uri.decodeFull(requestPath).replaceFirst(urlPrefix, '');
 
-    if (!(await userHasAccessToPath(session, file.path))) {
+    final filePath = await _userHasAccessToRequestPath(session, path);
+    if (filePath == null) return null;
+
+    final file = File(filePath);
+    if (!(await _userHasAccessToPath(session, file.path))) {
       return null;
     }
 
@@ -56,15 +60,53 @@ class RawFileServer extends Route {
     return file;
   }
 
-  Future<bool> userHasAccessToPath(Session session, String path) async => true;
+  Future<bool> _userHasAccessToPath(
+    Session session,
+    String filePath,
+  ) async => true;
+
+  Future<String?> _userHasAccessToRequestPath(
+    Session session,
+    String requestPath,
+  ) async => [filesDirectoryPath, requestPath].join();
 }
 
 class AuthenticatedFileServer extends RawFileServer {
   AuthenticatedFileServer({required super.urlPrefix});
 
   @override
-  Future<bool> userHasAccessToPath(Session session, String path) async {
+  Future<bool> _userHasAccessToPath(
+    Session session,
+    String filePath,
+  ) async {
     final auth = await session.authenticated;
     return auth?.isAdmin ?? false;
+  }
+}
+
+class PublicShareFileServer extends RawFileServer {
+  PublicShareFileServer({required super.urlPrefix});
+
+  @override
+  Future<String?> _userHasAccessToRequestPath(
+    Session session,
+    String requestPath,
+  ) async {
+    final publicLink = await SharedLink.db.findFirstRow(
+      session,
+      where: (p0) => p0.linkPrefix.equals(requestPath.replaceFirst('/', '')),
+    );
+    final linkPath = publicLink?.serverPath;
+    if (linkPath == null) return null;
+    return [filesDirectoryPath, linkPath].join();
+  }
+
+  @override
+  void _addExtraHeaders(HttpRequest request, File file) {
+    request.response.headers.add(
+      'Content-Disposition',
+      'attachment; filename="${file.path.split('/').last}"',
+    );
+    super._addExtraHeaders(request, file);
   }
 }
