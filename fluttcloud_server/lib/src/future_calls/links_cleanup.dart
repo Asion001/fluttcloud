@@ -21,7 +21,5 @@ class SharedLinksCleanupFutureCall extends FutureCall<SharedLink> {
       null,
       const Duration(minutes: 5),
     );
-
-    await session.close();
   }
 }
