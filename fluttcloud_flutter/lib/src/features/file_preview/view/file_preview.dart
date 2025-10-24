@@ -59,7 +59,14 @@ class _JustDownloadFile extends StatelessWidget {
         Text(LocaleKeys.file_type_not_supported.tr()),
         FilledButton(
           onPressed: () {
-            FileDownloadController.I.downloadFile(uri);
+            FileDownloadController.I.downloadFile(
+              uri.replace(
+                queryParameters: {
+                  ...uri.queryParameters,
+                  'download': '1',
+                },
+              ),
+            );
             Navigator.of(context).pop();
           },
           child: Text(LocaleKeys.download.tr()),

@@ -42,7 +42,14 @@ class RawFileServer extends Route {
     }
   }
 
-  void _addExtraHeaders(HttpRequest request, File file) {}
+  void _addExtraHeaders(HttpRequest request, File file) {
+    if (request.requestedUri.queryParameters['download'] == '1') {
+      request.response.headers.add(
+        'Content-Disposition',
+        'attachment; filename="${file.path.split('/').last}"',
+      );
+    }
+  }
 
   Future<File?> _getFile(Session session, String requestPath) async {
     final path = Uri.decodeFull(requestPath).replaceFirst(urlPrefix, '');
@@ -115,14 +122,5 @@ class PublicShareFileServer extends RawFileServer {
     final linkPath = publicLink?.serverPath;
     if (linkPath == null) return null;
     return [filesDirectoryPath, linkPath].join();
-  }
-
-  @override
-  void _addExtraHeaders(HttpRequest request, File file) {
-    request.response.headers.add(
-      'Content-Disposition',
-      'attachment; filename="${file.path.split('/').last}"',
-    );
-    super._addExtraHeaders(request, file);
   }
 }
