@@ -1,0 +1,168 @@
+{
+  "moduleName": "fluttcloud",
+  "tables": [
+    {
+      "name": "shared_link",
+      "dartName": "SharedLink",
+      "module": "fluttcloud",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "columnType": 6,
+          "isNullable": false,
+          "columnDefault": "nextval('shared_link_id_seq'::regclass)",
+          "dartType": "int?"
+        },
+        {
+          "name": "createdBy",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "serverPath",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "linkPrefix",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "deleteAfter",
+          "columnType": 4,
+          "isNullable": true,
+          "dartType": "DateTime?"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "constraintName": "shared_link_fk_0",
+          "columns": [
+            "createdBy"
+          ],
+          "referenceTable": "serverpod_user_info",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "indexName": "shared_link_pkey",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        },
+        {
+          "indexName": "shared_link_created_by_idx",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "createdBy"
+            }
+          ],
+          "type": "btree",
+          "isUnique": false,
+          "isPrimary": false
+        },
+        {
+          "indexName": "shared_link_prefix_idx",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "linkPrefix"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": false
+        }
+      ],
+      "managed": true
+    },
+    {
+      "name": "user_folder_access",
+      "dartName": "UserFolderAccess",
+      "module": "fluttcloud",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "columnType": 6,
+          "isNullable": false,
+          "columnDefault": "nextval('user_folder_access_id_seq'::regclass)",
+          "dartType": "int?"
+        },
+        {
+          "name": "userId",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "folderPath",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        }
+      ],
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "indexName": "user_folder_access_pkey",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        },
+        {
+          "indexName": "user_folder_access_idx",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "userId"
+            },
+            {
+              "type": 0,
+              "definition": "folderPath"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": false
+        }
+      ],
+      "managed": true
+    }
+  ],
+  "installedModules": [
+    {
+      "module": "serverpod",
+      "version": "20240516151843329"
+    },
+    {
+      "module": "serverpod_auth",
+      "version": "20240520102713718"
+    }
+  ],
+  "migrationApiVersion": 1
+}
