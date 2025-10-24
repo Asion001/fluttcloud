@@ -1,5 +1,5 @@
 # Build stage
-FROM dart:3.8 AS build
+FROM dart:3.9 AS build
 WORKDIR /app
 COPY fluttcloud_server .
 
