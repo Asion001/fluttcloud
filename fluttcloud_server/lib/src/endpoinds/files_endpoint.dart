@@ -12,6 +12,7 @@ class FilesEndpoint extends Endpoint {
   Stream<FsEntry> list(
     Session session, {
     String? serverFolderPath,
+    FsEntryType? filterByType,
   }) async* {
     await _validateAccess(session);
 
@@ -28,7 +29,9 @@ class FilesEndpoint extends Endpoint {
 
     await for (final entity in stream) {
       final fsEntry = _convertToFsEntry(session, entity, directory);
-      yield fsEntry;
+      if (filterByType == null || fsEntry.type == filterByType) {
+        yield fsEntry;
+      }
     }
   }
 

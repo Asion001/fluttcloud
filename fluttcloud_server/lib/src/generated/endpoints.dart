@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoinds/files_endpoint.dart' as _i2;
 import '../endpoinds/links_endpoint.dart' as _i3;
 import '../endpoinds/user_endpoint.dart' as _i4;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i5;
+import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i5;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i6;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -157,7 +158,12 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'serverFolderPath',
               type: _i1.getType<String?>(),
               nullable: true,
-            )
+            ),
+            'filterByType': _i1.ParameterDescription(
+              name: 'filterByType',
+              type: _i1.getType<_i5.FsEntryType?>(),
+              nullable: true,
+            ),
           },
           streamParams: {},
           returnType: _i1.MethodStreamReturnType.streamType,
@@ -169,6 +175,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['files'] as _i2.FilesEndpoint).list(
             session,
             serverFolderPath: params['serverFolderPath'],
+            filterByType: params['filterByType'],
           ),
         ),
       },
@@ -299,6 +306,6 @@ class Endpoints extends _i1.EndpointDispatch {
         )
       },
     );
-    modules['serverpod_auth'] = _i5.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i6.Endpoints()..initializeEndpoints(server);
   }
 }

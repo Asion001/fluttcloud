@@ -102,6 +102,7 @@
     "path_required": "Path is required",
     "copy_title": "Copy File",
     "copy_description": "Enter destination path for '{}'",
-    "actions": "File Actions"
+    "actions": "File Actions",
+    "destination": "Destination"
   }
 }

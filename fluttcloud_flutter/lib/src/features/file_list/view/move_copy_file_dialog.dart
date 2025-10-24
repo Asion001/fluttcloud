@@ -56,11 +56,12 @@ class _MoveCopyFileDialogState extends State<MoveCopyFileDialog> {
     });
 
     try {
-      final stream = Serverpod.I.client.files.list(serverFolderPath: '/');
+      final stream = Serverpod.I.client.files.list(
+        serverFolderPath: '/',
+        filterByType: FsEntryType.directory,
+      );
       await for (final entry in stream) {
-        if (entry.type == FsEntryType.directory) {
-          _folders.add(entry);
-        }
+        _folders.add(entry);
       }
       if (mounted) {
         setState(() {
@@ -78,12 +79,13 @@ class _MoveCopyFileDialogState extends State<MoveCopyFileDialog> {
 
   Future<void> _loadSubfolders(String path) async {
     try {
-      final stream = Serverpod.I.client.files.list(serverFolderPath: path);
+      final stream = Serverpod.I.client.files.list(
+        serverFolderPath: path,
+        filterByType: FsEntryType.directory,
+      );
       final newFolders = <FsEntry>[];
       await for (final entry in stream) {
-        if (entry.type == FsEntryType.directory) {
-          newFolders.add(entry);
-        }
+        newFolders.add(entry);
       }
       if (mounted) {
         setState(() {
@@ -180,7 +182,8 @@ class _MoveCopyFileDialogState extends State<MoveCopyFileDialog> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Destination: $_selectedFolder/${_nameController.text}',
+                '${LocaleKeys.file_actions_destination.tr()}: '
+                '$_selectedFolder/${_nameController.text}',
                 style: context.textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),

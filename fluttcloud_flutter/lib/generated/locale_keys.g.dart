@@ -89,6 +89,7 @@ abstract class  LocaleKeys {
   static const file_actions_copy_title = 'file_actions.copy_title';
   static const file_actions_copy_description = 'file_actions.copy_description';
   static const file_actions_actions = 'file_actions.actions';
+  static const file_actions_destination = 'file_actions.destination';
   static const file_actions = 'file_actions';
 
 }

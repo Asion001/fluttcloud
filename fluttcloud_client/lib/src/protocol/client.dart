@@ -12,10 +12,11 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i3;
+import 'package:fluttcloud_client/src/protocol/fs_entry_type.dart' as _i4;
 import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
-    as _i4;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
-import 'protocol.dart' as _i6;
+    as _i5;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointFiles extends _i1.EndpointRef {
@@ -24,11 +25,17 @@ class EndpointFiles extends _i1.EndpointRef {
   @override
   String get name => 'files';
 
-  _i2.Stream<_i3.FsEntry> list({String? serverFolderPath}) =>
+  _i2.Stream<_i3.FsEntry> list({
+    String? serverFolderPath,
+    _i4.FsEntryType? filterByType,
+  }) =>
       caller.callStreamingServerEndpoint<_i2.Stream<_i3.FsEntry>, _i3.FsEntry>(
         'files',
         'list',
-        {'serverFolderPath': serverFolderPath},
+        {
+          'serverFolderPath': serverFolderPath,
+          'filterByType': filterByType,
+        },
         {},
       );
 
@@ -107,8 +114,8 @@ class EndpointLinks extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i4.SharedLinkWithUrl>> list({int? userId}) =>
-      caller.callServerEndpoint<List<_i4.SharedLinkWithUrl>>(
+  _i2.Future<List<_i5.SharedLinkWithUrl>> list({int? userId}) =>
+      caller.callServerEndpoint<List<_i5.SharedLinkWithUrl>>(
         'links',
         'list',
         {'userId': userId},
@@ -155,10 +162,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i5.Caller(client);
+    auth = _i6.Caller(client);
   }
 
-  late final _i5.Caller auth;
+  late final _i6.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -177,7 +184,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i6.Protocol(),
+          _i7.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
