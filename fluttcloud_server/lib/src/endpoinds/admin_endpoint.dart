@@ -11,26 +11,24 @@ class AdminEndpoint extends Endpoint {
 
     // Get all users with their folder access in a single efficient query
     final users = await UserInfo.db.find(session);
-    final userIds = users.map((u) => u!.id!).toList();
-    
+    final userIds = users.map((u) => u.id!).toList();
+
     // Fetch all folder accesses for these users in one query
     final folderAccesses = await UserFolderAccess.db.find(
       session,
       where: (t) => t.userId.inSet(userIds.toSet()),
     );
-    
+
     // Group folder accesses by user ID
     final foldersByUser = <int, List<String>>{};
     for (final access in folderAccesses) {
-      if (access != null) {
-        final userId = access.userId;
-        foldersByUser.putIfAbsent(userId, () => []).add(access.folderPath);
-      }
+      final userId = access.userId;
+      foldersByUser.putIfAbsent(userId, () => []).add(access.folderPath);
     }
-    
+
     // Build result with all data
     return users.map((user) {
-      final userId = user!.id!;
+      final userId = user.id!;
       return UserInfoWithFolders(
         userId: userId,
         userName: user.userName,
@@ -139,7 +137,7 @@ class AdminEndpoint extends Endpoint {
         session,
         where: (t) => t.userId.equals(userId),
       );
-      
+
       // Insert new folder access
       if (folderPaths.isNotEmpty) {
         final accesses = folderPaths.map((path) {
@@ -154,7 +152,8 @@ class AdminEndpoint extends Endpoint {
 
     // Fetch updated user info
     final updatedUser = await Users.findUserByUserId(session, userId);
-    final updatedFolders = folderPaths ?? 
+    final updatedFolders =
+        folderPaths ??
         (await UserFolderAccess.db.find(
           session,
           where: (t) => t.userId.equals(userId),
@@ -195,7 +194,7 @@ class AdminEndpoint extends Endpoint {
   /// Deletes a user (admin only, cannot delete self)
   Future<void> deleteUser(Session session, int userId) async {
     await _validateAdminAccess(session);
-    
+
     final currentUser = await session.getRequestUser();
     if (currentUser?.id == userId) {
       throw Exception('Cannot delete your own account');
@@ -234,7 +233,8 @@ class AdminEndpoint extends Endpoint {
   }
 
   /// Gets allowed folder paths for the current user
-  /// Returns all paths if user is admin, otherwise returns user's allowed folders
+  /// Returns all paths if user is admin, otherwise returns
+  /// user's allowed folders
   Future<List<String>> getAllowedFolders(Session session) async {
     final auth = await session.authenticated;
     if (auth?.userId == null) {

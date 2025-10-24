@@ -183,8 +183,8 @@ class _AdminEndpoint {
     _i1.TestSessionBuilder sessionBuilder, {
     required String email,
     required String userName,
-    String? fullName,
     required bool isAdmin,
+    String? fullName,
     required List<String> folderPaths,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -201,8 +201,8 @@ class _AdminEndpoint {
           parameters: _i1.testObjectToJson({
             'email': email,
             'userName': userName,
-            'fullName': fullName,
             'isAdmin': isAdmin,
+            'fullName': fullName,
             'folderPaths': folderPaths,
           }),
           serializationManager: _serializationManager,

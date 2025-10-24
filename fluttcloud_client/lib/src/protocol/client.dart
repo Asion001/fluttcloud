@@ -41,8 +41,8 @@ class EndpointAdmin extends _i1.EndpointRef {
   _i2.Future<_i3.UserInfoWithFolders> createUser({
     required String email,
     required String userName,
-    String? fullName,
     required bool isAdmin,
+    String? fullName,
     required List<String> folderPaths,
   }) =>
       caller.callServerEndpoint<_i3.UserInfoWithFolders>(
@@ -51,8 +51,8 @@ class EndpointAdmin extends _i1.EndpointRef {
         {
           'email': email,
           'userName': userName,
-          'fullName': fullName,
           'isAdmin': isAdmin,
+          'fullName': fullName,
           'folderPaths': folderPaths,
         },
       );
@@ -95,7 +95,8 @@ class EndpointAdmin extends _i1.EndpointRef {
       );
 
   /// Gets allowed folder paths for the current user
-  /// Returns all paths if user is admin, otherwise returns user's allowed folders
+  /// Returns all paths if user is admin, otherwise returns
+  /// user's allowed folders
   _i2.Future<List<String>> getAllowedFolders() =>
       caller.callServerEndpoint<List<String>>(
         'admin',

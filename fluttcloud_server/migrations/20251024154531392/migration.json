@@ -28,7 +28,21 @@
             "dartType": "String"
           }
         ],
-        "foreignKeys": [],
+        "foreignKeys": [
+          {
+            "constraintName": "user_folder_access_fk_0",
+            "columns": [
+              "userId"
+            ],
+            "referenceTable": "serverpod_user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 4
+          }
+        ],
         "indexes": [
           {
             "indexName": "user_folder_access_pkey",

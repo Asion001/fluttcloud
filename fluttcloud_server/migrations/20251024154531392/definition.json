@@ -120,7 +120,21 @@
           "dartType": "String"
         }
       ],
-      "foreignKeys": [],
+      "foreignKeys": [
+        {
+          "constraintName": "user_folder_access_fk_0",
+          "columns": [
+            "userId"
+          ],
+          "referenceTable": "serverpod_user_info",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
       "indexes": [
         {
           "indexName": "user_folder_access_pkey",
@@ -1846,7 +1860,7 @@
   "installedModules": [
     {
       "module": "fluttcloud",
-      "version": "20251024151254904"
+      "version": "20251024154531392"
     },
     {
       "module": "serverpod",

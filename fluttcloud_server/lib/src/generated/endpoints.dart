@@ -72,15 +72,15 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
-            'fullName': _i1.ParameterDescription(
-              name: 'fullName',
-              type: _i1.getType<String?>(),
-              nullable: true,
-            ),
             'isAdmin': _i1.ParameterDescription(
               name: 'isAdmin',
               type: _i1.getType<bool>(),
               nullable: false,
+            ),
+            'fullName': _i1.ParameterDescription(
+              name: 'fullName',
+              type: _i1.getType<String?>(),
+              nullable: true,
             ),
             'folderPaths': _i1.ParameterDescription(
               name: 'folderPaths',
@@ -96,8 +96,8 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             email: params['email'],
             userName: params['userName'],
-            fullName: params['fullName'],
             isAdmin: params['isAdmin'],
+            fullName: params['fullName'],
             folderPaths: params['folderPaths'],
           ),
         ),

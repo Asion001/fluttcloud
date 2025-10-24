@@ -356,6 +356,16 @@ ALTER TABLE ONLY "shared_link"
     ON UPDATE NO ACTION;
 
 --
+-- Foreign relations for "user_folder_access" table
+--
+ALTER TABLE ONLY "user_folder_access"
+    ADD CONSTRAINT "user_folder_access_fk_0"
+    FOREIGN KEY("userId")
+    REFERENCES "serverpod_user_info"("id")
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
+
+--
 -- Foreign relations for "serverpod_log" table
 --
 ALTER TABLE ONLY "serverpod_log"
@@ -390,9 +400,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR fluttcloud
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('fluttcloud', '20251024151254904', now())
+    VALUES ('fluttcloud', '20251024154531392', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20251024151254904', "timestamp" = now();
+    DO UPDATE SET "version" = '20251024154531392', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod
