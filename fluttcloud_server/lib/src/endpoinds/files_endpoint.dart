@@ -14,7 +14,7 @@ class FilesEndpoint extends Endpoint {
     String? serverFolderPath,
     FsEntryType? filterByType,
   }) async* {
-    await _validateAccess(session, serverFolderPath);
+    await _validateAccess(session, serverFolderPath ?? '/');
 
     final directory = Directory(
       [
@@ -189,7 +189,7 @@ class FilesEndpoint extends Endpoint {
     }
   }
 
-  Future<void> _validateAccess(Session session, [String? serverPath]) async {
+  Future<void> _validateAccess(Session session, String serverPath) async {
     final auth = await session.authenticated;
     if (auth?.userId == null) {
       throw const UnAuthorizedException();
@@ -200,35 +200,23 @@ class FilesEndpoint extends Endpoint {
       return;
     }
 
-    if (serverPath != null) {
-      final normalizedPath =
-          serverPath.startsWith('/') ? serverPath : '/$serverPath';
-      
-      // Find folders where normalizedPath starts with folderPath
-      // Using custom expression to check if normalizedPath LIKE folderPath || '%'
-      final folders = await UserFolderAccess.db.find(
-        session,
-        where: (t) => t.userId.equals(auth!.userId),
-      );
+    final normalizedPath = serverPath.startsWith('/')
+        ? serverPath
+        : '/$serverPath';
 
-      // Check if any folder is a prefix of the normalized path
-      final hasAccess = folders.any((access) {
-        return normalizedPath.startsWith(access!.folderPath);
-      });
+    // Find folders where normalizedPath starts with folderPath
+    // Using custom expression to check if normalizedPath LIKE folderPath || '%'
+    final folder = await UserFolderAccess.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.userId.equals(auth!.userId) & t.folderPath.like('$normalizedPath%'),
+    );
 
-      if (!hasAccess) {
-        throw const UnAuthorizedException();
-      }
-    } else {
-      // If no specific path, just verify user has at least one folder access
-      final accessCount = await UserFolderAccess.db.count(
-        session,
-        where: (t) => t.userId.equals(auth!.userId),
-      );
-
-      if (accessCount == 0) {
-        throw const UnAuthorizedException();
-      }
+    // Check if any folder is a prefix of the normalized path
+    final hasAccess =
+        folder != null && normalizedPath.startsWith(folder.folderPath);
+    if (!hasAccess) {
+      throw const UnAuthorizedException();
     }
   }
 

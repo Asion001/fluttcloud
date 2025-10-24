@@ -48,6 +48,12 @@ class MyService {
 
 **Flutter State** managed with ChangeNotifier controllers, not BLoC or Riverpod.
 
+**UI Architecture Rules:**
+
+- **NO ScaffoldMessenger**: Always use `await ToastController.I.show(message, type: ToastType.error/success/info)` instead of ScaffoldMessenger.of(context).showSnackBar
+- **NO Direct API Calls in UI**: Never use `Serverpod.I.client.*` in UI components. Create dedicated controllers with injectable pattern and use them instead
+- **Controller Pattern**: UI widgets should only call controller methods, controllers handle all business logic and API calls
+
 ## Essential Development Workflows
 
 **Data Models - ALWAYS use YAML:**

@@ -11,8 +11,7 @@ class UserManagementScreen extends StatefulWidget {
 }
 
 class _UserManagementScreenState extends State<UserManagementScreen> {
-  List<UserInfoWithFolders>? users;
-  bool isLoading = true;
+  final UserManagementController _controller = UserManagementController.I;
 
   @override
   void initState() {
@@ -21,23 +20,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   }
 
   Future<void> _loadUsers() async {
-    setState(() => isLoading = true);
-    try {
-      final loadedUsers = await Serverpod.I.client.admin.listUsers();
-      if (mounted) {
-        setState(() {
-          users = loadedUsers;
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${LocaleKeys.error.tr()}: $e')),
-        );
-      }
-    }
+    await _controller.loadUsers();
+    if (mounted) setState(() {});
   }
 
   Future<void> _deleteUser(UserInfoWithFolders user) async {
@@ -46,8 +30,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       builder: (context) => AlertDialog(
         title: Text(LocaleKeys.delete.tr()),
         content: Text(
-          LocaleKeys.user_management_delete_user_confirm
-              .tr(args: [user.email]),
+          LocaleKeys.user_management_delete_user_confirm.tr(args: [user.email]),
         ),
         actions: [
           TextButton(
@@ -62,23 +45,10 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       ),
     );
 
-    if (confirmed == true && mounted) {
-      try {
-        await Serverpod.I.client.admin.deleteUser(user.userId);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(LocaleKeys.user_management_user_deleted.tr()),
-            ),
-          );
-          await _loadUsers();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${LocaleKeys.error.tr()}: $e')),
-          );
-        }
+    if ((confirmed ?? false) && mounted) {
+      final success = await _controller.deleteUser(user);
+      if (success && mounted) {
+        setState(() {});
       }
     }
   }
@@ -90,7 +60,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       ),
     );
 
-    if (result == true) {
+    if (result ?? false) {
       await _loadUsers();
     }
   }
@@ -102,7 +72,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       ),
     );
 
-    if (result == true) {
+    if (result ?? false) {
       await _loadUsers();
     }
   }
@@ -119,96 +89,94 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
           icon: const Icon(Icons.person_add),
           label: Text(LocaleKeys.user_management_create_user.tr()),
         ),
-        body: isLoading
+        body: _controller.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : users == null || users!.isEmpty
-                ? Center(
-                    child: Text(LocaleKeys.user_management_no_users.tr()),
-                  )
-                : ListView.builder(
-                    padding: 16.all,
-                    itemCount: users!.length,
-                    itemBuilder: (context, index) {
-                      final user = users![index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            child: Text(
-                              user.userName?.substring(0, 1).toUpperCase() ??
-                                  user.email.substring(0, 1).toUpperCase(),
+            : _controller.users == null || _controller.users!.isEmpty
+            ? Center(
+                child: Text(LocaleKeys.user_management_no_users.tr()),
+              )
+            : ListView.builder(
+                padding: 16.all,
+                itemCount: _controller.users!.length,
+                itemBuilder: (context, index) {
+                  final user = _controller.users![index];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        child: Text(
+                          user.userName?.substring(0, 1).toUpperCase() ??
+                              user.email.substring(0, 1).toUpperCase(),
+                        ),
+                      ),
+                      title: Row(
+                        children: [
+                          Text(user.userName ?? user.email),
+                          if (user.isAdmin) ...[
+                            const SizedBox(width: 8),
+                            Chip(
+                              label: Text(
+                                LocaleKeys.user_management_admin_badge.tr(),
+                              ),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ],
+                        ],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(user.email),
+                          const SizedBox(height: 4),
+                          Text(
+                            user.isAdmin
+                                ? LocaleKeys.user_management_all_folders.tr()
+                                : LocaleKeys.user_management_folders.plural(
+                                    user.folderPaths.length,
+                                  ),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                      trailing: PopupMenuButton<void>(
+                        itemBuilder: (context) => [
+                          PopupMenuItem<void>(
+                            onTap: () => _editUser(user),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.edit),
+                                const SizedBox(width: 8),
+                                Text(LocaleKeys.edit.tr()),
+                              ],
                             ),
                           ),
-                          title: Row(
-                            children: [
-                              Text(user.userName ?? user.email),
-                              if (user.isAdmin) ...[
+                          PopupMenuItem<void>(
+                            onTap: () => _deleteUser(user),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.delete),
                                 const SizedBox(width: 8),
-                                Chip(
-                                  label: Text(
-                                    LocaleKeys.user_management_admin_badge.tr(),
-                                  ),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  visualDensity: VisualDensity.compact,
-                                ),
+                                Text(LocaleKeys.delete.tr()),
                               ],
-                            ],
+                            ),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(user.email),
-                              const SizedBox(height: 4),
-                              Text(
-                                user.isAdmin
-                                    ? LocaleKeys
-                                        .user_management_all_folders
-                                        .tr()
-                                    : LocaleKeys.user_management_folders.plural(
-                                        user.folderPaths.length,
-                                      ),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          trailing: PopupMenuButton(
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                onTap: () => _editUser(user),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.edit),
-                                    const SizedBox(width: 8),
-                                    Text(LocaleKeys.edit.tr()),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                onTap: () => _deleteUser(user),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.delete),
-                                    const SizedBox(width: 8),
-                                    Text(LocaleKeys.delete.tr()),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
 }
 
 class _UserEditScreen extends StatefulWidget {
-  final UserInfoWithFolders? user;
-
   const _UserEditScreen({this.user});
+
+  final UserInfoWithFolders? user;
 
   @override
   State<_UserEditScreen> createState() => _UserEditScreenState();
@@ -216,6 +184,7 @@ class _UserEditScreen extends StatefulWidget {
 
 class _UserEditScreenState extends State<_UserEditScreen> {
   final _formKey = GlobalKey<FormState>();
+  final UserManagementController _controller = UserManagementController.I;
   late TextEditingController _emailController;
   late TextEditingController _usernameController;
   late TextEditingController _fullNameController;
@@ -227,10 +196,12 @@ class _UserEditScreenState extends State<_UserEditScreen> {
   void initState() {
     super.initState();
     _emailController = TextEditingController(text: widget.user?.email ?? '');
-    _usernameController =
-        TextEditingController(text: widget.user?.userName ?? '');
-    _fullNameController =
-        TextEditingController(text: widget.user?.fullName ?? '');
+    _usernameController = TextEditingController(
+      text: widget.user?.userName ?? '',
+    );
+    _fullNameController = TextEditingController(
+      text: widget.user?.fullName ?? '',
+    );
     _isAdmin = widget.user?.isAdmin ?? false;
     _folderPaths = List.from(widget.user?.folderPaths ?? []);
   }
@@ -248,10 +219,11 @@ class _UserEditScreenState extends State<_UserEditScreen> {
 
     setState(() => _isSaving = true);
 
+    var success = false;
     try {
       if (widget.user == null) {
         // Create new user
-        await Serverpod.I.client.admin.createUser(
+        success = await _controller.createUser(
           email: _emailController.text,
           userName: _usernameController.text,
           isAdmin: _isAdmin,
@@ -260,16 +232,9 @@ class _UserEditScreenState extends State<_UserEditScreen> {
               : _fullNameController.text,
           folderPaths: _folderPaths,
         );
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(LocaleKeys.user_management_user_created.tr()),
-            ),
-          );
-        }
       } else {
         // Update existing user
-        await Serverpod.I.client.admin.updateUser(
+        success = await _controller.updateUser(
           userId: widget.user!.userId,
           userName: _usernameController.text,
           fullName: _fullNameController.text.isEmpty
@@ -278,30 +243,20 @@ class _UserEditScreenState extends State<_UserEditScreen> {
           isAdmin: _isAdmin,
           folderPaths: _folderPaths,
         );
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(LocaleKeys.user_management_user_updated.tr()),
-            ),
-          );
-        }
       }
 
-      if (mounted) {
+      if (success && mounted) {
         Navigator.of(context).pop(true);
       }
-    } catch (e) {
+    } finally {
       if (mounted) {
         setState(() => _isSaving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${LocaleKeys.error.tr()}: $e')),
-        );
       }
     }
   }
 
   void _addFolder() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) {
         final controller = TextEditingController();
@@ -309,9 +264,9 @@ class _UserEditScreenState extends State<_UserEditScreen> {
           title: Text(LocaleKeys.user_management_add_folder.tr()),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'Folder Path',
-              hintText: '/folder1',
+            decoration: InputDecoration(
+              labelText: LocaleKeys.user_management_folder_path.tr(),
+              hintText: LocaleKeys.user_management_folder_path_hint.tr(),
             ),
           ),
           actions: [
@@ -388,7 +343,7 @@ class _UserEditScreenState extends State<_UserEditScreen> {
                   return LocaleKeys.user_management_email_required.tr();
                 }
                 if (!value.contains('@')) {
-                  return 'Invalid email';
+                  return LocaleKeys.user_management_invalid_email.tr();
                 }
                 return null;
               },
@@ -454,7 +409,7 @@ class _UserEditScreenState extends State<_UserEditScreen> {
                 child: Padding(
                   padding: 16.all,
                   child: Text(
-                    'No folder access assigned',
+                    LocaleKeys.user_management_no_folder_access.tr(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),

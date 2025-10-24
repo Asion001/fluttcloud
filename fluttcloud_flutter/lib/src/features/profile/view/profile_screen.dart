@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
     final sessionManager = Serverpod.I.sessionManager;
     final user = sessionManager.signedInUser;
     final image = user?.imageUrl;
-    final isAdmin = user?.scopes?.contains('admin') ?? false;
+    final isAdmin = user?.scopeNames.contains('admin') ?? false;
 
     return MaxSizeContainer(
       child: Scaffold(

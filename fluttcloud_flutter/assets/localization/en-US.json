@@ -122,6 +122,10 @@
     "add_folder": "Add Folder",
     "email_required": "Email is required",
     "username_required": "Username is required",
+    "invalid_email": "Invalid email",
+    "folder_path": "Folder Path",
+    "folder_path_hint": "/folder1",
+    "no_folder_access": "No folder access assigned",
     "no_users": "No users found",
     "admin_badge": "Admin",
     "folders": {

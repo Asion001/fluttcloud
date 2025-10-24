@@ -49,5 +49,7 @@ export 'src/features/share_links/controller/share_links_controller.dart';
 export 'src/features/share_links/view/create_share_link_dialog.dart';
 export 'src/features/share_links/view/edit_share_link_dialog.dart';
 export 'src/features/share_links/view/share_links_screen.dart';
+export 'src/features/user_management/controller/user_management_controller.dart';
+export 'src/features/user_management/view/user_management_screen.dart';
 export 'src/ui/fields/password_fields.dart';
 export 'src/ui/image_provider.dart';
