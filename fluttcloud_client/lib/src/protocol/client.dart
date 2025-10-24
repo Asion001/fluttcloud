@@ -38,6 +38,52 @@ class EndpointFiles extends _i1.EndpointRef {
         'getPrivateUri',
         {'serverFilePath': serverFilePath},
       );
+
+  _i2.Future<void> deleteFile(String serverFilePath) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'deleteFile',
+        {'serverFilePath': serverFilePath},
+      );
+
+  _i2.Future<void> copyFile(
+    String sourceServerPath,
+    String destinationServerPath,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'copyFile',
+        {
+          'sourceServerPath': sourceServerPath,
+          'destinationServerPath': destinationServerPath,
+        },
+      );
+
+  _i2.Future<void> renameFile(
+    String serverFilePath,
+    String newName,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'renameFile',
+        {
+          'serverFilePath': serverFilePath,
+          'newName': newName,
+        },
+      );
+
+  _i2.Future<void> moveFile(
+    String sourceServerPath,
+    String destinationServerPath,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'moveFile',
+        {
+          'sourceServerPath': sourceServerPath,
+          'destinationServerPath': destinationServerPath,
+        },
+      );
 }
 
 /// {@category Endpoint}

@@ -60,6 +60,96 @@ class Endpoints extends _i1.EndpointDispatch {
             params['serverFilePath'],
           ),
         ),
+        'deleteFile': _i1.MethodConnector(
+          name: 'deleteFile',
+          params: {
+            'serverFilePath': _i1.ParameterDescription(
+              name: 'serverFilePath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['files'] as _i2.FilesEndpoint).deleteFile(
+            session,
+            params['serverFilePath'],
+          ),
+        ),
+        'copyFile': _i1.MethodConnector(
+          name: 'copyFile',
+          params: {
+            'sourceServerPath': _i1.ParameterDescription(
+              name: 'sourceServerPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'destinationServerPath': _i1.ParameterDescription(
+              name: 'destinationServerPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['files'] as _i2.FilesEndpoint).copyFile(
+            session,
+            params['sourceServerPath'],
+            params['destinationServerPath'],
+          ),
+        ),
+        'renameFile': _i1.MethodConnector(
+          name: 'renameFile',
+          params: {
+            'serverFilePath': _i1.ParameterDescription(
+              name: 'serverFilePath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'newName': _i1.ParameterDescription(
+              name: 'newName',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['files'] as _i2.FilesEndpoint).renameFile(
+            session,
+            params['serverFilePath'],
+            params['newName'],
+          ),
+        ),
+        'moveFile': _i1.MethodConnector(
+          name: 'moveFile',
+          params: {
+            'sourceServerPath': _i1.ParameterDescription(
+              name: 'sourceServerPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'destinationServerPath': _i1.ParameterDescription(
+              name: 'destinationServerPath',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['files'] as _i2.FilesEndpoint).moveFile(
+            session,
+            params['sourceServerPath'],
+            params['destinationServerPath'],
+          ),
+        ),
         'list': _i1.MethodStreamConnector(
           name: 'list',
           params: {

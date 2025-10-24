@@ -70,5 +70,25 @@ abstract class  LocaleKeys {
   static const share_links_prefix_required = 'share_links.prefix_required';
   static const share_links_updated = 'share_links.updated';
   static const share_links = 'share_links';
+  static const file_actions_rename = 'file_actions.rename';
+  static const file_actions_move = 'file_actions.move';
+  static const file_actions_copy = 'file_actions.copy';
+  static const file_actions_delete_confirm = 'file_actions.delete_confirm';
+  static const file_actions_deleted = 'file_actions.deleted';
+  static const file_actions_renamed = 'file_actions.renamed';
+  static const file_actions_moved = 'file_actions.moved';
+  static const file_actions_copied = 'file_actions.copied';
+  static const file_actions_rename_title = 'file_actions.rename_title';
+  static const file_actions_rename_description = 'file_actions.rename_description';
+  static const file_actions_new_name = 'file_actions.new_name';
+  static const file_actions_name_required = 'file_actions.name_required';
+  static const file_actions_move_title = 'file_actions.move_title';
+  static const file_actions_move_description = 'file_actions.move_description';
+  static const file_actions_destination_path = 'file_actions.destination_path';
+  static const file_actions_path_required = 'file_actions.path_required';
+  static const file_actions_copy_title = 'file_actions.copy_title';
+  static const file_actions_copy_description = 'file_actions.copy_description';
+  static const file_actions_actions = 'file_actions.actions';
+  static const file_actions = 'file_actions';
 
 }

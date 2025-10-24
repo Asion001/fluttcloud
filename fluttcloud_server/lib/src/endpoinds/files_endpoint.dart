@@ -43,6 +43,97 @@ class FilesEndpoint extends Endpoint {
     return hostUri.replace(path: [privateShareLinkPrefix, file.path].join());
   }
 
+  Future<void> deleteFile(Session session, String serverFilePath) async {
+    await _validateAccess(session);
+
+    final entity = _getEntity(serverFilePath);
+    _validatePath(entity);
+
+    if (entity is Directory) {
+      await entity.delete(recursive: true);
+    } else {
+      await entity.delete();
+    }
+  }
+
+  Future<void> copyFile(
+    Session session,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    await _validateAccess(session);
+
+    final source = _getEntity(sourceServerPath);
+    _validatePath(source);
+
+    final destination = _getEntity(destinationServerPath);
+
+    if (source is File) {
+      await source.copy(destination.path);
+    } else if (source is Directory) {
+      await _copyDirectory(source, destination as Directory);
+    }
+  }
+
+  Future<void> renameFile(
+    Session session,
+    String serverFilePath,
+    String newName,
+  ) async {
+    await _validateAccess(session);
+
+    final entity = _getEntity(serverFilePath);
+    _validatePath(entity);
+
+    final parentPath = entity.parent.path;
+    final newPath = join(parentPath, newName);
+
+    await entity.rename(newPath);
+  }
+
+  Future<void> moveFile(
+    Session session,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    await _validateAccess(session);
+
+    final source = _getEntity(sourceServerPath);
+    _validatePath(source);
+
+    final destination = _getEntity(destinationServerPath);
+
+    await source.rename(destination.path);
+  }
+
+  FileSystemEntity _getEntity(String serverPath) {
+    final path = [filesDirectoryPath, serverPath].join();
+    final file = File(path).absolute;
+    final dir = Directory(path).absolute;
+
+    if (file.existsSync()) {
+      return file;
+    } else if (dir.existsSync()) {
+      return dir;
+    } else {
+      return file; // Return file entity for validation error
+    }
+  }
+
+  Future<void> _copyDirectory(Directory source, Directory destination) async {
+    await destination.create(recursive: true);
+
+    await for (final entity in source.list(recursive: false)) {
+      final name = basename(entity.path);
+      if (entity is Directory) {
+        final newDirectory = Directory(join(destination.path, name));
+        await _copyDirectory(entity, newDirectory);
+      } else if (entity is File) {
+        await entity.copy(join(destination.path, name));
+      }
+    }
+  }
+
   Future<void> _validateAccess(Session session) async {
     final auth = await session.authenticated;
     if (!auth.isAdmin) {
