@@ -24,6 +24,8 @@ jobs:
       - run: flutter pub get
       - run: make pre_run
       - run: dart analyze --fatal-infos lib/
+      # Ignore format exception check for generated files
+      - run: dart format lib/generated/*
       - run: dart format lib --set-exit-if-changed
 
   test_server:
