@@ -24,7 +24,6 @@ jobs:
       - run: flutter pub get
       - run: make pre_run
       - run: dart analyze --fatal-infos lib/
-      - run: dart run scripts/run_format_exception.dart
       - run: dart format lib --set-exit-if-changed
 
   test_server:
@@ -41,7 +40,5 @@ jobs:
         with:
           sdk: 3.9
       - run: dart pub get
-      - run: make pre_run
       - run: dart analyze --fatal-infos lib/
-      - run: dart run scripts/run_format_exception.dart
       - run: dart format lib --set-exit-if-changed
