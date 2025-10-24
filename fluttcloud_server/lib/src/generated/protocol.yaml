@@ -1,6 +1,10 @@
 files:
   - list:
   - getPrivateUri:
+  - deleteFile:
+  - copyFile:
+  - renameFile:
+  - moveFile:
 links:
   - create:
   - list:

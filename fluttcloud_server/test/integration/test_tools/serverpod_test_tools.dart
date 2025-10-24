@@ -15,8 +15,10 @@ import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i4;
+import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i5;
+import 'dart:convert' as _i6;
 import 'package:fluttcloud_server/src/generated/shared_link_with_url.dart'
-    as _i5;
+    as _i7;
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -145,6 +147,7 @@ class _FilesEndpoint {
   _i3.Stream<_i4.FsEntry> list(
     _i1.TestSessionBuilder sessionBuilder, {
     String? serverFolderPath,
+    _i5.FsEntryType? filterByType,
   }) {
     var _localTestStreamManager = _i1.TestStreamManager<_i4.FsEntry>();
     _i1.callStreamFunctionAndHandleExceptions(
@@ -159,7 +162,11 @@ class _FilesEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'files',
           methodName: 'list',
-          arguments: {'serverFolderPath': serverFolderPath},
+          arguments: {
+            'serverFolderPath': serverFolderPath,
+            'filterByType':
+                _i6.jsonDecode(_i2.SerializationManager.encode(filterByType)),
+          },
           requestedInputStreams: [],
           serializationManager: _serializationManager,
         );
@@ -196,6 +203,134 @@ class _FilesEndpoint {
           _localUniqueSession,
           _localCallContext.arguments,
         ) as _i3.Future<Uri>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> deleteFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    String serverFilePath,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'files',
+        method: 'deleteFile',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'deleteFile',
+          parameters: _i1.testObjectToJson({'serverFilePath': serverFilePath}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> copyFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'files',
+        method: 'copyFile',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'copyFile',
+          parameters: _i1.testObjectToJson({
+            'sourceServerPath': sourceServerPath,
+            'destinationServerPath': destinationServerPath,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> renameFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    String serverFilePath,
+    String newName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'files',
+        method: 'renameFile',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'renameFile',
+          parameters: _i1.testObjectToJson({
+            'serverFilePath': serverFilePath,
+            'newName': newName,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> moveFile(
+    _i1.TestSessionBuilder sessionBuilder,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'files',
+        method: 'moveFile',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'moveFile',
+          parameters: _i1.testObjectToJson({
+            'sourceServerPath': sourceServerPath,
+            'destinationServerPath': destinationServerPath,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -247,7 +382,7 @@ class _LinksEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.SharedLinkWithUrl>> list(
+  _i3.Future<List<_i7.SharedLinkWithUrl>> list(
     _i1.TestSessionBuilder sessionBuilder, {
     int? userId,
   }) async {
@@ -268,7 +403,7 @@ class _LinksEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.SharedLinkWithUrl>>);
+        ) as _i3.Future<List<_i7.SharedLinkWithUrl>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

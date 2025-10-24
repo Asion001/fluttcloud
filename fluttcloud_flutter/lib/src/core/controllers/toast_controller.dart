@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
@@ -32,7 +33,9 @@ class ToastController {
     ToastType type = ToastType.error,
     String? title,
   }) async {
-    final messageText = message.toString();
+    final messageText = type == ToastType.error
+        ? parseObject(message)
+        : message.toString();
 
     final context = _context;
     final colorScheme = context?.theme.colorScheme;
@@ -72,10 +75,21 @@ class ToastController {
     );
   }
 
+  String parseObject(dynamic object) {
+    String? error;
+    if (object is Map) {
+      error = object['error']?.toString();
+    } else if (object is DioException) {
+      error = parseObject(object.response?.data ?? object.message);
+    }
+    return error ?? object.toString();
+  }
+
   BuildContext? get _context => getIt<AppRouter>().navigatorKey.currentContext;
 
-  ToastificationConfig get config {
-    return const ToastificationConfig(maxToastLimit: 3);
+  ToastificationConfig config(BuildContext context) {
+    final wideMode = UiModeUtils.wideModeOn(context);
+    return ToastificationConfig(maxToastLimit: wideMode ? 3 : 1);
   }
 
   static ToastController get I => getIt<ToastController>();

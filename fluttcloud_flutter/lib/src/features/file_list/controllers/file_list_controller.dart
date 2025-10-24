@@ -4,6 +4,13 @@ import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
 import 'package:flutter/material.dart';
 
+enum FileAction {
+  rename,
+  copy,
+  move,
+  delete,
+}
+
 @singleton
 class FileListController extends ChangeNotifier {
   final List<FsEntry> files = [];
@@ -100,4 +107,46 @@ class FileListController extends ChangeNotifier {
   }
 
   final Map<String, List<FsEntry>> _cachedFiles = {};
+
+  Future<void> deleteFile(FsEntry file) async {
+    await Serverpod.I.client.files.deleteFile(file.serverFullpath);
+    await ToastController.I.show(
+      LocaleKeys.file_actions_deleted.tr(),
+      type: ToastType.success,
+    );
+    await fetchFiles(useCache: false);
+  }
+
+  Future<void> renameFile(FsEntry file, String newName) async {
+    await Serverpod.I.client.files.renameFile(file.serverFullpath, newName);
+    await ToastController.I.show(
+      LocaleKeys.file_actions_renamed.tr(),
+      type: ToastType.success,
+    );
+    await fetchFiles(useCache: false);
+  }
+
+  Future<void> copyFile(FsEntry file, String destinationPath) async {
+    await Serverpod.I.client.files.copyFile(
+      file.serverFullpath,
+      destinationPath,
+    );
+    await ToastController.I.show(
+      LocaleKeys.file_actions_copied.tr(),
+      type: ToastType.success,
+    );
+    await fetchFiles(useCache: false);
+  }
+
+  Future<void> moveFile(FsEntry file, String destinationPath) async {
+    await Serverpod.I.client.files.moveFile(
+      file.serverFullpath,
+      destinationPath,
+    );
+    await ToastController.I.show(
+      LocaleKeys.file_actions_moved.tr(),
+      type: ToastType.success,
+    );
+    await fetchFiles(useCache: false);
+  }
 }

@@ -45,17 +45,19 @@ class _ShareLinksScreenState extends State<ShareLinksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.share_links_title.tr()),
-        actions: [
-          IconButton(
-            onPressed: _loadLinks,
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
+    return MaxSizeContainer(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(LocaleKeys.share_links_title.tr()),
+          actions: [
+            IconButton(
+              onPressed: _loadLinks,
+              icon: const Icon(Icons.refresh),
+            ),
+          ],
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -223,44 +225,63 @@ class ShareLinkTile extends StatelessWidget {
             Text(
               link.serverPath,
               style: const TextStyle(fontSize: 12),
+            ).withIcon(
+              Icon(
+                Icons.computer,
+                size: 12,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+            Text(
+              linkWithUrl.fullUrl,
+              style: const TextStyle(fontSize: 12),
+            ).withIcon(
+              Icon(
+                Icons.link,
+                size: 12,
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
             const SizedBox(height: 2),
-            if (link.deleteAfter != null)
-              Text(
-                isExpired
-                    ? LocaleKeys.expiration_expired_on.tr(
-                        args: [
-                          link.deleteAfter!
-                              .toLocal()
-                              .toString()
-                              .split('.')
-                              .first,
-                        ],
-                      )
-                    : LocaleKeys.expiration_expires_on.tr(
-                        args: [
-                          link.deleteAfter!
-                              .toLocal()
-                              .toString()
-                              .split('.')
-                              .first,
-                        ],
-                      ),
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isExpired
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.outline,
-                ),
-              )
-            else
-              Text(
-                LocaleKeys.expiration_never.tr(),
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+            Text(
+              link.deleteAfter != null
+                  ? (link.deleteAfter!.isBefore(DateTime.now())
+                        ? LocaleKeys.expiration_expired_on.tr(
+                            args: [
+                              link.deleteAfter!
+                                  .toLocal()
+                                  .toString()
+                                  .split('.')
+                                  .first,
+                            ],
+                          )
+                        : LocaleKeys.expiration_expires_on.tr(
+                            args: [
+                              link.deleteAfter!
+                                  .toLocal()
+                                  .toString()
+                                  .split('.')
+                                  .first,
+                            ],
+                          ))
+                  : LocaleKeys.expiration_never.tr(),
+              style: TextStyle(
+                fontSize: 11,
+                color: isExpired
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.outline,
               ),
+            ).withIcon(
+              Icon(
+                link.deleteAfter != null
+                    ? (isExpired ? Icons.schedule : Icons.access_time)
+                    : Icons.all_inclusive,
+                size: 12,
+                color: isExpired
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.outline,
+              ),
+            ),
           ],
         ),
         trailing: Row(

@@ -12,6 +12,7 @@ class FilesEndpoint extends Endpoint {
   Stream<FsEntry> list(
     Session session, {
     String? serverFolderPath,
+    FsEntryType? filterByType,
   }) async* {
     await _validateAccess(session);
 
@@ -28,7 +29,9 @@ class FilesEndpoint extends Endpoint {
 
     await for (final entity in stream) {
       final fsEntry = _convertToFsEntry(session, entity, directory);
-      yield fsEntry;
+      if (filterByType == null || fsEntry.type == filterByType) {
+        yield fsEntry;
+      }
     }
   }
 
@@ -41,6 +44,147 @@ class FilesEndpoint extends Endpoint {
     final host = session.endpoint;
     final hostUri = Uri.parse(host);
     return hostUri.replace(path: [privateShareLinkPrefix, file.path].join());
+  }
+
+  Future<void> deleteFile(Session session, String serverFilePath) async {
+    await _validateAccess(session);
+
+    final entity = _getEntity(serverFilePath);
+    _validatePath(entity);
+
+    // Delete associated shared links
+    await SharedLink.db.deleteWhere(
+      session,
+      where: (p0) => p0.serverPath.like('$serverFilePath%'),
+    );
+
+    await entity.delete(recursive: entity is Directory);
+  }
+
+  Future<void> copyFile(
+    Session session,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    await _validateAccess(session);
+
+    final source = _getEntity(sourceServerPath);
+    _validatePath(source);
+
+    final destination = _getEntity(destinationServerPath);
+
+    if (source is File) {
+      await source.copy(destination.path);
+    } else if (source is Directory) {
+      await _copyDirectory(source, destination as Directory);
+    }
+  }
+
+  Future<void> renameFile(
+    Session session,
+    String serverFilePath,
+    String newName,
+  ) async {
+    await _validateAccess(session);
+
+    final entity = _getEntity(serverFilePath);
+    _validatePath(entity);
+
+    final parentPath = entity.parent.path;
+    final newPath = join(parentPath, newName);
+
+    // Calculate new server path for shared links
+    final oldServerPath = serverFilePath;
+    final newServerPath = newPath.replaceFirst(filesDirectoryPath, '');
+
+    await entity.rename(newPath);
+
+    // Update shared links with new path
+    await _updateSharedLinks(
+      session,
+      oldServerPath,
+      newServerPath,
+      entity is Directory,
+    );
+  }
+
+  Future<void> moveFile(
+    Session session,
+    String sourceServerPath,
+    String destinationServerPath,
+  ) async {
+    await _validateAccess(session);
+
+    final source = _getEntity(sourceServerPath);
+    _validatePath(source);
+
+    final destination = _getEntity(destinationServerPath);
+
+    await source.rename(destination.path);
+
+    // Update shared links with new path
+    final newServerPath = destination.path.replaceFirst(filesDirectoryPath, '');
+
+    await _updateSharedLinks(
+      session,
+      sourceServerPath,
+      newServerPath,
+      source is Directory,
+    );
+  }
+
+  FileSystemEntity _getEntity(String serverPath) {
+    final path = [filesDirectoryPath, serverPath].join();
+    final file = File(path).absolute;
+    final dir = Directory(path).absolute;
+
+    if (file.existsSync()) {
+      return file;
+    } else if (dir.existsSync()) {
+      return dir;
+    } else {
+      return file; // Return file entity for validation error
+    }
+  }
+
+  Future<void> _copyDirectory(Directory source, Directory destination) async {
+    await destination.create(recursive: true);
+
+    await for (final entity in source.list()) {
+      final name = basename(entity.path);
+      if (entity is Directory) {
+        final newDirectory = Directory(join(destination.path, name));
+        await _copyDirectory(entity, newDirectory);
+      } else if (entity is File) {
+        await entity.copy(join(destination.path, name));
+      }
+    }
+  }
+
+  Future<void> _updateSharedLinks(
+    Session session,
+    String oldServerPath,
+    String newServerPath,
+    bool isDirectory,
+  ) async {
+    final sharedLinks = await SharedLink.db.find(
+      session,
+      where: (p0) => isDirectory
+          ? p0.serverPath.like('$oldServerPath%')
+          : p0.serverPath.equals(oldServerPath),
+    );
+
+    if (sharedLinks.isNotEmpty) {
+      final updatedLinks = sharedLinks.map((link) {
+        final updatedPath = link.serverPath.replaceFirst(
+          oldServerPath,
+          newServerPath,
+        );
+        return link.copyWith(serverPath: updatedPath);
+      }).toList();
+
+      await SharedLink.db.update(session, updatedLinks);
+    }
   }
 
   Future<void> _validateAccess(Session session) async {

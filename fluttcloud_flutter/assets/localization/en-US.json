@@ -82,5 +82,27 @@
     "link_prefix": "Link ID",
     "prefix_required": "Link ID is required",
     "updated": "Share link updated"
+  },
+  "file_actions": {
+    "rename": "Rename",
+    "move": "Move",
+    "copy": "Copy",
+    "delete_confirm": "Delete '{}'?",
+    "deleted": "File deleted",
+    "renamed": "File renamed",
+    "moved": "File moved",
+    "copied": "File copied",
+    "rename_title": "Rename File",
+    "rename_description": "Enter new name for '{}'",
+    "new_name": "New Name",
+    "name_required": "Name is required",
+    "move_title": "Move File",
+    "move_description": "Enter destination path for '{}'",
+    "destination_path": "Destination Path",
+    "path_required": "Path is required",
+    "copy_title": "Copy File",
+    "copy_description": "Enter destination path for '{}'",
+    "actions": "File Actions",
+    "destination": "Destination"
   }
 }
