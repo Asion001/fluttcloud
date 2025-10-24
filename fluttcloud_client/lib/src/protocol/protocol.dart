@@ -15,14 +15,20 @@ import 'fs_entry_content_type.dart' as _i3;
 import 'fs_entry_type.dart' as _i4;
 import 'shared_link.dart' as _i5;
 import 'shared_link_with_url.dart' as _i6;
+import 'user_folder_access.dart' as _i7;
+import 'user_info_with_folders.dart' as _i8;
+import 'package:fluttcloud_client/src/protocol/user_info_with_folders.dart'
+    as _i9;
 import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
-    as _i7;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
+    as _i10;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i11;
 export 'fs_entry.dart';
 export 'fs_entry_content_type.dart';
 export 'fs_entry_type.dart';
 export 'shared_link.dart';
 export 'shared_link_with_url.dart';
+export 'user_folder_access.dart';
+export 'user_info_with_folders.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -53,6 +59,12 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i6.SharedLinkWithUrl) {
       return _i6.SharedLinkWithUrl.fromJson(data) as T;
     }
+    if (t == _i7.UserFolderAccess) {
+      return _i7.UserFolderAccess.fromJson(data) as T;
+    }
+    if (t == _i8.UserInfoWithFolders) {
+      return _i8.UserInfoWithFolders.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i2.FsEntry?>()) {
       return (data != null ? _i2.FsEntry.fromJson(data) : null) as T;
     }
@@ -68,13 +80,36 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i6.SharedLinkWithUrl?>()) {
       return (data != null ? _i6.SharedLinkWithUrl.fromJson(data) : null) as T;
     }
-    if (t == List<_i7.SharedLinkWithUrl>) {
+    if (t == _i1.getType<_i7.UserFolderAccess?>()) {
+      return (data != null ? _i7.UserFolderAccess.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.UserInfoWithFolders?>()) {
+      return (data != null ? _i8.UserInfoWithFolders.fromJson(data) : null)
+          as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == List<_i9.UserInfoWithFolders>) {
       return (data as List)
-          .map((e) => deserialize<_i7.SharedLinkWithUrl>(e))
+          .map((e) => deserialize<_i9.UserInfoWithFolders>(e))
+          .toList() as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == List<_i10.SharedLinkWithUrl>) {
+      return (data as List)
+          .map((e) => deserialize<_i10.SharedLinkWithUrl>(e))
           .toList() as T;
     }
     try {
-      return _i8.Protocol().deserialize<T>(data, t);
+      return _i11.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -98,7 +133,13 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i6.SharedLinkWithUrl) {
       return 'SharedLinkWithUrl';
     }
-    className = _i8.Protocol().getClassNameForObject(data);
+    if (data is _i7.UserFolderAccess) {
+      return 'UserFolderAccess';
+    }
+    if (data is _i8.UserInfoWithFolders) {
+      return 'UserInfoWithFolders';
+    }
+    className = _i11.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -126,9 +167,15 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'SharedLinkWithUrl') {
       return deserialize<_i6.SharedLinkWithUrl>(data['data']);
     }
+    if (dataClassName == 'UserFolderAccess') {
+      return deserialize<_i7.UserFolderAccess>(data['data']);
+    }
+    if (dataClassName == 'UserInfoWithFolders') {
+      return deserialize<_i8.UserInfoWithFolders>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i8.Protocol().deserializeByClassName(data);
+      return _i11.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

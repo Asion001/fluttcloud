@@ -1,0 +1,9 @@
+class: UserFolderAccess
+table: user_folder_access
+fields:
+  userId: int
+  folderPath: String
+indexes:
+  user_folder_access_idx:
+    fields: userId, folderPath
+    unique: true

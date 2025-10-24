@@ -10,35 +10,187 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../endpoinds/files_endpoint.dart' as _i2;
-import '../endpoinds/links_endpoint.dart' as _i3;
-import '../endpoinds/user_endpoint.dart' as _i4;
-import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i5;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i6;
+import '../endpoinds/admin_endpoint.dart' as _i2;
+import '../endpoinds/files_endpoint.dart' as _i3;
+import '../endpoinds/links_endpoint.dart' as _i4;
+import '../endpoinds/user_endpoint.dart' as _i5;
+import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i6;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i7;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'files': _i2.FilesEndpoint()
+      'admin': _i2.AdminEndpoint()
+        ..initialize(
+          server,
+          'admin',
+          null,
+        ),
+      'files': _i3.FilesEndpoint()
         ..initialize(
           server,
           'files',
           null,
         ),
-      'links': _i3.LinksEndpoint()
+      'links': _i4.LinksEndpoint()
         ..initialize(
           server,
           'links',
           null,
         ),
-      'user': _i4.UserEndpoint()
+      'user': _i5.UserEndpoint()
         ..initialize(
           server,
           'user',
           null,
         ),
     };
+    connectors['admin'] = _i1.EndpointConnector(
+      name: 'admin',
+      endpoint: endpoints['admin']!,
+      methodConnectors: {
+        'listUsers': _i1.MethodConnector(
+          name: 'listUsers',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).listUsers(session),
+        ),
+        'createUser': _i1.MethodConnector(
+          name: 'createUser',
+          params: {
+            'email': _i1.ParameterDescription(
+              name: 'email',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'userName': _i1.ParameterDescription(
+              name: 'userName',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'fullName': _i1.ParameterDescription(
+              name: 'fullName',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'isAdmin': _i1.ParameterDescription(
+              name: 'isAdmin',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'folderPaths': _i1.ParameterDescription(
+              name: 'folderPaths',
+              type: _i1.getType<List<String>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).createUser(
+            session,
+            email: params['email'],
+            userName: params['userName'],
+            fullName: params['fullName'],
+            isAdmin: params['isAdmin'],
+            folderPaths: params['folderPaths'],
+          ),
+        ),
+        'updateUser': _i1.MethodConnector(
+          name: 'updateUser',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'userName': _i1.ParameterDescription(
+              name: 'userName',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'fullName': _i1.ParameterDescription(
+              name: 'fullName',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'isAdmin': _i1.ParameterDescription(
+              name: 'isAdmin',
+              type: _i1.getType<bool?>(),
+              nullable: true,
+            ),
+            'folderPaths': _i1.ParameterDescription(
+              name: 'folderPaths',
+              type: _i1.getType<List<String>?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).updateUser(
+            session,
+            userId: params['userId'],
+            userName: params['userName'],
+            fullName: params['fullName'],
+            isAdmin: params['isAdmin'],
+            folderPaths: params['folderPaths'],
+          ),
+        ),
+        'initiatePasswordReset': _i1.MethodConnector(
+          name: 'initiatePasswordReset',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).initiatePasswordReset(
+            session,
+            userId: params['userId'],
+          ),
+        ),
+        'deleteUser': _i1.MethodConnector(
+          name: 'deleteUser',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).deleteUser(
+            session,
+            params['userId'],
+          ),
+        ),
+        'getAllowedFolders': _i1.MethodConnector(
+          name: 'getAllowedFolders',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getAllowedFolders(session),
+        ),
+      },
+    );
     connectors['files'] = _i1.EndpointConnector(
       name: 'files',
       endpoint: endpoints['files']!,
@@ -56,7 +208,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['files'] as _i2.FilesEndpoint).getPrivateUri(
+              (endpoints['files'] as _i3.FilesEndpoint).getPrivateUri(
             session,
             params['serverFilePath'],
           ),
@@ -74,7 +226,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['files'] as _i2.FilesEndpoint).deleteFile(
+              (endpoints['files'] as _i3.FilesEndpoint).deleteFile(
             session,
             params['serverFilePath'],
           ),
@@ -97,7 +249,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['files'] as _i2.FilesEndpoint).copyFile(
+              (endpoints['files'] as _i3.FilesEndpoint).copyFile(
             session,
             params['sourceServerPath'],
             params['destinationServerPath'],
@@ -121,7 +273,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['files'] as _i2.FilesEndpoint).renameFile(
+              (endpoints['files'] as _i3.FilesEndpoint).renameFile(
             session,
             params['serverFilePath'],
             params['newName'],
@@ -145,7 +297,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['files'] as _i2.FilesEndpoint).moveFile(
+              (endpoints['files'] as _i3.FilesEndpoint).moveFile(
             session,
             params['sourceServerPath'],
             params['destinationServerPath'],
@@ -161,7 +313,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'filterByType': _i1.ParameterDescription(
               name: 'filterByType',
-              type: _i1.getType<_i5.FsEntryType?>(),
+              type: _i1.getType<_i6.FsEntryType?>(),
               nullable: true,
             ),
           },
@@ -172,7 +324,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
             Map<String, Stream> streamParams,
           ) =>
-              (endpoints['files'] as _i2.FilesEndpoint).list(
+              (endpoints['files'] as _i3.FilesEndpoint).list(
             session,
             serverFolderPath: params['serverFolderPath'],
             filterByType: params['filterByType'],
@@ -202,7 +354,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['links'] as _i3.LinksEndpoint).create(
+              (endpoints['links'] as _i4.LinksEndpoint).create(
             session,
             serverPath: params['serverPath'],
             deleteAfter: params['deleteAfter'],
@@ -221,7 +373,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['links'] as _i3.LinksEndpoint).list(
+              (endpoints['links'] as _i4.LinksEndpoint).list(
             session,
             userId: params['userId'],
           ),
@@ -254,7 +406,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['links'] as _i3.LinksEndpoint).update(
+              (endpoints['links'] as _i4.LinksEndpoint).update(
             session,
             linkId: params['linkId'],
             serverPath: params['serverPath'],
@@ -275,7 +427,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['links'] as _i3.LinksEndpoint).delete(
+              (endpoints['links'] as _i4.LinksEndpoint).delete(
             session,
             params['linkId'],
           ),
@@ -299,13 +451,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['user'] as _i4.UserEndpoint).deleteMyUserProfile(
+              (endpoints['user'] as _i5.UserEndpoint).deleteMyUserProfile(
             session,
             params['userId'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i6.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i7.Endpoints()..initializeEndpoints(server);
   }
 }

@@ -1,3 +1,10 @@
+admin:
+  - listUsers:
+  - createUser:
+  - updateUser:
+  - initiatePasswordReset:
+  - deleteUser:
+  - getAllowedFolders:
 files:
   - list:
   - getPrivateUri:
