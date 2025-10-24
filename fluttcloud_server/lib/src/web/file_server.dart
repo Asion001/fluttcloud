@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io' show ContentType, File, HttpRequest, HttpStatus;
 
+import 'package:fluttcloud_server/common_imports.dart';
 import 'package:fluttcloud_server/src/core/env.dart';
 import 'package:fluttcloud_server/src/generated/shared_link.dart';
-import 'package:fluttcloud_server/src/utils/extensions.dart';
 import 'package:fluttcloud_server/src/web/content_type_mapping.dart';
 import 'package:path/path.dart';
 import 'package:serverpod/serverpod.dart';
@@ -48,14 +48,30 @@ class RawFileServer extends Route {
     final path = Uri.decodeFull(requestPath).replaceFirst(urlPrefix, '');
 
     final filePath = await _userHasAccessToRequestPath(session, path);
-    if (filePath == null) return null;
-
-    final file = File(filePath);
-    if (!(await _userHasAccessToPath(session, file.path))) {
+    if (filePath == null) {
+      session.log(
+        'Unauthorized access to path: $path',
+        level: LogLevel.debug,
+      );
       return null;
     }
 
-    if (!file.existsSync()) return null;
+    final file = File(filePath);
+    if (!(await _userHasAccessToPath(session, file.path))) {
+      session.log(
+        'Unauthorized access to file: ${file.path}',
+        level: LogLevel.debug,
+      );
+      return null;
+    }
+
+    if (!file.existsSync()) {
+      session.log(
+        'File does not exist: ${file.path}',
+        level: LogLevel.debug,
+      );
+      return null;
+    }
 
     return file;
   }

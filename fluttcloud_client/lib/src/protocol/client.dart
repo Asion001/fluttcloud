@@ -12,7 +12,8 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i3;
-import 'package:fluttcloud_client/src/protocol/shared_link.dart' as _i4;
+import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
+    as _i4;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
 import 'protocol.dart' as _i6;
 
@@ -60,8 +61,8 @@ class EndpointLinks extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i4.SharedLink>> list({int? userId}) =>
-      caller.callServerEndpoint<List<_i4.SharedLink>>(
+  _i2.Future<List<_i4.SharedLinkWithUrl>> list({int? userId}) =>
+      caller.callServerEndpoint<List<_i4.SharedLinkWithUrl>>(
         'links',
         'list',
         {'userId': userId},

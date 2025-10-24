@@ -44,5 +44,8 @@ export 'src/features/profile/view/profile_screen.dart';
 export 'src/features/server_config/controllers/server_config_controller.dart';
 export 'src/features/server_config/view/server_picker_screen.dart';
 export 'src/features/share_links/controller/share_links_controller.dart';
+export 'src/features/share_links/view/create_share_link_dialog.dart';
+export 'src/features/share_links/view/edit_share_link_dialog.dart';
+export 'src/features/share_links/view/share_links_screen.dart';
 export 'src/ui/fields/password_fields.dart';
 export 'src/ui/image_provider.dart';

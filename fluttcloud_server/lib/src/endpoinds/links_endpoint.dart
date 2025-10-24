@@ -27,16 +27,10 @@ class LinksEndpoint extends Endpoint {
       ),
     );
 
-    final webServerConfig = session.serverpod.config.webServer;
-    final url = Uri(
-      scheme: webServerConfig?.publicScheme,
-      host: webServerConfig?.publicHost,
-      path: [publicShareLinkPrefix, link.linkPrefix].join('/'),
-    );
-    return url.toString();
+    return _getFullUrl(session, link);
   }
 
-  Future<List<SharedLink>> list(Session session, {int? userId}) async {
+  Future<List<SharedLinkWithUrl>> list(Session session, {int? userId}) async {
     final auth = await _validateAccess(session);
 
     // If specific user is set dont allow to see other users links
@@ -49,7 +43,14 @@ class LinksEndpoint extends Endpoint {
       where: (p0) => p0.createdBy.equals(userId ?? auth!.userId),
     );
 
-    return links;
+    return links
+        .map(
+          (link) => SharedLinkWithUrl(
+            link: link,
+            fullUrl: _getFullUrl(session, link),
+          ),
+        )
+        .toList();
   }
 
   Future<void> update(
@@ -66,7 +67,7 @@ class LinksEndpoint extends Endpoint {
     if (link == null) throw const NotFoundException();
 
     // Allow update only for admins and owners
-    if (!auth.isAdmin || link.createdBy != auth?.userId) {
+    if (!auth.isAdmin && link.createdBy != auth?.userId) {
       throw const UnAuthorizedException();
     }
 
@@ -90,9 +91,22 @@ class LinksEndpoint extends Endpoint {
     if (link == null) throw const NotFoundException();
 
     // Allow deletion only for admins and owners
-    if (!auth.isAdmin || link.createdBy != auth?.userId) {
+    if (!auth.isAdmin && link.createdBy != auth?.userId) {
       throw const UnAuthorizedException();
     }
+
+    await SharedLink.db.deleteRow(session, link);
+  }
+
+  String _getFullUrl(Session session, SharedLink link) {
+    final webServerConfig = session.serverpod.config.webServer;
+    final url = Uri(
+      scheme: webServerConfig?.publicScheme,
+      host: webServerConfig?.publicHost,
+      port: webServerConfig?.publicPort,
+      path: [publicShareLinkPrefix, link.linkPrefix].join('/'),
+    );
+    return url.toString();
   }
 
   String _generateRandomLinkPrefix({int length = 4}) {

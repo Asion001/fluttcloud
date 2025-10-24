@@ -45,8 +45,42 @@
     "other": "{} items"
   },
   "copied_to_clipboard": "{} copied to clipboard",
+  "retry": "Retry",
   "link_sharing": {
     "created": "Link created and copied",
     "create_share_link": "Create share link for {}?"
+  },
+  "expiration": {
+    "expiration": "Expiration",
+    "never": "Never expires",
+    "expires_on": "Expires on: {}",
+    "expired_on": "Expired on: {}",
+    "in_hours": {
+      "one": "Expires in {} hour",
+      "other": "Expires in {} hours"
+    },
+    "in_days": {
+      "one": "Expires in {} day",
+      "other": "Expires in {} days"
+    }
+  },
+  "share_link": {
+    "create_title": "Create Share Link",
+    "create_description": "Create a shareable link for '{}'",
+    "create": "Create Link"
+  },
+  "share_links": {
+    "title": "Share Links",
+    "empty_title": "No shared links",
+    "empty_description": "You haven't created any share links yet. Share a file to create your first link.",
+    "delete_confirm": "Delete share link for '{}'?",
+    "deleted": "Share link deleted",
+    "copied": "Link copied to clipboard",
+    "copy": "Copy link",
+    "edit_title": "Edit Share Link",
+    "edit_description": "Edit share link for '{}'",
+    "link_prefix": "Link ID",
+    "prefix_required": "Link ID is required",
+    "updated": "Share link updated"
   }
 }

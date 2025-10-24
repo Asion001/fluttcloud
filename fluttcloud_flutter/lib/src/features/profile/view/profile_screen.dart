@@ -40,6 +40,12 @@ class ProfileScreen extends StatelessWidget {
               ),
               Text(user?.email ?? '-'),
               const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () => context.router.pushPath('/share-links'),
+                icon: const Icon(Icons.link),
+                label: Text(LocaleKeys.share_links_title.tr()),
+              ),
+              const SizedBox(height: 8),
               TextButton(
                 onPressed: () async {
                   final confirm = await ConfirmDialog(

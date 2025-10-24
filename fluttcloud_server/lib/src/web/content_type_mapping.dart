@@ -21,6 +21,7 @@ final contentTypeMapping = <String, ContentType>{
   '.aac': ContentType('audio', 'aac'),
   '.flac': ContentType('audio', 'flac'),
   '.mp4': ContentType('video', 'mp4'),
+  '.mov': ContentType('video', 'quicktime'),
   '.webm': ContentType('video', 'webm'),
   '.mkv': ContentType('video', 'x-matroska'),
   '.txt': ContentType('text', 'plain'),

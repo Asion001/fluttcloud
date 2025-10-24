@@ -16,11 +16,14 @@ import 'fs_entry.dart' as _i4;
 import 'fs_entry_content_type.dart' as _i5;
 import 'fs_entry_type.dart' as _i6;
 import 'shared_link.dart' as _i7;
-import 'package:fluttcloud_server/src/generated/shared_link.dart' as _i8;
+import 'shared_link_with_url.dart' as _i8;
+import 'package:fluttcloud_server/src/generated/shared_link_with_url.dart'
+    as _i9;
 export 'fs_entry.dart';
 export 'fs_entry_content_type.dart';
 export 'fs_entry_type.dart';
 export 'shared_link.dart';
+export 'shared_link_with_url.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -145,6 +148,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i7.SharedLink) {
       return _i7.SharedLink.fromJson(data) as T;
     }
+    if (t == _i8.SharedLinkWithUrl) {
+      return _i8.SharedLinkWithUrl.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i4.FsEntry?>()) {
       return (data != null ? _i4.FsEntry.fromJson(data) : null) as T;
     }
@@ -157,9 +163,13 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i7.SharedLink?>()) {
       return (data != null ? _i7.SharedLink.fromJson(data) : null) as T;
     }
-    if (t == List<_i8.SharedLink>) {
-      return (data as List).map((e) => deserialize<_i8.SharedLink>(e)).toList()
-          as T;
+    if (t == _i1.getType<_i8.SharedLinkWithUrl?>()) {
+      return (data != null ? _i8.SharedLinkWithUrl.fromJson(data) : null) as T;
+    }
+    if (t == List<_i9.SharedLinkWithUrl>) {
+      return (data as List)
+          .map((e) => deserialize<_i9.SharedLinkWithUrl>(e))
+          .toList() as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -185,6 +195,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (data is _i7.SharedLink) {
       return 'SharedLink';
+    }
+    if (data is _i8.SharedLinkWithUrl) {
+      return 'SharedLinkWithUrl';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -214,6 +227,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'SharedLink') {
       return deserialize<_i7.SharedLink>(data['data']);
+    }
+    if (dataClassName == 'SharedLinkWithUrl') {
+      return deserialize<_i8.SharedLinkWithUrl>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);

@@ -14,12 +14,15 @@ import 'fs_entry.dart' as _i2;
 import 'fs_entry_content_type.dart' as _i3;
 import 'fs_entry_type.dart' as _i4;
 import 'shared_link.dart' as _i5;
-import 'package:fluttcloud_client/src/protocol/shared_link.dart' as _i6;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
+import 'shared_link_with_url.dart' as _i6;
+import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
+    as _i7;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
 export 'fs_entry.dart';
 export 'fs_entry_content_type.dart';
 export 'fs_entry_type.dart';
 export 'shared_link.dart';
+export 'shared_link_with_url.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -47,6 +50,9 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i5.SharedLink) {
       return _i5.SharedLink.fromJson(data) as T;
     }
+    if (t == _i6.SharedLinkWithUrl) {
+      return _i6.SharedLinkWithUrl.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i2.FsEntry?>()) {
       return (data != null ? _i2.FsEntry.fromJson(data) : null) as T;
     }
@@ -59,12 +65,16 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i5.SharedLink?>()) {
       return (data != null ? _i5.SharedLink.fromJson(data) : null) as T;
     }
-    if (t == List<_i6.SharedLink>) {
-      return (data as List).map((e) => deserialize<_i6.SharedLink>(e)).toList()
-          as T;
+    if (t == _i1.getType<_i6.SharedLinkWithUrl?>()) {
+      return (data != null ? _i6.SharedLinkWithUrl.fromJson(data) : null) as T;
+    }
+    if (t == List<_i7.SharedLinkWithUrl>) {
+      return (data as List)
+          .map((e) => deserialize<_i7.SharedLinkWithUrl>(e))
+          .toList() as T;
     }
     try {
-      return _i7.Protocol().deserialize<T>(data, t);
+      return _i8.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -85,7 +95,10 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i5.SharedLink) {
       return 'SharedLink';
     }
-    className = _i7.Protocol().getClassNameForObject(data);
+    if (data is _i6.SharedLinkWithUrl) {
+      return 'SharedLinkWithUrl';
+    }
+    className = _i8.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -110,9 +123,12 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'SharedLink') {
       return deserialize<_i5.SharedLink>(data['data']);
     }
+    if (dataClassName == 'SharedLinkWithUrl') {
+      return deserialize<_i6.SharedLinkWithUrl>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i7.Protocol().deserializeByClassName(data);
+      return _i8.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

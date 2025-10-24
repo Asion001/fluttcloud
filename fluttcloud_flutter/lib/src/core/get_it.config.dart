@@ -31,20 +31,20 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.singleton<_i193.Serverpod>(() => _i193.Serverpod());
-    gh.singleton<_i278.ToastController>(() => _i278.ToastController());
-    gh.singleton<_i770.Storage>(() => _i770.Storage());
     gh.singleton<_i216.AppRouter>(() => _i216.AppRouter());
+    gh.singleton<_i193.Serverpod>(() => _i193.Serverpod());
+    gh.singleton<_i770.Storage>(() => _i770.Storage());
+    gh.singleton<_i278.ToastController>(() => _i278.ToastController());
     gh.singleton<_i677.FileListController>(() => _i677.FileListController());
+    gh.singleton<_i322.ShareLinksController>(
+      () => _i322.ShareLinksController(),
+    );
     await gh.singletonAsync<_i138.ServerConfigController>(() {
       final i = _i138.ServerConfigController();
       return i.init().then((_) => i);
     }, preResolve: true);
     gh.singleton<_i632.FileDownloadController>(
       () => _i632.FileDownloadController(),
-    );
-    gh.singleton<_i322.ShareLinksController>(
-      () => _i322.ShareLinksController(),
     );
     return this;
   }

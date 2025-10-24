@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 class ShareLinksController {
   Future<void> create(FsEntry entry, {DateTime? deleteAfter}) async {
     if (entry.type != FsEntryType.file) return;
-    
+
     try {
       final link = await Serverpod.I.client.links.create(
         serverPath: entry.serverFullpath,
@@ -22,6 +22,43 @@ class ShareLinksController {
     } catch (e) {
       logger.e(e);
       await ToastController.I.show(e);
+    }
+  }
+
+  Future<List<SharedLinkWithUrl>> getLinks({int? userId}) async {
+    try {
+      return await Serverpod.I.client.links.list(userId: userId);
+    } catch (e) {
+      logger.e(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateLink({
+    required int linkId,
+    required String serverPath,
+    required String linkPrefix,
+    required DateTime? deleteAfter,
+  }) async {
+    try {
+      await Serverpod.I.client.links.update(
+        linkId: linkId,
+        serverPath: serverPath,
+        linkPrefix: linkPrefix,
+        deleteAfter: deleteAfter,
+      );
+    } catch (e) {
+      logger.e(e);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteLink(int linkId) async {
+    try {
+      await Serverpod.I.client.links.delete(linkId);
+    } catch (e) {
+      logger.e(e);
+      rethrow;
     }
   }
 }

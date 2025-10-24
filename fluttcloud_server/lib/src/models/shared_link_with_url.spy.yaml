@@ -1,0 +1,7 @@
+class: SharedLinkWithUrl
+fields:
+  ### The shared link
+  link: SharedLink
+
+  ### Full URL for accessing the shared resource
+  fullUrl: String

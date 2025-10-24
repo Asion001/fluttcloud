@@ -50,16 +50,7 @@ class FileTile extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: () async {
-                  final confirm = await ConfirmDialog(
-                    title: LocaleKeys.link_sharing_create_share_link.tr(
-                      args: [file.serverFullpath],
-                    ),
-                  ).show(context);
-                  if (!confirm) return;
-                  await getIt<ShareLinksController>().create(
-                    file,
-                    deleteAfter: DateTime.now().add(const Duration(minutes: 2)),
-                  );
+                  await CreateShareLinkDialog(file: file).show(context);
                 },
                 icon: const Icon(Icons.share),
               ),

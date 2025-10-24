@@ -42,8 +42,33 @@ abstract class  LocaleKeys {
   static const download_finished = 'download_finished';
   static const items = 'items';
   static const copied_to_clipboard = 'copied_to_clipboard';
+  static const retry = 'retry';
   static const link_sharing_created = 'link_sharing.created';
   static const link_sharing_create_share_link = 'link_sharing.create_share_link';
   static const link_sharing = 'link_sharing';
+  static const expiration_expiration = 'expiration.expiration';
+  static const expiration_never = 'expiration.never';
+  static const expiration_expires_on = 'expiration.expires_on';
+  static const expiration_expired_on = 'expiration.expired_on';
+  static const expiration_in_hours = 'expiration.in_hours';
+  static const expiration_in_days = 'expiration.in_days';
+  static const expiration = 'expiration';
+  static const share_link_create_title = 'share_link.create_title';
+  static const share_link_create_description = 'share_link.create_description';
+  static const share_link_create = 'share_link.create';
+  static const share_link = 'share_link';
+  static const share_links_title = 'share_links.title';
+  static const share_links_empty_title = 'share_links.empty_title';
+  static const share_links_empty_description = 'share_links.empty_description';
+  static const share_links_delete_confirm = 'share_links.delete_confirm';
+  static const share_links_deleted = 'share_links.deleted';
+  static const share_links_copied = 'share_links.copied';
+  static const share_links_copy = 'share_links.copy';
+  static const share_links_edit_title = 'share_links.edit_title';
+  static const share_links_edit_description = 'share_links.edit_description';
+  static const share_links_link_prefix = 'share_links.link_prefix';
+  static const share_links_prefix_required = 'share_links.prefix_required';
+  static const share_links_updated = 'share_links.updated';
+  static const share_links = 'share_links';
 
 }
