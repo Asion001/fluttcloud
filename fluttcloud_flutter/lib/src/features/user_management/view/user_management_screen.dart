@@ -1,30 +1,72 @@
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 @RoutePage()
-class UserManagementScreen extends StatefulWidget {
+class UserManagementScreen extends WatchingWidget {
   const UserManagementScreen({super.key});
 
   @override
-  State<UserManagementScreen> createState() => _UserManagementScreenState();
-}
+  Widget build(BuildContext context) {
+    final controller = UserManagementController.I;
 
-class _UserManagementScreenState extends State<UserManagementScreen> {
-  final UserManagementController _controller = UserManagementController.I;
+    // Watch for changes in the controller
+    registerHandler(
+      select: (UserManagementController c) => c.users,
+      handler: (context, value, cancel) {
+        // This will rebuild when users list changes
+      },
+    );
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUsers();
+    return MaxSizeContainer(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(LocaleKeys.user_management_title.tr()),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _createUser(context, controller),
+          icon: const Icon(Icons.person_add),
+          label: Text(LocaleKeys.user_management_create_user.tr()),
+        ),
+        body: PagedListView<int, UserInfoWithFolders>(
+          padding: 16.all,
+          pagingController: controller.pagingController,
+          builderDelegate: PagedChildBuilderDelegate<UserInfoWithFolders>(
+            itemBuilder: (context, user, index) => _UserListItem(
+              user: user,
+              onEdit: () => _editUser(context, controller, user),
+              onDelete: () => _deleteUser(context, controller, user),
+            ),
+            firstPageErrorIndicatorBuilder: (context) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${LocaleKeys.error.tr()}: ${controller.pagingController.error}',
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: controller.pagingController.refresh,
+                    child: Text(LocaleKeys.retry.tr()),
+                  ),
+                ],
+              ),
+            ),
+            noItemsFoundIndicatorBuilder: (context) => Center(
+              child: Text(LocaleKeys.user_management_no_users.tr()),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<void> _loadUsers() async {
-    await _controller.loadUsers();
-    if (mounted) setState(() {});
-  }
-
-  Future<void> _deleteUser(UserInfoWithFolders user) async {
+  Future<void> _deleteUser(
+    BuildContext context,
+    UserManagementController controller,
+    UserInfoWithFolders user,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -45,15 +87,16 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       ),
     );
 
-    if ((confirmed ?? false) && mounted) {
-      final success = await _controller.deleteUser(user);
-      if (success && mounted) {
-        setState(() {});
-      }
+    if (confirmed ?? false) {
+      await controller.deleteUser(user);
     }
   }
 
-  Future<void> _editUser(UserInfoWithFolders user) async {
+  Future<void> _editUser(
+    BuildContext context,
+    UserManagementController controller,
+    UserInfoWithFolders user,
+  ) async {
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (context) => _UserEditScreen(user: user),
@@ -61,11 +104,14 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     );
 
     if (result ?? false) {
-      await _loadUsers();
+      controller.loadUsers();
     }
   }
 
-  Future<void> _createUser() async {
+  Future<void> _createUser(
+    BuildContext context,
+    UserManagementController controller,
+  ) async {
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (context) => const _UserEditScreen(),
@@ -73,51 +119,91 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     );
 
     if (result ?? false) {
-      await _loadUsers();
+      controller.loadUsers();
     }
   }
+}
+
+class _UserListItem extends StatelessWidget {
+  final UserInfoWithFolders user;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _UserListItem({
+    required this.user,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaxSizeContainer(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(LocaleKeys.user_management_title.tr()),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(
+            user.userName?.substring(0, 1).toUpperCase() ??
+                user.email.substring(0, 1).toUpperCase(),
+          ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _createUser,
-          icon: const Icon(Icons.person_add),
-          label: Text(LocaleKeys.user_management_create_user.tr()),
+        title: Row(
+          children: [
+            Text(user.userName ?? user.email),
+            if (user.isAdmin) ...[
+              const SizedBox(width: 8),
+              Chip(
+                label: Text(
+                  LocaleKeys.user_management_admin_badge.tr(),
+                ),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ],
         ),
-        body: _controller.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _controller.users == null || _controller.users!.isEmpty
-            ? Center(
-                child: Text(LocaleKeys.user_management_no_users.tr()),
-              )
-            : ListView.builder(
-                padding: 16.all,
-                itemCount: _controller.users!.length,
-                itemBuilder: (context, index) {
-                  final user = _controller.users![index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text(
-                          user.userName?.substring(0, 1).toUpperCase() ??
-                              user.email.substring(0, 1).toUpperCase(),
-                        ),
-                      ),
-                      title: Row(
-                        children: [
-                          Text(user.userName ?? user.email),
-                          if (user.isAdmin) ...[
-                            const SizedBox(width: 8),
-                            Chip(
-                              label: Text(
-                                LocaleKeys.user_management_admin_badge.tr(),
-                              ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(user.email),
+            const SizedBox(height: 4),
+            Text(
+              user.isAdmin
+                  ? LocaleKeys.user_management_all_folders.tr()
+                  : LocaleKeys.user_management_folders.plural(
+                      user.folderPaths.length,
+                    ),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+        trailing: PopupMenuButton(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: onEdit,
+              child: Row(
+                children: [
+                  const Icon(Icons.edit),
+                  const SizedBox(width: 8),
+                  Text(LocaleKeys.edit.tr()),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              onTap: onDelete,
+              child: Row(
+                children: [
+                  const Icon(Icons.delete),
+                  const SizedBox(width: 8),
+                  Text(LocaleKeys.delete.tr()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,

@@ -1,29 +1,70 @@
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/fluttcloud_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 @singleton
-class UserManagementController {
+class UserManagementController extends ChangeNotifier {
   static UserManagementController get I => getIt<UserManagementController>();
 
-  List<UserInfoWithFolders>? _users;
-  bool _isLoading = false;
+  final PagingController<int, UserInfoWithFolders> pagingController =
+      PagingController(firstPageKey: 0);
 
-  List<UserInfoWithFolders>? get users => _users;
-  bool get isLoading => _isLoading;
+  static const int _pageSize = 20;
+  List<UserInfoWithFolders> _allUsers = [];
+
+  List<UserInfoWithFolders> get users => _allUsers;
+  bool get isLoading => pagingController.value.status == PagingStatus.loadingFirstPage;
+
+  UserManagementController() {
+    pagingController.addPageRequestListener(_fetchPage);
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      // Load all users from server (we'll paginate in memory)
+      if (pageKey == 0) {
+        _allUsers = await Serverpod.I.client.admin.listUsers();
+      }
+
+      final startIndex = pageKey * _pageSize;
+      final endIndex = startIndex + _pageSize;
+
+      if (startIndex >= _allUsers.length) {
+        pagingController.appendLastPage([]);
+        return;
+      }
+
+      final newItems = _allUsers.sublist(
+        startIndex,
+        endIndex > _allUsers.length ? _allUsers.length : endIndex,
+      );
+
+      final isLastPage = endIndex >= _allUsers.length;
+      if (isLastPage) {
+        pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(newItems, nextPageKey);
+      }
+      
+      notifyListeners();
+    } catch (error) {
+      pagingController.error = error;
+      await ToastController.I.show(
+        '${LocaleKeys.error.tr()}: $error',
+      );
+    }
+  }
 
   Future<void> loadUsers() async {
-    _isLoading = true;
+    pagingController.refresh();
+  }
 
-    try {
-      _users = await Serverpod.I.client.admin.listUsers();
-      _isLoading = false;
-    } catch (e) {
-      _isLoading = false;
-      await ToastController.I.show(
-        '${LocaleKeys.error.tr()}: $e',
-      );
-      rethrow;
-    }
+  @override
+  void dispose() {
+    pagingController.dispose();
+    super.dispose();
   }
 
   Future<bool> deleteUser(UserInfoWithFolders user) async {
