@@ -123,7 +123,7 @@ class FilesEndpoint extends Endpoint {
   Future<void> _copyDirectory(Directory source, Directory destination) async {
     await destination.create(recursive: true);
 
-    await for (final entity in source.list(recursive: false)) {
+    await for (final entity in source.list()) {
       final name = basename(entity.path);
       if (entity is Directory) {
         final newDirectory = Directory(join(destination.path, name));
