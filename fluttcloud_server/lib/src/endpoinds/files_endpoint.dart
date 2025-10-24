@@ -97,35 +97,12 @@ class FilesEndpoint extends Endpoint {
     await entity.rename(newPath);
 
     // Update shared links with new path
-    if (entity is Directory) {
-      // For directories, update all links that start with the old path
-      final sharedLinks = await SharedLink.db.find(
-        session,
-        where: (p0) => p0.serverPath.like('$oldServerPath%'),
-      );
-      for (final link in sharedLinks) {
-        final updatedPath = link.serverPath.replaceFirst(
-          oldServerPath,
-          newServerPath,
-        );
-        await SharedLink.db.updateRow(
-          session,
-          link.copyWith(serverPath: updatedPath),
-        );
-      }
-    } else {
-      // For files, update the exact match
-      final sharedLinks = await SharedLink.db.find(
-        session,
-        where: (p0) => p0.serverPath.equals(oldServerPath),
-      );
-      for (final link in sharedLinks) {
-        await SharedLink.db.updateRow(
-          session,
-          link.copyWith(serverPath: newServerPath),
-        );
-      }
-    }
+    await _updateSharedLinks(
+      session,
+      oldServerPath,
+      newServerPath,
+      entity is Directory,
+    );
   }
 
   Future<void> moveFile(
@@ -145,35 +122,12 @@ class FilesEndpoint extends Endpoint {
     // Update shared links with new path
     final newServerPath = destination.path.replaceFirst(filesDirectoryPath, '');
 
-    if (source is Directory) {
-      // For directories, update all links that start with the old path
-      final sharedLinks = await SharedLink.db.find(
-        session,
-        where: (p0) => p0.serverPath.like('$sourceServerPath%'),
-      );
-      for (final link in sharedLinks) {
-        final updatedPath = link.serverPath.replaceFirst(
-          sourceServerPath,
-          newServerPath,
-        );
-        await SharedLink.db.updateRow(
-          session,
-          link.copyWith(serverPath: updatedPath),
-        );
-      }
-    } else {
-      // For files, update the exact match
-      final sharedLinks = await SharedLink.db.find(
-        session,
-        where: (p0) => p0.serverPath.equals(sourceServerPath),
-      );
-      for (final link in sharedLinks) {
-        await SharedLink.db.updateRow(
-          session,
-          link.copyWith(serverPath: newServerPath),
-        );
-      }
-    }
+    await _updateSharedLinks(
+      session,
+      sourceServerPath,
+      newServerPath,
+      source is Directory,
+    );
   }
 
   FileSystemEntity _getEntity(String serverPath) {
@@ -201,6 +155,32 @@ class FilesEndpoint extends Endpoint {
       } else if (entity is File) {
         await entity.copy(join(destination.path, name));
       }
+    }
+  }
+
+  Future<void> _updateSharedLinks(
+    Session session,
+    String oldServerPath,
+    String newServerPath,
+    bool isDirectory,
+  ) async {
+    final sharedLinks = await SharedLink.db.find(
+      session,
+      where: (p0) => isDirectory
+          ? p0.serverPath.like('$oldServerPath%')
+          : p0.serverPath.equals(oldServerPath),
+    );
+
+    if (sharedLinks.isNotEmpty) {
+      final updatedLinks = sharedLinks.map((link) {
+        final updatedPath = link.serverPath.replaceFirst(
+          oldServerPath,
+          newServerPath,
+        );
+        return link.copyWith(serverPath: updatedPath);
+      }).toList();
+
+      await SharedLink.db.update(session, updatedLinks);
     }
   }
 
