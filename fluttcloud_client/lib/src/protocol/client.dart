@@ -11,14 +11,16 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:fluttcloud_client/src/protocol/user_info_with_folders.dart'
+import 'package:fluttcloud_client/src/protocol/paginated_users_result.dart'
     as _i3;
-import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i4;
-import 'package:fluttcloud_client/src/protocol/fs_entry_type.dart' as _i5;
+import 'package:fluttcloud_client/src/protocol/user_info_with_folders.dart'
+    as _i4;
+import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i5;
+import 'package:fluttcloud_client/src/protocol/fs_entry_type.dart' as _i6;
 import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
-    as _i6;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
-import 'protocol.dart' as _i8;
+    as _i7;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
+import 'protocol.dart' as _i9;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -27,25 +29,31 @@ class EndpointAdmin extends _i1.EndpointRef {
   @override
   String get name => 'admin';
 
-  /// Lists all users with their folder access permissions
+  /// Lists all users with their folder access permissions with pagination
   /// Admin only
-  _i2.Future<List<_i3.UserInfoWithFolders>> listUsers() =>
-      caller.callServerEndpoint<List<_i3.UserInfoWithFolders>>(
+  _i2.Future<_i3.PaginatedUsersResult> listUsers({
+    required int page,
+    required int pageSize,
+  }) =>
+      caller.callServerEndpoint<_i3.PaginatedUsersResult>(
         'admin',
         'listUsers',
-        {},
+        {
+          'page': page,
+          'pageSize': pageSize,
+        },
       );
 
   /// Creates a new user with email and password
   /// Admin only
-  _i2.Future<_i3.UserInfoWithFolders> createUser({
+  _i2.Future<_i4.UserInfoWithFolders> createUser({
     required String email,
     required String userName,
     required bool isAdmin,
     String? fullName,
     required List<String> folderPaths,
   }) =>
-      caller.callServerEndpoint<_i3.UserInfoWithFolders>(
+      caller.callServerEndpoint<_i4.UserInfoWithFolders>(
         'admin',
         'createUser',
         {
@@ -59,14 +67,14 @@ class EndpointAdmin extends _i1.EndpointRef {
 
   /// Updates user information
   /// Admin only
-  _i2.Future<_i3.UserInfoWithFolders> updateUser({
+  _i2.Future<_i4.UserInfoWithFolders> updateUser({
     required int userId,
     String? userName,
     String? fullName,
     bool? isAdmin,
     List<String>? folderPaths,
   }) =>
-      caller.callServerEndpoint<_i3.UserInfoWithFolders>(
+      caller.callServerEndpoint<_i4.UserInfoWithFolders>(
         'admin',
         'updateUser',
         {
@@ -112,11 +120,11 @@ class EndpointFiles extends _i1.EndpointRef {
   @override
   String get name => 'files';
 
-  _i2.Stream<_i4.FsEntry> list({
+  _i2.Stream<_i5.FsEntry> list({
     String? serverFolderPath,
-    _i5.FsEntryType? filterByType,
+    _i6.FsEntryType? filterByType,
   }) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i4.FsEntry>, _i4.FsEntry>(
+      caller.callStreamingServerEndpoint<_i2.Stream<_i5.FsEntry>, _i5.FsEntry>(
         'files',
         'list',
         {
@@ -201,8 +209,8 @@ class EndpointLinks extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i6.SharedLinkWithUrl>> list({int? userId}) =>
-      caller.callServerEndpoint<List<_i6.SharedLinkWithUrl>>(
+  _i2.Future<List<_i7.SharedLinkWithUrl>> list({int? userId}) =>
+      caller.callServerEndpoint<List<_i7.SharedLinkWithUrl>>(
         'links',
         'list',
         {'userId': userId},
@@ -249,10 +257,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i7.Caller(client);
+    auth = _i8.Caller(client);
   }
 
-  late final _i7.Caller auth;
+  late final _i8.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -271,7 +279,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i8.Protocol(),
+          _i9.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

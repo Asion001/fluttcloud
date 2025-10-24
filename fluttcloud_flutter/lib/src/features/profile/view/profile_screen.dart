@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
     final sessionManager = Serverpod.I.sessionManager;
     final user = sessionManager.signedInUser;
     final image = user?.imageUrl;
-    final isAdmin = user?.scopeNames.contains('admin') ?? false;
+    final isAdmin = user?.scopeNames.contains('serverpod.admin') ?? false;
 
     return MaxSizeContainer(
       child: Scaffold(
@@ -38,6 +38,7 @@ class ProfileScreen extends StatelessWidget {
                     ? null
                     : NetworkImage(image!),
                 radius: 48,
+                onForegroundImageError: (exception, stackTrace) {},
               ),
               Text(user?.email ?? '-'),
               const SizedBox(height: 16),

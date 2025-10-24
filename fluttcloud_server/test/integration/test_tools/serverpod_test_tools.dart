@@ -14,13 +14,15 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:fluttcloud_server/src/generated/user_info_with_folders.dart'
+import 'package:fluttcloud_server/src/generated/paginated_users_result.dart'
     as _i4;
-import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i5;
-import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i6;
-import 'dart:convert' as _i7;
+import 'package:fluttcloud_server/src/generated/user_info_with_folders.dart'
+    as _i5;
+import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i6;
+import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i7;
+import 'dart:convert' as _i8;
 import 'package:fluttcloud_server/src/generated/shared_link_with_url.dart'
-    as _i8;
+    as _i9;
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -152,8 +154,11 @@ class _AdminEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i4.UserInfoWithFolders>> listUsers(
-      _i1.TestSessionBuilder sessionBuilder) async {
+  _i3.Future<_i4.PaginatedUsersResult> listUsers(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int page,
+    required int pageSize,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -165,13 +170,16 @@ class _AdminEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'admin',
           methodName: 'listUsers',
-          parameters: _i1.testObjectToJson({}),
+          parameters: _i1.testObjectToJson({
+            'page': page,
+            'pageSize': pageSize,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i4.UserInfoWithFolders>>);
+        ) as _i3.Future<_i4.PaginatedUsersResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -179,7 +187,7 @@ class _AdminEndpoint {
     });
   }
 
-  _i3.Future<_i4.UserInfoWithFolders> createUser(
+  _i3.Future<_i5.UserInfoWithFolders> createUser(
     _i1.TestSessionBuilder sessionBuilder, {
     required String email,
     required String userName,
@@ -210,7 +218,7 @@ class _AdminEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.UserInfoWithFolders>);
+        ) as _i3.Future<_i5.UserInfoWithFolders>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -218,7 +226,7 @@ class _AdminEndpoint {
     });
   }
 
-  _i3.Future<_i4.UserInfoWithFolders> updateUser(
+  _i3.Future<_i5.UserInfoWithFolders> updateUser(
     _i1.TestSessionBuilder sessionBuilder, {
     required int userId,
     String? userName,
@@ -249,7 +257,7 @@ class _AdminEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.UserInfoWithFolders>);
+        ) as _i3.Future<_i5.UserInfoWithFolders>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -353,12 +361,12 @@ class _FilesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Stream<_i5.FsEntry> list(
+  _i3.Stream<_i6.FsEntry> list(
     _i1.TestSessionBuilder sessionBuilder, {
     String? serverFolderPath,
-    _i6.FsEntryType? filterByType,
+    _i7.FsEntryType? filterByType,
   }) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i5.FsEntry>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i6.FsEntry>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -374,7 +382,7 @@ class _FilesEndpoint {
           arguments: {
             'serverFolderPath': serverFolderPath,
             'filterByType':
-                _i7.jsonDecode(_i2.SerializationManager.encode(filterByType)),
+                _i8.jsonDecode(_i2.SerializationManager.encode(filterByType)),
           },
           requestedInputStreams: [],
           serializationManager: _serializationManager,
@@ -591,7 +599,7 @@ class _LinksEndpoint {
     });
   }
 
-  _i3.Future<List<_i8.SharedLinkWithUrl>> list(
+  _i3.Future<List<_i9.SharedLinkWithUrl>> list(
     _i1.TestSessionBuilder sessionBuilder, {
     int? userId,
   }) async {
@@ -612,7 +620,7 @@ class _LinksEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i8.SharedLinkWithUrl>>);
+        ) as _i3.Future<List<_i9.SharedLinkWithUrl>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

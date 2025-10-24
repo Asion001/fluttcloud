@@ -5,49 +5,38 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 @singleton
 class UserManagementController extends ChangeNotifier {
+  UserManagementController();
+
   static UserManagementController get I => getIt<UserManagementController>();
 
-  final PagingController<int, UserInfoWithFolders> pagingController =
-      PagingController(firstPageKey: 0);
+  late PagingController<int, UserInfoWithFolders> pagingController;
 
   static const int _pageSize = 20;
-  List<UserInfoWithFolders> _allUsers = [];
 
-  List<UserInfoWithFolders> get users => _allUsers;
-  bool get isLoading => pagingController.value.status == PagingStatus.loadingFirstPage;
+  bool get isLoading =>
+      pagingController.value.status == PagingStatus.loadingFirstPage;
 
-  UserManagementController() {
+  void init() {
+    pagingController = PagingController(firstPageKey: 1);
     pagingController.addPageRequestListener(_fetchPage);
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      // Load all users from server (we'll paginate in memory)
-      if (pageKey == 0) {
-        _allUsers = await Serverpod.I.client.admin.listUsers();
-      }
-
-      final startIndex = pageKey * _pageSize;
-      final endIndex = startIndex + _pageSize;
-
-      if (startIndex >= _allUsers.length) {
-        pagingController.appendLastPage([]);
-        return;
-      }
-
-      final newItems = _allUsers.sublist(
-        startIndex,
-        endIndex > _allUsers.length ? _allUsers.length : endIndex,
+      // Fetch paginated users from server
+      final result = await Serverpod.I.client.admin.listUsers(
+        page: pageKey,
+        pageSize: _pageSize,
       );
 
-      final isLastPage = endIndex >= _allUsers.length;
+      final isLastPage = !result.hasNextPage;
       if (isLastPage) {
-        pagingController.appendLastPage(newItems);
+        pagingController.appendLastPage(result.users);
       } else {
         final nextPageKey = pageKey + 1;
-        pagingController.appendPage(newItems, nextPageKey);
+        pagingController.appendPage(result.users, nextPageKey);
       }
-      
+
       notifyListeners();
     } catch (error) {
       pagingController.error = error;
@@ -61,10 +50,8 @@ class UserManagementController extends ChangeNotifier {
     pagingController.refresh();
   }
 
-  @override
-  void dispose() {
+  void clear() {
     pagingController.dispose();
-    super.dispose();
   }
 
   Future<bool> deleteUser(UserInfoWithFolders user) async {

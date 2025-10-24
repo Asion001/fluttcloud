@@ -4,13 +4,32 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/module.dart';
 
 class AdminEndpoint extends Endpoint {
-  /// Lists all users with their folder access permissions
+  /// Lists all users with their folder access permissions with pagination
   /// Admin only
-  Future<List<UserInfoWithFolders>> listUsers(Session session) async {
+  Future<PaginatedUsersResult> listUsers(
+    Session session, {
+    int page = 1,
+    int pageSize = 20,
+  }) async {
     await _validateAdminAccess(session);
 
-    // Get all users with their folder access in a single efficient query
-    final users = await UserInfo.db.find(session);
+    // Validate pagination parameters
+    final validPage = page < 1 ? 1 : page;
+    final validPageSize = pageSize < 1 || pageSize > 100 ? 20 : pageSize;
+
+    final offset = (validPage - 1) * validPageSize;
+
+    // Get total count of users
+    final totalCount = await UserInfo.db.count(session);
+
+    // Get paginated users with efficient query
+    final users = await UserInfo.db.find(
+      session,
+      limit: validPageSize,
+      offset: offset,
+      orderBy: (t) => t.id,
+    );
+
     final userIds = users.map((u) => u.id!).toList();
 
     // Fetch all folder accesses for these users in one query
@@ -26,8 +45,8 @@ class AdminEndpoint extends Endpoint {
       foldersByUser.putIfAbsent(userId, () => []).add(access.folderPath);
     }
 
-    // Build result with all data
-    return users.map((user) {
+    // Build user results with all data
+    final userResults = users.map((user) {
       final userId = user.id!;
       return UserInfoWithFolders(
         userId: userId,
@@ -38,6 +57,19 @@ class AdminEndpoint extends Endpoint {
         folderPaths: foldersByUser[userId] ?? [],
       );
     }).toList();
+
+    // Calculate pagination metadata
+    final totalPages = (totalCount / validPageSize).ceil();
+
+    return PaginatedUsersResult(
+      users: userResults,
+      totalCount: totalCount,
+      pageSize: validPageSize,
+      currentPage: validPage,
+      totalPages: totalPages,
+      hasNextPage: validPage < totalPages,
+      hasPreviousPage: validPage > 1,
+    );
   }
 
   /// Creates a new user with email and password
@@ -64,7 +96,7 @@ class AdminEndpoint extends Endpoint {
     }
 
     // Create user info directly
-    final userInfo = UserInfo(
+    var userInfo = UserInfo(
       userName: userName,
       email: email,
       fullName: fullName ?? userName,
@@ -73,7 +105,8 @@ class AdminEndpoint extends Endpoint {
       blocked: false,
       userIdentifier: email,
     );
-    await UserInfo.db.insertRow(session, userInfo);
+
+    userInfo = (await Users.createUser(session, userInfo))!;
 
     // Set folder access permissions
     if (folderPaths.isNotEmpty) {

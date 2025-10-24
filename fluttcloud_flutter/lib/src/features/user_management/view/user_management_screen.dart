@@ -9,15 +9,8 @@ class UserManagementScreen extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = UserManagementController.I;
-
-    // Watch for changes in the controller
-    registerHandler(
-      select: (UserManagementController c) => c.users,
-      handler: (context, value, cancel) {
-        // This will rebuild when users list changes
-      },
-    );
+    final controller = watchIt<UserManagementController>();
+    callOnce((context) => controller.init(), dispose: controller.clear);
 
     return MaxSizeContainer(
       child: Scaffold(
@@ -43,7 +36,8 @@ class UserManagementScreen extends WatchingWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${LocaleKeys.error.tr()}: ${controller.pagingController.error}',
+                    '${LocaleKeys.error.tr()}: '
+                    '${controller.pagingController.error}',
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
@@ -76,11 +70,11 @@ class UserManagementScreen extends WatchingWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () async => Navigator.of(context).pop(false),
             child: Text(LocaleKeys.cancel.tr()),
           ),
           FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () async => Navigator.of(context).pop(true),
             child: Text(LocaleKeys.delete.tr()),
           ),
         ],
@@ -104,7 +98,7 @@ class UserManagementScreen extends WatchingWidget {
     );
 
     if (result ?? false) {
-      controller.loadUsers();
+      await controller.loadUsers();
     }
   }
 
@@ -119,21 +113,21 @@ class UserManagementScreen extends WatchingWidget {
     );
 
     if (result ?? false) {
-      controller.loadUsers();
+      await controller.loadUsers();
     }
   }
 }
 
 class _UserListItem extends StatelessWidget {
-  final UserInfoWithFolders user;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
   const _UserListItem({
     required this.user,
     required this.onEdit,
     required this.onDelete,
   });
+
+  final UserInfoWithFolders user;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +170,9 @@ class _UserListItem extends StatelessWidget {
             ),
           ],
         ),
-        trailing: PopupMenuButton(
+        trailing: PopupMenuButton<void>(
           itemBuilder: (context) => [
-            PopupMenuItem(
+            PopupMenuItem<void>(
               onTap: onEdit,
               child: Row(
                 children: [
@@ -188,7 +182,7 @@ class _UserListItem extends StatelessWidget {
                 ],
               ),
             ),
-            PopupMenuItem(
+            PopupMenuItem<void>(
               onTap: onDelete,
               child: Row(
                 children: [
@@ -200,60 +194,6 @@ class _UserListItem extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
-                            ),
-                          ],
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user.email),
-                          const SizedBox(height: 4),
-                          Text(
-                            user.isAdmin
-                                ? LocaleKeys.user_management_all_folders.tr()
-                                : LocaleKeys.user_management_folders.plural(
-                                    user.folderPaths.length,
-                                  ),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                      trailing: PopupMenuButton<void>(
-                        itemBuilder: (context) => [
-                          PopupMenuItem<void>(
-                            onTap: () => _editUser(user),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.edit),
-                                const SizedBox(width: 8),
-                                Text(LocaleKeys.edit.tr()),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem<void>(
-                            onTap: () => _deleteUser(user),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.delete),
-                                const SizedBox(width: 8),
-                                Text(LocaleKeys.delete.tr()),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
       ),
     );
   }

@@ -52,12 +52,27 @@ class Endpoints extends _i1.EndpointDispatch {
       methodConnectors: {
         'listUsers': _i1.MethodConnector(
           name: 'listUsers',
-          params: {},
+          params: {
+            'page': _i1.ParameterDescription(
+              name: 'page',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'pageSize': _i1.ParameterDescription(
+              name: 'pageSize',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
           call: (
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['admin'] as _i2.AdminEndpoint).listUsers(session),
+              (endpoints['admin'] as _i2.AdminEndpoint).listUsers(
+            session,
+            page: params['page'],
+            pageSize: params['pageSize'],
+          ),
         ),
         'createUser': _i1.MethodConnector(
           name: 'createUser',

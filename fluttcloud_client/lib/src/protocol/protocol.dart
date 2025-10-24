@@ -13,18 +13,18 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'fs_entry.dart' as _i2;
 import 'fs_entry_content_type.dart' as _i3;
 import 'fs_entry_type.dart' as _i4;
-import 'shared_link.dart' as _i5;
-import 'shared_link_with_url.dart' as _i6;
-import 'user_folder_access.dart' as _i7;
-import 'user_info_with_folders.dart' as _i8;
-import 'package:fluttcloud_client/src/protocol/user_info_with_folders.dart'
-    as _i9;
+import 'paginated_users_result.dart' as _i5;
+import 'shared_link.dart' as _i6;
+import 'shared_link_with_url.dart' as _i7;
+import 'user_folder_access.dart' as _i8;
+import 'user_info_with_folders.dart' as _i9;
 import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
     as _i10;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i11;
 export 'fs_entry.dart';
 export 'fs_entry_content_type.dart';
 export 'fs_entry_type.dart';
+export 'paginated_users_result.dart';
 export 'shared_link.dart';
 export 'shared_link_with_url.dart';
 export 'user_folder_access.dart';
@@ -53,17 +53,20 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i4.FsEntryType) {
       return _i4.FsEntryType.fromJson(data) as T;
     }
-    if (t == _i5.SharedLink) {
-      return _i5.SharedLink.fromJson(data) as T;
+    if (t == _i5.PaginatedUsersResult) {
+      return _i5.PaginatedUsersResult.fromJson(data) as T;
     }
-    if (t == _i6.SharedLinkWithUrl) {
-      return _i6.SharedLinkWithUrl.fromJson(data) as T;
+    if (t == _i6.SharedLink) {
+      return _i6.SharedLink.fromJson(data) as T;
     }
-    if (t == _i7.UserFolderAccess) {
-      return _i7.UserFolderAccess.fromJson(data) as T;
+    if (t == _i7.SharedLinkWithUrl) {
+      return _i7.SharedLinkWithUrl.fromJson(data) as T;
     }
-    if (t == _i8.UserInfoWithFolders) {
-      return _i8.UserInfoWithFolders.fromJson(data) as T;
+    if (t == _i8.UserFolderAccess) {
+      return _i8.UserFolderAccess.fromJson(data) as T;
+    }
+    if (t == _i9.UserInfoWithFolders) {
+      return _i9.UserInfoWithFolders.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.FsEntry?>()) {
       return (data != null ? _i2.FsEntry.fromJson(data) : null) as T;
@@ -74,26 +77,30 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i4.FsEntryType?>()) {
       return (data != null ? _i4.FsEntryType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.SharedLink?>()) {
-      return (data != null ? _i5.SharedLink.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i6.SharedLinkWithUrl?>()) {
-      return (data != null ? _i6.SharedLinkWithUrl.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i7.UserFolderAccess?>()) {
-      return (data != null ? _i7.UserFolderAccess.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i8.UserInfoWithFolders?>()) {
-      return (data != null ? _i8.UserInfoWithFolders.fromJson(data) : null)
+    if (t == _i1.getType<_i5.PaginatedUsersResult?>()) {
+      return (data != null ? _i5.PaginatedUsersResult.fromJson(data) : null)
           as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    if (t == _i1.getType<_i6.SharedLink?>()) {
+      return (data != null ? _i6.SharedLink.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.SharedLinkWithUrl?>()) {
+      return (data != null ? _i7.SharedLinkWithUrl.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.UserFolderAccess?>()) {
+      return (data != null ? _i8.UserFolderAccess.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i9.UserInfoWithFolders?>()) {
+      return (data != null ? _i9.UserInfoWithFolders.fromJson(data) : null)
+          as T;
     }
     if (t == List<_i9.UserInfoWithFolders>) {
       return (data as List)
           .map((e) => deserialize<_i9.UserInfoWithFolders>(e))
           .toList() as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
@@ -127,16 +134,19 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i4.FsEntryType) {
       return 'FsEntryType';
     }
-    if (data is _i5.SharedLink) {
+    if (data is _i5.PaginatedUsersResult) {
+      return 'PaginatedUsersResult';
+    }
+    if (data is _i6.SharedLink) {
       return 'SharedLink';
     }
-    if (data is _i6.SharedLinkWithUrl) {
+    if (data is _i7.SharedLinkWithUrl) {
       return 'SharedLinkWithUrl';
     }
-    if (data is _i7.UserFolderAccess) {
+    if (data is _i8.UserFolderAccess) {
       return 'UserFolderAccess';
     }
-    if (data is _i8.UserInfoWithFolders) {
+    if (data is _i9.UserInfoWithFolders) {
       return 'UserInfoWithFolders';
     }
     className = _i11.Protocol().getClassNameForObject(data);
@@ -161,17 +171,20 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'FsEntryType') {
       return deserialize<_i4.FsEntryType>(data['data']);
     }
+    if (dataClassName == 'PaginatedUsersResult') {
+      return deserialize<_i5.PaginatedUsersResult>(data['data']);
+    }
     if (dataClassName == 'SharedLink') {
-      return deserialize<_i5.SharedLink>(data['data']);
+      return deserialize<_i6.SharedLink>(data['data']);
     }
     if (dataClassName == 'SharedLinkWithUrl') {
-      return deserialize<_i6.SharedLinkWithUrl>(data['data']);
+      return deserialize<_i7.SharedLinkWithUrl>(data['data']);
     }
     if (dataClassName == 'UserFolderAccess') {
-      return deserialize<_i7.UserFolderAccess>(data['data']);
+      return deserialize<_i8.UserFolderAccess>(data['data']);
     }
     if (dataClassName == 'UserInfoWithFolders') {
-      return deserialize<_i8.UserInfoWithFolders>(data['data']);
+      return deserialize<_i9.UserInfoWithFolders>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
