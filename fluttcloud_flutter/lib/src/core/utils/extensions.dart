@@ -46,7 +46,8 @@ extension WidgetX on Widget {
   Widget withIcon(Widget icon, {double spacing = 4}) {
     return Row(
       spacing: spacing,
-      children: [icon, this],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [icon.paddingTop(2), flexible()],
     );
   }
 }
