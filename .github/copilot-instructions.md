@@ -55,6 +55,7 @@ class MyService {
 - Create/modify models in `fluttcloud_server/lib/src/models/*.spy.yaml`
 - Use Serverpod YAML syntax: `class:`, `enum:`, `fields:`, `values:`
 - Example: `fs_entry.spy.yaml` defines FsEntry with typed fields
+- **User IDs**: Always use `int, relation(parent=serverpod_user_info, onDelete=Cascade)` for user ID fields
 
 **Code Generation (crucial):**
 
