@@ -49,6 +49,15 @@ class FilesEndpoint extends Endpoint {
     final entity = _getEntity(serverFilePath);
     _validatePath(entity);
 
+    // Delete associated shared links
+    final links = await SharedLink.db.find(
+      session,
+      where: (p0) => p0.serverPath.equals(serverFilePath),
+    );
+    for (final link in links) {
+      await SharedLink.db.deleteRow(session, link);
+    }
+
     if (entity is Directory) {
       await entity.delete(recursive: true);
     } else {

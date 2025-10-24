@@ -116,11 +116,10 @@ class _RenameFileDialogState extends State<RenameFileDialog> {
     });
 
     try {
-      await Serverpod.I.client.files.renameFile(
-        widget.file.serverFullpath,
+      await getIt<FileListController>().renameFile(
+        widget.file,
         _nameController.text.trim(),
       );
-      await ToastController.I.show(LocaleKeys.file_actions_renamed.tr());
       if (mounted) {
         Navigator.of(context).pop(true);
       }

@@ -58,13 +58,13 @@ class FileTile extends StatelessWidget {
                 },
                 icon: const Icon(Icons.share),
               ),
-            PopupMenuButton<String>(
+            PopupMenuButton<FileAction>(
               icon: const Icon(Icons.more_vert),
               tooltip: LocaleKeys.file_actions_actions.tr(),
               onSelected: (value) => _handleMenuAction(context, value),
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  value: 'rename',
+                  value: FileAction.rename,
                   child: Row(
                     children: [
                       const Icon(Icons.edit),
@@ -74,7 +74,7 @@ class FileTile extends StatelessWidget {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 'copy',
+                  value: FileAction.copy,
                   child: Row(
                     children: [
                       const Icon(Icons.copy),
@@ -84,7 +84,7 @@ class FileTile extends StatelessWidget {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 'move',
+                  value: FileAction.move,
                   child: Row(
                     children: [
                       const Icon(Icons.drive_file_move),
@@ -94,7 +94,7 @@ class FileTile extends StatelessWidget {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 'delete',
+                  value: FileAction.delete,
                   child: Row(
                     children: [
                       const Icon(Icons.delete, color: Colors.red),
@@ -115,42 +115,37 @@ class FileTile extends StatelessWidget {
     );
   }
 
-  Future<void> _handleMenuAction(BuildContext context, String action) async {
+  Future<void> _handleMenuAction(
+    BuildContext context,
+    FileAction action,
+  ) async {
     final fileName = file.fullpath.split('/').last;
-    bool? shouldRefresh = false;
+    final controller = getIt<FileListController>();
 
     switch (action) {
-      case 'rename':
-        shouldRefresh = await RenameFileDialog(file: file).show(context);
-      case 'copy':
-        shouldRefresh = await MoveCopyFileDialog(
+      case FileAction.rename:
+        await RenameFileDialog(file: file).show(context);
+      case FileAction.copy:
+        await MoveCopyFileDialog(
           file: file,
           operationType: FileOperationType.copy,
         ).show(context);
-      case 'move':
-        shouldRefresh = await MoveCopyFileDialog(
+      case FileAction.move:
+        await MoveCopyFileDialog(
           file: file,
           operationType: FileOperationType.move,
         ).show(context);
-      case 'delete':
+      case FileAction.delete:
         final confirmed = await ConfirmDialog(
           title: LocaleKeys.file_actions_delete_confirm.tr(args: [fileName]),
         ).show(context);
         if (confirmed) {
           try {
-            await Serverpod.I.client.files.deleteFile(file.serverFullpath);
-            await ToastController.I.show(LocaleKeys.file_actions_deleted.tr());
-            shouldRefresh = true;
+            await controller.deleteFile(file);
           } catch (e) {
             await ToastController.I.show(e.toString());
           }
         }
-    }
-
-    if (shouldRefresh ?? false) {
-      if (context.mounted) {
-        await getIt<FileListController>().fetchFiles(useCache: false);
-      }
     }
   }
 }
