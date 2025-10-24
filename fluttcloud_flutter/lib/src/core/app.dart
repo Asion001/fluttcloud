@@ -23,7 +23,7 @@ class _AppState extends State<App> {
     const loader = Material();
 
     return ToastificationWrapper(
-      config: getIt<ToastController>().config,
+      config: getIt<ToastController>().config(context),
       child: MaterialApp.router(
         title: 'FluttCloud',
         restorationScopeId: 'app',

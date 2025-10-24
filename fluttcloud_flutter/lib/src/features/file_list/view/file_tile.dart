@@ -1,7 +1,5 @@
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
-import 'package:fluttcloud_flutter/src/features/file_list/view/move_copy_file_dialog.dart';
-import 'package:fluttcloud_flutter/src/features/file_list/view/rename_file_dialog.dart';
 import 'package:flutter/material.dart';
 
 class FileTile extends StatelessWidget {

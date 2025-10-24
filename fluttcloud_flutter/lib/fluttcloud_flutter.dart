@@ -33,6 +33,8 @@ export 'src/features/file_list/controllers/file_list_controller.dart';
 export 'src/features/file_list/view/file_list.dart';
 export 'src/features/file_list/view/file_tile.dart';
 export 'src/features/file_list/view/files_bar.dart';
+export 'src/features/file_list/view/move_copy_file_dialog.dart';
+export 'src/features/file_list/view/rename_file_dialog.dart';
 export 'src/features/file_preview/view/file_preview.dart';
 export 'src/features/file_preview/view/image_preview.dart';
 export 'src/features/file_preview/view/media_preview.dart';

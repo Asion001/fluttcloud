@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const flutcloud = 'flutcloud';
   static const duration_h = 'duration.h';
   static const duration_m = 'duration.m';
@@ -27,10 +27,14 @@ abstract class  LocaleKeys {
   static const profile_screen_delete_account = 'profile_screen.delete_account';
   static const profile_screen = 'profile_screen';
   static const server_picker_screen_title = 'server_picker_screen.title';
-  static const server_picker_screen_description = 'server_picker_screen.description';
-  static const server_picker_screen_server_url = 'server_picker_screen.server_url';
-  static const server_picker_screen_url_saved = 'server_picker_screen.url_saved';
-  static const server_picker_screen_url_invalid = 'server_picker_screen.url_invalid';
+  static const server_picker_screen_description =
+      'server_picker_screen.description';
+  static const server_picker_screen_server_url =
+      'server_picker_screen.server_url';
+  static const server_picker_screen_url_saved =
+      'server_picker_screen.url_saved';
+  static const server_picker_screen_url_invalid =
+      'server_picker_screen.url_invalid';
   static const server_picker_screen = 'server_picker_screen';
   static const download = 'download';
   static const file_type_not_supported = 'file_type_not_supported';
@@ -44,7 +48,8 @@ abstract class  LocaleKeys {
   static const copied_to_clipboard = 'copied_to_clipboard';
   static const retry = 'retry';
   static const link_sharing_created = 'link_sharing.created';
-  static const link_sharing_create_share_link = 'link_sharing.create_share_link';
+  static const link_sharing_create_share_link =
+      'link_sharing.create_share_link';
   static const link_sharing = 'link_sharing';
   static const expiration_expiration = 'expiration.expiration';
   static const expiration_never = 'expiration.never';
@@ -79,7 +84,8 @@ abstract class  LocaleKeys {
   static const file_actions_moved = 'file_actions.moved';
   static const file_actions_copied = 'file_actions.copied';
   static const file_actions_rename_title = 'file_actions.rename_title';
-  static const file_actions_rename_description = 'file_actions.rename_description';
+  static const file_actions_rename_description =
+      'file_actions.rename_description';
   static const file_actions_new_name = 'file_actions.new_name';
   static const file_actions_name_required = 'file_actions.name_required';
   static const file_actions_move_title = 'file_actions.move_title';
@@ -91,5 +97,4 @@ abstract class  LocaleKeys {
   static const file_actions_actions = 'file_actions.actions';
   static const file_actions_destination = 'file_actions.destination';
   static const file_actions = 'file_actions';
-
 }

@@ -110,13 +110,19 @@ class FileListController extends ChangeNotifier {
 
   Future<void> deleteFile(FsEntry file) async {
     await Serverpod.I.client.files.deleteFile(file.serverFullpath);
-    await ToastController.I.show(LocaleKeys.file_actions_deleted.tr());
+    await ToastController.I.show(
+      LocaleKeys.file_actions_deleted.tr(),
+      type: ToastType.success,
+    );
     await fetchFiles(useCache: false);
   }
 
   Future<void> renameFile(FsEntry file, String newName) async {
     await Serverpod.I.client.files.renameFile(file.serverFullpath, newName);
-    await ToastController.I.show(LocaleKeys.file_actions_renamed.tr());
+    await ToastController.I.show(
+      LocaleKeys.file_actions_renamed.tr(),
+      type: ToastType.success,
+    );
     await fetchFiles(useCache: false);
   }
 
@@ -125,7 +131,10 @@ class FileListController extends ChangeNotifier {
       file.serverFullpath,
       destinationPath,
     );
-    await ToastController.I.show(LocaleKeys.file_actions_copied.tr());
+    await ToastController.I.show(
+      LocaleKeys.file_actions_copied.tr(),
+      type: ToastType.success,
+    );
     await fetchFiles(useCache: false);
   }
 
@@ -134,7 +143,10 @@ class FileListController extends ChangeNotifier {
       file.serverFullpath,
       destinationPath,
     );
-    await ToastController.I.show(LocaleKeys.file_actions_moved.tr());
+    await ToastController.I.show(
+      LocaleKeys.file_actions_moved.tr(),
+      type: ToastType.success,
+    );
     await fetchFiles(useCache: false);
   }
 }

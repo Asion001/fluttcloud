@@ -120,10 +120,12 @@ class _MoveCopyFileDialogState extends State<MoveCopyFileDialog> {
             children: [
               Text(
                 isMove
-                    ? LocaleKeys.file_actions_move_description
-                        .tr(args: [fileName])
-                    : LocaleKeys.file_actions_copy_description
-                        .tr(args: [fileName]),
+                    ? LocaleKeys.file_actions_move_description.tr(
+                        args: [fileName],
+                      )
+                    : LocaleKeys.file_actions_copy_description.tr(
+                        args: [fileName],
+                      ),
                 style: context.textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
@@ -197,8 +199,9 @@ class _MoveCopyFileDialogState extends State<MoveCopyFileDialog> {
           spacing: 16,
           children: [
             OutlinedButton(
-              onPressed:
-                  _isProcessing ? null : () => Navigator.of(context).pop(false),
+              onPressed: _isProcessing
+                  ? null
+                  : () => Navigator.of(context).pop(false),
               child: Text(LocaleKeys.cancel.tr()),
             ).expand(),
             FilledButton(

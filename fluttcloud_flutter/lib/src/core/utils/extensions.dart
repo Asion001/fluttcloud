@@ -42,6 +42,13 @@ extension WidgetX on Widget {
   Widget constrained(BoxConstraints constraints) {
     return ConstrainedBox(constraints: constraints, child: this);
   }
+
+  Widget withIcon(Widget icon, {double spacing = 4}) {
+    return Row(
+      spacing: spacing,
+      children: [icon, this],
+    );
+  }
 }
 
 extension NumberPaddings on num {
