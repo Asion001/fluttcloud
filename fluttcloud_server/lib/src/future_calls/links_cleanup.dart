@@ -5,9 +5,14 @@ import 'package:serverpod/serverpod.dart';
 class SharedLinksCleanupFutureCall extends FutureCall<SharedLink> {
   @override
   Future<void> invoke(Session session, SharedLink? object) async {
-    await SharedLink.db.deleteWhere(
+    final deletedLinks = await SharedLink.db.deleteWhere(
       session,
-      where: (p0) => p0.deleteAfter.between(DateTime(2000), DateTime.now()),
+      where: (p0) => p0.deleteAfter.between(DateTime(1000), DateTime.now()),
+    );
+
+    session.log(
+      'Deleted ${deletedLinks.length} expired shared links.',
+      level: LogLevel.info,
     );
 
     // Schedule next task

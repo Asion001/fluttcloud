@@ -97,4 +97,34 @@ abstract class LocaleKeys {
   static const file_actions_actions = 'file_actions.actions';
   static const file_actions_destination = 'file_actions.destination';
   static const file_actions = 'file_actions';
+  static const user_management_title = 'user_management.title';
+  static const user_management_users = 'user_management.users';
+  static const user_management_create_user = 'user_management.create_user';
+  static const user_management_edit_user = 'user_management.edit_user';
+  static const user_management_delete_user_confirm =
+      'user_management.delete_user_confirm';
+  static const user_management_user_deleted = 'user_management.user_deleted';
+  static const user_management_user_created = 'user_management.user_created';
+  static const user_management_user_updated = 'user_management.user_updated';
+  static const user_management_email = 'user_management.email';
+  static const user_management_username = 'user_management.username';
+  static const user_management_full_name = 'user_management.full_name';
+  static const user_management_is_admin = 'user_management.is_admin';
+  static const user_management_folder_access = 'user_management.folder_access';
+  static const user_management_add_folder = 'user_management.add_folder';
+  static const user_management_email_required =
+      'user_management.email_required';
+  static const user_management_username_required =
+      'user_management.username_required';
+  static const user_management_invalid_email = 'user_management.invalid_email';
+  static const user_management_folder_path = 'user_management.folder_path';
+  static const user_management_folder_path_hint =
+      'user_management.folder_path_hint';
+  static const user_management_no_folder_access =
+      'user_management.no_folder_access';
+  static const user_management_no_users = 'user_management.no_users';
+  static const user_management_admin_badge = 'user_management.admin_badge';
+  static const user_management_folders = 'user_management.folders';
+  static const user_management_all_folders = 'user_management.all_folders';
+  static const user_management = 'user_management';
 }

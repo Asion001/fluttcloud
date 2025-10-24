@@ -14,7 +14,7 @@ class FilesEndpoint extends Endpoint {
     String? serverFolderPath,
     FsEntryType? filterByType,
   }) async* {
-    await _validateAccess(session);
+    await _validateAccess(session, serverFolderPath ?? '/');
 
     final directory = Directory(
       [
@@ -36,7 +36,7 @@ class FilesEndpoint extends Endpoint {
   }
 
   Future<Uri> getPrivateUri(Session session, String serverFilePath) async {
-    await _validateAccess(session);
+    await _validateAccess(session, serverFilePath);
 
     final file = File([filesDirectoryPath, serverFilePath].join()).absolute;
     _validatePath(file);
@@ -47,7 +47,7 @@ class FilesEndpoint extends Endpoint {
   }
 
   Future<void> deleteFile(Session session, String serverFilePath) async {
-    await _validateAccess(session);
+    await _validateAccess(session, serverFilePath);
 
     final entity = _getEntity(serverFilePath);
     _validatePath(entity);
@@ -66,7 +66,8 @@ class FilesEndpoint extends Endpoint {
     String sourceServerPath,
     String destinationServerPath,
   ) async {
-    await _validateAccess(session);
+    await _validateAccess(session, sourceServerPath);
+    await _validateAccess(session, destinationServerPath);
 
     final source = _getEntity(sourceServerPath);
     _validatePath(source);
@@ -85,7 +86,7 @@ class FilesEndpoint extends Endpoint {
     String serverFilePath,
     String newName,
   ) async {
-    await _validateAccess(session);
+    await _validateAccess(session, serverFilePath);
 
     final entity = _getEntity(serverFilePath);
     _validatePath(entity);
@@ -113,7 +114,8 @@ class FilesEndpoint extends Endpoint {
     String sourceServerPath,
     String destinationServerPath,
   ) async {
-    await _validateAccess(session);
+    await _validateAccess(session, sourceServerPath);
+    await _validateAccess(session, destinationServerPath);
 
     final source = _getEntity(sourceServerPath);
     _validatePath(source);
@@ -187,9 +189,33 @@ class FilesEndpoint extends Endpoint {
     }
   }
 
-  Future<void> _validateAccess(Session session) async {
+  Future<void> _validateAccess(Session session, String serverPath) async {
     final auth = await session.authenticated;
-    if (!auth.isAdmin) {
+    if (auth?.userId == null) {
+      throw const UnAuthorizedException();
+    }
+
+    // Admins have access to all files
+    if (auth.isAdmin) {
+      return;
+    }
+
+    final normalizedPath = serverPath.startsWith('/')
+        ? serverPath
+        : '/$serverPath';
+
+    // Find folders where normalizedPath starts with folderPath
+    // Using custom expression to check if normalizedPath LIKE folderPath || '%'
+    final folder = await UserFolderAccess.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.userId.equals(auth!.userId) & t.folderPath.like('$normalizedPath%'),
+    );
+
+    // Check if any folder is a prefix of the normalized path
+    final hasAccess =
+        folder != null && normalizedPath.startsWith(folder.folderPath);
+    if (!hasAccess) {
       throw const UnAuthorizedException();
     }
   }

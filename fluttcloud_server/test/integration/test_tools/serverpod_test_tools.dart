@@ -14,11 +14,15 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i4;
-import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i5;
-import 'dart:convert' as _i6;
+import 'package:fluttcloud_server/src/generated/paginated_users_result.dart'
+    as _i4;
+import 'package:fluttcloud_server/src/generated/user_info_with_folders.dart'
+    as _i5;
+import 'package:fluttcloud_server/src/generated/fs_entry.dart' as _i6;
+import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i7;
+import 'dart:convert' as _i8;
 import 'package:fluttcloud_server/src/generated/shared_link_with_url.dart'
-    as _i7;
+    as _i9;
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -105,6 +109,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _AdminEndpoint admin;
+
   late final _FilesEndpoint files;
 
   late final _LinksEndpoint links;
@@ -119,6 +125,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    admin = _AdminEndpoint(
+      endpoints,
+      serializationManager,
+    );
     files = _FilesEndpoint(
       endpoints,
       serializationManager,
@@ -134,6 +144,213 @@ class _InternalTestEndpoints extends TestEndpoints
   }
 }
 
+class _AdminEndpoint {
+  _AdminEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.PaginatedUsersResult> listUsers(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int page,
+    required int pageSize,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'listUsers',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'listUsers',
+          parameters: _i1.testObjectToJson({
+            'page': page,
+            'pageSize': pageSize,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.PaginatedUsersResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i5.UserInfoWithFolders> createUser(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required String email,
+    required String userName,
+    required bool isAdmin,
+    String? fullName,
+    required List<String> folderPaths,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'createUser',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'createUser',
+          parameters: _i1.testObjectToJson({
+            'email': email,
+            'userName': userName,
+            'isAdmin': isAdmin,
+            'fullName': fullName,
+            'folderPaths': folderPaths,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.UserInfoWithFolders>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i5.UserInfoWithFolders> updateUser(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int userId,
+    String? userName,
+    String? fullName,
+    bool? isAdmin,
+    List<String>? folderPaths,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'updateUser',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'updateUser',
+          parameters: _i1.testObjectToJson({
+            'userId': userId,
+            'userName': userName,
+            'fullName': fullName,
+            'isAdmin': isAdmin,
+            'folderPaths': folderPaths,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.UserInfoWithFolders>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> initiatePasswordReset(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int userId,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'initiatePasswordReset',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'initiatePasswordReset',
+          parameters: _i1.testObjectToJson({'userId': userId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> deleteUser(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'deleteUser',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'deleteUser',
+          parameters: _i1.testObjectToJson({'userId': userId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<String>> getAllowedFolders(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'getAllowedFolders',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'getAllowedFolders',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<String>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _FilesEndpoint {
   _FilesEndpoint(
     this._endpointDispatch,
@@ -144,12 +361,12 @@ class _FilesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Stream<_i4.FsEntry> list(
+  _i3.Stream<_i6.FsEntry> list(
     _i1.TestSessionBuilder sessionBuilder, {
     String? serverFolderPath,
-    _i5.FsEntryType? filterByType,
+    _i7.FsEntryType? filterByType,
   }) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i4.FsEntry>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i6.FsEntry>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -165,7 +382,7 @@ class _FilesEndpoint {
           arguments: {
             'serverFolderPath': serverFolderPath,
             'filterByType':
-                _i6.jsonDecode(_i2.SerializationManager.encode(filterByType)),
+                _i8.jsonDecode(_i2.SerializationManager.encode(filterByType)),
           },
           requestedInputStreams: [],
           serializationManager: _serializationManager,
@@ -382,7 +599,7 @@ class _LinksEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.SharedLinkWithUrl>> list(
+  _i3.Future<List<_i9.SharedLinkWithUrl>> list(
     _i1.TestSessionBuilder sessionBuilder, {
     int? userId,
   }) async {
@@ -403,7 +620,7 @@ class _LinksEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i7.SharedLinkWithUrl>>);
+        ) as _i3.Future<List<_i9.SharedLinkWithUrl>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

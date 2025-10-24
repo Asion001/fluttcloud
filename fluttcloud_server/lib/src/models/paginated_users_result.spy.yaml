@@ -1,0 +1,9 @@
+class: PaginatedUsersResult
+fields:
+  users: List<UserInfoWithFolders>
+  totalCount: int
+  pageSize: int
+  currentPage: int
+  totalPages: int
+  hasNextPage: bool
+  hasPreviousPage: bool

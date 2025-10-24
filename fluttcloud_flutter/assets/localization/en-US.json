@@ -104,5 +104,34 @@
     "copy_description": "Enter destination path for '{}'",
     "actions": "File Actions",
     "destination": "Destination"
+  },
+  "user_management": {
+    "title": "User Management",
+    "users": "Users",
+    "create_user": "Create User",
+    "edit_user": "Edit User",
+    "delete_user_confirm": "Delete user '{}'?",
+    "user_deleted": "User deleted",
+    "user_created": "User created",
+    "user_updated": "User updated",
+    "email": "Email",
+    "username": "Username",
+    "full_name": "Full Name",
+    "is_admin": "Administrator",
+    "folder_access": "Folder Access",
+    "add_folder": "Add Folder",
+    "email_required": "Email is required",
+    "username_required": "Username is required",
+    "invalid_email": "Invalid email",
+    "folder_path": "Folder Path",
+    "folder_path_hint": "/folder1",
+    "no_folder_access": "No folder access assigned",
+    "no_users": "No users found",
+    "admin_badge": "Admin",
+    "folders": {
+      "one": "{} folder",
+      "other": "{} folders"
+    },
+    "all_folders": "All folders (Admin)"
   }
 }

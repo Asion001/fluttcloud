@@ -29,6 +29,11 @@ class AppRouter extends RootStackRouter {
         path: '/share-links',
         guards: _privateGuards,
       ),
+      AutoRoute(
+        page: UserManagementRoute.page,
+        path: '/user-management',
+        guards: _privateGuards,
+      ),
       AutoRoute(page: LoginRoute.page, path: '/login'),
       AutoRoute(page: ServerPickerRoute.page, path: '/server-config'),
     ];

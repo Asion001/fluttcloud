@@ -1,0 +1,8 @@
+class: UserInfoWithFolders
+fields:
+  userId: int
+  userName: String?
+  email: String
+  fullName: String?
+  isAdmin: bool
+  folderPaths: List<String>

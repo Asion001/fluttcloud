@@ -48,6 +48,12 @@ class MyService {
 
 **Flutter State** managed with ChangeNotifier controllers, not BLoC or Riverpod.
 
+**UI Architecture Rules:**
+
+- **NO ScaffoldMessenger**: Always use `await ToastController.I.show(message, type: ToastType.error/success/info)` instead of ScaffoldMessenger.of(context).showSnackBar
+- **NO Direct API Calls in UI**: Never use `Serverpod.I.client.*` in UI components. Create dedicated controllers with injectable pattern and use them instead
+- **Controller Pattern**: UI widgets should only call controller methods, controllers handle all business logic and API calls
+
 ## Essential Development Workflows
 
 **Data Models - ALWAYS use YAML:**
@@ -55,6 +61,7 @@ class MyService {
 - Create/modify models in `fluttcloud_server/lib/src/models/*.spy.yaml`
 - Use Serverpod YAML syntax: `class:`, `enum:`, `fields:`, `values:`
 - Example: `fs_entry.spy.yaml` defines FsEntry with typed fields
+- **User IDs**: Always use `int, relation(parent=serverpod_user_info, onDelete=Cascade)` for user ID fields
 
 **Code Generation (crucial):**
 
