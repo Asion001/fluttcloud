@@ -10,6 +10,7 @@ class ProfileScreen extends StatelessWidget {
     final sessionManager = Serverpod.I.sessionManager;
     final user = sessionManager.signedInUser;
     final image = user?.imageUrl;
+    final isAdmin = user?.scopes?.contains('admin') ?? false;
 
     return MaxSizeContainer(
       child: Scaffold(
@@ -40,6 +41,12 @@ class ProfileScreen extends StatelessWidget {
               ),
               Text(user?.email ?? '-'),
               const SizedBox(height: 16),
+              if (isAdmin)
+                FilledButton.icon(
+                  onPressed: () => context.router.pushPath('/user-management'),
+                  icon: const Icon(Icons.admin_panel_settings),
+                  label: Text(LocaleKeys.user_management_title.tr()),
+                ),
               FilledButton.icon(
                 onPressed: () => context.router.pushPath('/share-links'),
                 icon: const Icon(Icons.link),
