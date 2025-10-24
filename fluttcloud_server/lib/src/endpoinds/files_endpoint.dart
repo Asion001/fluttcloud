@@ -200,27 +200,33 @@ class FilesEndpoint extends Endpoint {
       return;
     }
 
-    // Get user's allowed folders
-    final folderAccesses = await UserFolderAccess.db.find(
-      session,
-      where: (t) => t.userId.equals(auth!.userId),
-    );
-
-    // If user has no folder access, deny access
-    if (folderAccesses.isEmpty) {
-      throw const UnAuthorizedException();
-    }
-
-    // If serverPath is provided, check if it's in an allowed folder
     if (serverPath != null) {
       final normalizedPath =
           serverPath.startsWith('/') ? serverPath : '/$serverPath';
-      final hasAccess = folderAccesses.any((access) {
-        final folderPath = access.folderPath;
-        return normalizedPath.startsWith(folderPath);
+      
+      // Find folders where normalizedPath starts with folderPath
+      // Using custom expression to check if normalizedPath LIKE folderPath || '%'
+      final folders = await UserFolderAccess.db.find(
+        session,
+        where: (t) => t.userId.equals(auth!.userId),
+      );
+
+      // Check if any folder is a prefix of the normalized path
+      final hasAccess = folders.any((access) {
+        return normalizedPath.startsWith(access!.folderPath);
       });
 
       if (!hasAccess) {
+        throw const UnAuthorizedException();
+      }
+    } else {
+      // If no specific path, just verify user has at least one folder access
+      final accessCount = await UserFolderAccess.db.count(
+        session,
+        where: (t) => t.userId.equals(auth!.userId),
+      );
+
+      if (accessCount == 0) {
         throw const UnAuthorizedException();
       }
     }
