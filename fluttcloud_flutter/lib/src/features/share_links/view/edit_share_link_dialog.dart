@@ -52,6 +52,7 @@ class _EditShareLinkDialogState extends State<EditShareLinkDialog> {
 
   int _selectedExpirationIndex = 0;
   bool _isUpdating = false;
+  late bool _canUpload;
   late final TextEditingController _linkPrefixController;
 
   @override
@@ -59,6 +60,7 @@ class _EditShareLinkDialogState extends State<EditShareLinkDialog> {
     super.initState();
     _linkPrefixController = TextEditingController(text: widget.link.linkPrefix);
     _selectedExpiration = widget.link.deleteAfter;
+    _canUpload = widget.link.canUpload;
 
     // Find the closest matching expiration option
     if (_selectedExpiration != null) {
@@ -163,6 +165,24 @@ class _EditShareLinkDialogState extends State<EditShareLinkDialog> {
                 ),
               ),
             ],
+            const SizedBox(height: 16),
+            CheckboxListTile(
+              value: _canUpload,
+              onChanged: (value) {
+                setState(() {
+                  _canUpload = value ?? false,
+                });
+              },
+              title: Text(
+                LocaleKeys.share_link_allow_upload.tr(),
+                style: context.textTheme.bodyMedium,
+              ),
+              subtitle: Text(
+                LocaleKeys.share_link_allow_upload_description.tr(),
+                style: context.textTheme.bodySmall,
+              ),
+              contentPadding: EdgeInsets.zero,
+            ),
           ],
         ),
       ),
@@ -212,6 +232,7 @@ class _EditShareLinkDialogState extends State<EditShareLinkDialog> {
         serverPath: widget.link.serverPath,
         linkPrefix: linkPrefix,
         deleteAfter: _selectedExpiration,
+        canUpload: _canUpload,
       );
 
       if (mounted) {

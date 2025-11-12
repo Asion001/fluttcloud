@@ -67,7 +67,9 @@
   "share_link": {
     "create_title": "Create Share Link",
     "create_description": "Create a shareable link for '{}'",
-    "create": "Create Link"
+    "create": "Create Link",
+    "allow_upload": "Allow upload",
+    "allow_upload_description": "Allow others to upload files to this folder via the shared link"
   },
   "share_links": {
     "title": "Share Links",

@@ -52,6 +52,7 @@ class _CreateShareLinkDialogState extends State<CreateShareLinkDialog> {
 
   int _selectedExpirationIndex = 0;
   bool _isCreating = false;
+  bool _canUpload = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +116,26 @@ class _CreateShareLinkDialogState extends State<CreateShareLinkDialog> {
                 ),
               ),
             ],
+            if (widget.file.type == FsEntryType.directory) ...[
+              const SizedBox(height: 16),
+              CheckboxListTile(
+                value: _canUpload,
+                onChanged: (value) {
+                  setState(() {
+                    _canUpload = value ?? false;
+                  });
+                },
+                title: Text(
+                  LocaleKeys.share_link_allow_upload.tr(),
+                  style: context.textTheme.bodyMedium,
+                ),
+                subtitle: Text(
+                  LocaleKeys.share_link_allow_upload_description.tr(),
+                  style: context.textTheme.bodySmall,
+                ),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ],
           ],
         ),
       ),
@@ -151,6 +172,7 @@ class _CreateShareLinkDialogState extends State<CreateShareLinkDialog> {
       await getIt<ShareLinksController>().create(
         widget.file,
         deleteAfter: _selectedExpiration,
+        canUpload: _canUpload,
       );
       if (mounted) {
         Navigator.of(context).pop();
