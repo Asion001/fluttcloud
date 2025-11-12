@@ -276,4 +276,48 @@ class FilesEndpoint extends Endpoint {
       contentType: fsContentType,
     );
   }
+
+  /// List files in a publicly shared folder (no authentication required)
+  Stream<FsEntry> listPublic(
+    Session session, {
+    required String linkPrefix,
+    FsEntryType? filterByType,
+  }) async* {
+    // Get the shared link
+    final link = await SharedLink.db.findFirstRow(
+      session,
+      where: (p0) => p0.linkPrefix.equals(linkPrefix),
+    );
+
+    if (link == null) {
+      throw const NotFoundException();
+    }
+
+    // Check if link has expired
+    if (link.deleteAfter != null && link.deleteAfter!.isBefore(DateTime.now())) {
+      throw const NotFoundException();
+    }
+
+    // Check if canUpload is true (meaning it's a folder meant for public access)
+    if (!link.canUpload) {
+      throw const UnAuthorizedException();
+    }
+
+    final directory = Directory([filesDirectoryPath, link.serverPath].join()).absolute;
+    _validatePath(directory);
+
+    // Verify it's a directory
+    if (!directory.existsSync() || directory.statSync().type != FileSystemEntityType.directory) {
+      throw const NotFoundException();
+    }
+
+    final stream = directory.list(followLinks: false);
+
+    await for (final entity in stream) {
+      final fsEntry = _convertToFsEntry(session, entity, directory);
+      if (filterByType == null || fsEntry.type == filterByType) {
+        yield fsEntry;
+      }
+    }
+  }
 }

@@ -128,4 +128,21 @@ class LinksEndpoint extends Endpoint {
     if (auth == null) throw const UnAuthorizedException();
     return auth;
   }
+
+  /// Get public link information (no authentication required)
+  Future<SharedLink?> getPublicLinkInfo(Session session, String linkPrefix) async {
+    final link = await SharedLink.db.findFirstRow(
+      session,
+      where: (p0) => p0.linkPrefix.equals(linkPrefix),
+    );
+
+    // Check if link exists and hasn't expired
+    if (link != null &&
+        link.deleteAfter != null &&
+        link.deleteAfter!.isBefore(DateTime.now())) {
+      return null; // Link expired
+    }
+
+    return link;
+  }
 }
