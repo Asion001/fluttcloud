@@ -86,6 +86,25 @@ class _PublicSharedFolderScreenState extends State<PublicSharedFolderScreen> {
     );
   }
 
+  void Function()? _getOnTapFunc(BuildContext context, FsEntry file) {
+    // For public folders, we can only show a message since we don't have full navigation
+    return switch (file.type) {
+      FsEntryType.directory => () {
+          ToastController.I.show(
+            'Directory navigation not supported in public view',
+            type: ToastType.info,
+          );
+        },
+      FsEntryType.file => () {
+          ToastController.I.show(
+            'File preview not available in public view',
+            type: ToastType.info,
+          );
+        },
+      FsEntryType.symlink => null,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +150,7 @@ class _PublicSharedFolderScreenState extends State<PublicSharedFolderScreen> {
                               size: 64, color: Colors.grey),
                           const SizedBox(height: 16),
                           Text(
-                            'No files in this folder',
+                            LocaleKeys.file_upload_no_files_in_folder.tr(),
                             style: context.textTheme.bodyLarge?.copyWith(
                               color: Colors.grey,
                             ),
@@ -144,23 +163,11 @@ class _PublicSharedFolderScreenState extends State<PublicSharedFolderScreen> {
                       itemCount: _files.length,
                       itemBuilder: (context, index) {
                         final file = _files[index];
-                        return Card(
-                          child: ListTile(
-                            leading: Icon(
-                              file.type == FsEntryType.directory
-                                  ? Icons.folder
-                                  : Icons.insert_drive_file,
-                            ),
-                            title: Text(file.name),
-                            subtitle: file.type == FsEntryType.file
-                                ? Text('${(file.size / 1024).toStringAsFixed(2)} KB')
-                                : null,
-                            trailing: Text(
-                              file.updatedAt.toLocal().toString().split('.').first,
-                              style: context.textTheme.bodySmall,
-                            ),
-                          ),
-                        );
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: _getOnTapFunc(context, file),
+                          child: FileTile(file: file),
+                        ).paddingSymmetric(horizontal: 8, vertical: 2);
                       },
                     ),
     );

@@ -144,6 +144,7 @@
     "select_files": "Select Files",
     "select_folder": "Select Folder",
     "no_files_selected": "No files selected",
+    "no_files_in_folder": "No files in this folder",
     "upload_complete": "Upload complete",
     "upload_failed": "Upload failed",
     "upload_cancelled": "Upload cancelled",
