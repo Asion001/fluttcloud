@@ -1,7 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:fluttcloud_server/common_imports.dart';
 import 'package:fluttcloud_server/src/core/env.dart';
+import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 import 'package:serverpod/serverpod.dart';
@@ -96,12 +97,14 @@ class FileUploadRoute extends Route {
       // Return success response
       request.response.statusCode = HttpStatus.ok;
       request.response.headers.contentType = ContentType.json;
+      
+      final response = {
+        'success': true,
+        'filePath': path.join(destinationPath, fileName),
+        'fileName': fileName,
+      };
       request.response.write(
-        jsonEncode({
-          'success': true,
-          'filePath': path.join(destinationPath, fileName),
-          'fileName': fileName,
-        }),
+        session.serializationManager.encodeWithType(response),
       );
 
       return true;
@@ -130,13 +133,23 @@ class FileUploadRoute extends Route {
     }
 
     // For non-admin users, check folder access
-    // This is a simplified check - you may want to implement more robust access control
     final normalizedPath = serverPath.startsWith('/')
         ? serverPath
         : '/$serverPath';
 
-    // Check if user has access to this path
-    // You can implement proper folder access checks here
-    // For now, we'll allow uploads to any folder for authenticated users
+    // Find folders where normalizedPath starts with folderPath
+    // Using custom expression to check if normalizedPath LIKE folderPath || '%'
+    final folder = await UserFolderAccess.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.userId.equals(auth.userId) & t.folderPath.like('$normalizedPath%'),
+    );
+
+    // Check if any folder is a prefix of the normalized path
+    final hasAccess =
+        folder != null && normalizedPath.startsWith(folder.folderPath);
+    if (!hasAccess) {
+      throw const UnAuthorizedException();
+    }
   }
 }

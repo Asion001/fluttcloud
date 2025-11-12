@@ -53,7 +53,7 @@ class FilesBar extends WatchingWidget {
             label: Text('$activeUploadCount'),
             child: IconButton(
               icon: const Icon(Icons.upload),
-              onPressed: () => UploadProgressDialog.show(context),
+              onPressed: () => const UploadProgressDialog().show(context),
               tooltip: LocaleKeys.file_upload_view_progress.tr(),
             ),
           ),

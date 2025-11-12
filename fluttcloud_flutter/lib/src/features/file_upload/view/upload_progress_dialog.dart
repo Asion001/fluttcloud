@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 class UploadProgressDialog extends StatelessWidget {
   const UploadProgressDialog({super.key});
 
-  static Future<void> show(BuildContext context) {
+  Future<void> show(BuildContext context) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const UploadProgressDialog(),
+      builder: (_) => this,
     );
   }
 
