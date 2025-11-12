@@ -1,4 +1,6 @@
 import 'package:fluttcloud_flutter/common_imports.dart';
+import 'package:fluttcloud_flutter/src/features/file_upload/controllers/file_upload_controller.dart';
+import 'package:fluttcloud_flutter/src/features/file_upload/view/upload_progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,10 +10,13 @@ class FilesBar extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final controller = watchIt<FileListController>();
+    final uploadController = watchIt<FileUploadController>();
     final currentPath = controller.currentPath;
     final fetchFiles = controller.fetchFiles;
     final fileCount = controller.files.length;
     final backBtnVisible = currentPath != '/';
+    final hasActiveUploads = uploadController.hasActiveUploads;
+    final activeUploadCount = uploadController.activeUploadCount;
 
     return Row(
       children: [
@@ -36,6 +41,22 @@ class FilesBar extends WatchingWidget {
           icon: const Icon(Icons.refresh),
           onPressed: () => fetchFiles(useCache: false),
         ),
+        IconButton(
+          icon: const Icon(Icons.upload_file),
+          onPressed: () async {
+            await FileUploadController.I.pickAndUploadFiles(currentPath);
+          },
+          tooltip: LocaleKeys.file_upload_upload.tr(),
+        ),
+        if (hasActiveUploads)
+          Badge(
+            label: Text('$activeUploadCount'),
+            child: IconButton(
+              icon: const Icon(Icons.upload),
+              onPressed: () => UploadProgressDialog.show(context),
+              tooltip: LocaleKeys.file_upload_view_progress.tr(),
+            ),
+          ),
         TextButton(
           onPressed: () {
             Clipboard.setData(ClipboardData(text: currentPath));

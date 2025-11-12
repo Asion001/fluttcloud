@@ -4,6 +4,7 @@ import 'package:fluttcloud_server/src/future_calls/future_calls_list.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/web/file_server.dart';
+import 'package:fluttcloud_server/src/web/file_upload_route.dart';
 import 'package:fluttcloud_server/src/web/static_server.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
@@ -37,6 +38,7 @@ Future<void> run(List<String> args) async {
     PublicShareFileServer(urlPrefix: publicShareLinkPrefix),
     '$publicShareLinkPrefix/*',
   );
+  pod.webServer.addRoute(FileUploadRoute(), '/upload');
   pod.webServer.addRoute(routeStaticDirectory, '/*');
 
   // Register all future calls names
