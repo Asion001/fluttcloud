@@ -1,0 +1,5 @@
+class: UploadResult
+fields:
+  success: bool
+  filePath: String
+  fileName: String

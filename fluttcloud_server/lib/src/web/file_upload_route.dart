@@ -98,11 +98,11 @@ class FileUploadRoute extends Route {
       request.response.statusCode = HttpStatus.ok;
       request.response.headers.contentType = ContentType.json;
       
-      final response = {
-        'success': true,
-        'filePath': path.join(destinationPath, fileName),
-        'fileName': fileName,
-      };
+      final response = UploadResult(
+        success: true,
+        filePath: path.join(destinationPath, fileName),
+        fileName: fileName,
+      );
       request.response.write(
         session.serializationManager.encodeWithType(response),
       );
