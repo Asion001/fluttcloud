@@ -33,12 +33,17 @@
     "url_invalid": "Please enter a valid server URL."
   },
   "download": "Download",
+  "fullscreen": "Fullscreen",
+  "exit_fullscreen": "Exit Fullscreen",
   "file_type_not_supported": "File type not supported for preview",
   "modified": "Modified",
   "created": "Created",
   "size": "Size",
   "downloading": "Downloading",
   "file": "File",
+  "path": "Path",
+  "type": "Type",
+  "content_type": "Content Type",
   "download_finished": "Download finished",
   "items": {
     "one": "{} item",
@@ -151,6 +156,11 @@
     "cancel_upload": "Cancel Upload",
     "files_uploaded": "{} files uploaded successfully",
     "upload_in_progress": "Upload in progress...",
-    "view_progress": "View Progress"
-  }
+    "view_progress": "View Progress",
+    "upload_not_allowed": "This link does not allow uploads",
+    "no_file_data_available": "No file data available",
+    "upload_failed_server_side": "Upload failed on server side",
+    "clear": "Clear uploads"
+  },
+  "something_went_wrong": "Something went wrong"
 }

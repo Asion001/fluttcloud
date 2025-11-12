@@ -31,10 +31,8 @@ class UploadProgressDialog extends StatelessWidget {
           spacing: 16,
           children: [
             OutlinedButton(
-              onPressed: () {
-                FileUploadController.I.clearCompletedUploads();
-              },
-              child: Text(LocaleKeys.file_actions_delete.tr()),
+              onPressed: FileUploadController.I.clearCompletedUploads,
+              child: Text(LocaleKeys.file_upload_clear.tr()),
             ).expand(),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -138,7 +136,7 @@ class _UploadTaskTile extends StatelessWidget {
               Text(
                 task.error ?? LocaleKeys.file_upload_upload_failed.tr(),
                 style: context.textTheme.bodySmall?.copyWith(
-                  color: context.colorScheme.error,
+                  color: context.theme.colorScheme.error,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -184,7 +182,11 @@ class _StatusIcon extends StatelessWidget {
       case UploadStatus.completed:
         return const Icon(Icons.check_circle, size: 20, color: Colors.green);
       case UploadStatus.failed:
-        return Icon(Icons.error, size: 20, color: context.colorScheme.error);
+        return Icon(
+          Icons.error,
+          size: 20,
+          color: context.theme.colorScheme.error,
+        );
       case UploadStatus.cancelled:
         return const Icon(Icons.cancel, size: 20, color: Colors.orange);
     }

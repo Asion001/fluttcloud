@@ -19,8 +19,9 @@ import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i5;
 import 'package:fluttcloud_client/src/protocol/fs_entry_type.dart' as _i6;
 import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
     as _i7;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
-import 'protocol.dart' as _i9;
+import 'package:fluttcloud_client/src/protocol/shared_link.dart' as _i8;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
+import 'protocol.dart' as _i10;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -141,6 +142,12 @@ class EndpointFiles extends _i1.EndpointRef {
         {'serverFilePath': serverFilePath},
       );
 
+  _i2.Future<Uri> getUploadUrl() => caller.callServerEndpoint<Uri>(
+        'files',
+        'getUploadUrl',
+        {},
+      );
+
   _i2.Future<void> deleteFile(String serverFilePath) =>
       caller.callServerEndpoint<void>(
         'files',
@@ -186,6 +193,23 @@ class EndpointFiles extends _i1.EndpointRef {
           'destinationServerPath': destinationServerPath,
         },
       );
+
+  /// List files in a publicly shared folder (no authentication required)
+  _i2.Stream<_i5.FsEntry> listPublic({
+    required String linkPrefix,
+    String? subPath,
+    _i6.FsEntryType? filterByType,
+  }) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i5.FsEntry>, _i5.FsEntry>(
+        'files',
+        'listPublic',
+        {
+          'linkPrefix': linkPrefix,
+          'subPath': subPath,
+          'filterByType': filterByType,
+        },
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -199,7 +223,7 @@ class EndpointLinks extends _i1.EndpointRef {
   _i2.Future<String> create({
     required String serverPath,
     DateTime? deleteAfter,
-    bool canUpload = false,
+    required bool canUpload,
   }) =>
       caller.callServerEndpoint<String>(
         'links',
@@ -242,6 +266,14 @@ class EndpointLinks extends _i1.EndpointRef {
         'delete',
         {'linkId': linkId},
       );
+
+  /// Get public link information (no authentication required)
+  _i2.Future<_i8.SharedLink?> getPublicLinkInfo(String linkPrefix) =>
+      caller.callServerEndpoint<_i8.SharedLink?>(
+        'links',
+        'getPublicLinkInfo',
+        {'linkPrefix': linkPrefix},
+      );
 }
 
 /// {@category Endpoint}
@@ -261,10 +293,10 @@ class EndpointUser extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i8.Caller(client);
+    auth = _i9.Caller(client);
   }
 
-  late final _i8.Caller auth;
+  late final _i9.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -283,7 +315,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i9.Protocol(),
+          _i10.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

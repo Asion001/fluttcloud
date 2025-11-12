@@ -1,6 +1,4 @@
 import 'package:fluttcloud_flutter/common_imports.dart';
-import 'package:fluttcloud_flutter/src/features/file_upload/controllers/file_upload_controller.dart';
-import 'package:fluttcloud_flutter/src/features/file_upload/view/upload_progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

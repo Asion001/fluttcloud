@@ -1,0 +1,24 @@
+admin:
+  - listUsers:
+  - createUser:
+  - updateUser:
+  - initiatePasswordReset:
+  - deleteUser:
+  - getAllowedFolders:
+files:
+  - list:
+  - getPrivateUri:
+  - getUploadUrl:
+  - deleteFile:
+  - copyFile:
+  - renameFile:
+  - moveFile:
+  - listPublic:
+links:
+  - create:
+  - list:
+  - update:
+  - delete:
+  - getPublicLinkInfo:
+user:
+  - deleteMyUserProfile:

@@ -130,7 +130,10 @@ class LinksEndpoint extends Endpoint {
   }
 
   /// Get public link information (no authentication required)
-  Future<SharedLink?> getPublicLinkInfo(Session session, String linkPrefix) async {
+  Future<SharedLink?> getPublicLinkInfo(
+    Session session,
+    String linkPrefix,
+  ) async {
     final link = await SharedLink.db.findFirstRow(
       session,
       where: (p0) => p0.linkPrefix.equals(linkPrefix),

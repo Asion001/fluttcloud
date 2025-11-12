@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const flutcloud = 'flutcloud';
   static const duration_h = 'duration.h';
   static const duration_m = 'duration.m';
@@ -27,29 +27,29 @@ abstract class LocaleKeys {
   static const profile_screen_delete_account = 'profile_screen.delete_account';
   static const profile_screen = 'profile_screen';
   static const server_picker_screen_title = 'server_picker_screen.title';
-  static const server_picker_screen_description =
-      'server_picker_screen.description';
-  static const server_picker_screen_server_url =
-      'server_picker_screen.server_url';
-  static const server_picker_screen_url_saved =
-      'server_picker_screen.url_saved';
-  static const server_picker_screen_url_invalid =
-      'server_picker_screen.url_invalid';
+  static const server_picker_screen_description = 'server_picker_screen.description';
+  static const server_picker_screen_server_url = 'server_picker_screen.server_url';
+  static const server_picker_screen_url_saved = 'server_picker_screen.url_saved';
+  static const server_picker_screen_url_invalid = 'server_picker_screen.url_invalid';
   static const server_picker_screen = 'server_picker_screen';
   static const download = 'download';
+  static const fullscreen = 'fullscreen';
+  static const exit_fullscreen = 'exit_fullscreen';
   static const file_type_not_supported = 'file_type_not_supported';
   static const modified = 'modified';
   static const created = 'created';
   static const size = 'size';
   static const downloading = 'downloading';
   static const file = 'file';
+  static const path = 'path';
+  static const type = 'type';
+  static const content_type = 'content_type';
   static const download_finished = 'download_finished';
   static const items = 'items';
   static const copied_to_clipboard = 'copied_to_clipboard';
   static const retry = 'retry';
   static const link_sharing_created = 'link_sharing.created';
-  static const link_sharing_create_share_link =
-      'link_sharing.create_share_link';
+  static const link_sharing_create_share_link = 'link_sharing.create_share_link';
   static const link_sharing = 'link_sharing';
   static const expiration_expiration = 'expiration.expiration';
   static const expiration_never = 'expiration.never';
@@ -61,6 +61,8 @@ abstract class LocaleKeys {
   static const share_link_create_title = 'share_link.create_title';
   static const share_link_create_description = 'share_link.create_description';
   static const share_link_create = 'share_link.create';
+  static const share_link_allow_upload = 'share_link.allow_upload';
+  static const share_link_allow_upload_description = 'share_link.allow_upload_description';
   static const share_link = 'share_link';
   static const share_links_title = 'share_links.title';
   static const share_links_empty_title = 'share_links.empty_title';
@@ -84,8 +86,7 @@ abstract class LocaleKeys {
   static const file_actions_moved = 'file_actions.moved';
   static const file_actions_copied = 'file_actions.copied';
   static const file_actions_rename_title = 'file_actions.rename_title';
-  static const file_actions_rename_description =
-      'file_actions.rename_description';
+  static const file_actions_rename_description = 'file_actions.rename_description';
   static const file_actions_new_name = 'file_actions.new_name';
   static const file_actions_name_required = 'file_actions.name_required';
   static const file_actions_move_title = 'file_actions.move_title';
@@ -101,8 +102,7 @@ abstract class LocaleKeys {
   static const user_management_users = 'user_management.users';
   static const user_management_create_user = 'user_management.create_user';
   static const user_management_edit_user = 'user_management.edit_user';
-  static const user_management_delete_user_confirm =
-      'user_management.delete_user_confirm';
+  static const user_management_delete_user_confirm = 'user_management.delete_user_confirm';
   static const user_management_user_deleted = 'user_management.user_deleted';
   static const user_management_user_created = 'user_management.user_created';
   static const user_management_user_updated = 'user_management.user_updated';
@@ -112,19 +112,37 @@ abstract class LocaleKeys {
   static const user_management_is_admin = 'user_management.is_admin';
   static const user_management_folder_access = 'user_management.folder_access';
   static const user_management_add_folder = 'user_management.add_folder';
-  static const user_management_email_required =
-      'user_management.email_required';
-  static const user_management_username_required =
-      'user_management.username_required';
+  static const user_management_email_required = 'user_management.email_required';
+  static const user_management_username_required = 'user_management.username_required';
   static const user_management_invalid_email = 'user_management.invalid_email';
   static const user_management_folder_path = 'user_management.folder_path';
-  static const user_management_folder_path_hint =
-      'user_management.folder_path_hint';
-  static const user_management_no_folder_access =
-      'user_management.no_folder_access';
+  static const user_management_folder_path_hint = 'user_management.folder_path_hint';
+  static const user_management_no_folder_access = 'user_management.no_folder_access';
   static const user_management_no_users = 'user_management.no_users';
   static const user_management_admin_badge = 'user_management.admin_badge';
   static const user_management_folders = 'user_management.folders';
   static const user_management_all_folders = 'user_management.all_folders';
   static const user_management = 'user_management';
+  static const file_upload_title = 'file_upload.title';
+  static const file_upload_upload = 'file_upload.upload';
+  static const file_upload_uploading = 'file_upload.uploading';
+  static const file_upload_upload_progress = 'file_upload.upload_progress';
+  static const file_upload_select_files = 'file_upload.select_files';
+  static const file_upload_select_folder = 'file_upload.select_folder';
+  static const file_upload_no_files_selected = 'file_upload.no_files_selected';
+  static const file_upload_no_files_in_folder = 'file_upload.no_files_in_folder';
+  static const file_upload_upload_complete = 'file_upload.upload_complete';
+  static const file_upload_upload_failed = 'file_upload.upload_failed';
+  static const file_upload_upload_cancelled = 'file_upload.upload_cancelled';
+  static const file_upload_cancel_upload = 'file_upload.cancel_upload';
+  static const file_upload_files_uploaded = 'file_upload.files_uploaded';
+  static const file_upload_upload_in_progress = 'file_upload.upload_in_progress';
+  static const file_upload_view_progress = 'file_upload.view_progress';
+  static const file_upload_upload_not_allowed = 'file_upload.upload_not_allowed';
+  static const file_upload_no_file_data_available = 'file_upload.no_file_data_available';
+  static const file_upload_upload_failed_server_side = 'file_upload.upload_failed_server_side';
+  static const file_upload_clear = 'file_upload.clear';
+  static const file_upload = 'file_upload';
+  static const something_went_wrong = 'something_went_wrong';
+
 }

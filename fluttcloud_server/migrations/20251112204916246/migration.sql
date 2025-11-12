@@ -4,15 +4,14 @@ BEGIN;
 -- ACTION ALTER TABLE
 --
 ALTER TABLE "shared_link" ADD COLUMN "canUpload" boolean NOT NULL DEFAULT false;
-ALTER TABLE "shared_link" ALTER COLUMN "canUpload" DROP DEFAULT;
 
 --
 -- MIGRATION VERSION FOR fluttcloud
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('fluttcloud', '20251112134929406', now())
+    VALUES ('fluttcloud', '20251112204916246', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20251112134929406', "timestamp" = now();
+    DO UPDATE SET "version" = '20251112204916246', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

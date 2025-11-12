@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fluttcloud_server/common_imports.dart';
@@ -45,14 +46,14 @@ class FileUploadRoute extends Route {
       String? destinationPath;
       String? fileName;
       List<int>? fileData;
-
       // Parse the multipart data
-      await for (final part
-          in request.cast<List<int>>().transform(MimeMultipartTransformer(boundary))) {
+      await for (final part in request.cast<List<int>>().transform(
+        MimeMultipartTransformer(boundary),
+      )) {
         final contentDisposition = part.headers['content-disposition'];
         if (contentDisposition == null) continue;
 
-        final match = RegExp(r'name="([^"]+)"').firstMatch(contentDisposition);
+        final match = RegExp('name="([^"]+)"').firstMatch(contentDisposition);
         if (match == null) continue;
 
         final fieldName = match.group(1);
@@ -62,8 +63,9 @@ class FileUploadRoute extends Route {
         if (fieldName == 'destinationPath') {
           destinationPath = utf8.decode(content);
         } else if (fieldName == 'file') {
-          final fileMatch =
-              RegExp(r'filename="([^"]+)"').firstMatch(contentDisposition);
+          final fileMatch = RegExp(
+            'filename="([^"]+)"',
+          ).firstMatch(contentDisposition);
           if (fileMatch != null) {
             fileName = fileMatch.group(1);
             fileData = content;
@@ -83,29 +85,27 @@ class FileUploadRoute extends Route {
       await _validateAccess(session, destinationPath, auth);
 
       // Create the destination directory if it doesn't exist
-      final fullDestPath = path.join(filesDirectoryPath, destinationPath);
+      final fullDestPath = path.joinAll([filesDirectoryPath, destinationPath]);
       final destDir = Directory(fullDestPath);
-      if (!await destDir.exists()) {
+      if (!destDir.existsSync()) {
         await destDir.create(recursive: true);
       }
 
       // Save the file
-      final filePath = path.join(fullDestPath, fileName);
+      final filePath = path.joinAll([fullDestPath, fileName]);
       final file = File(filePath);
       await file.writeAsBytes(fileData);
 
       // Return success response
       request.response.statusCode = HttpStatus.ok;
       request.response.headers.contentType = ContentType.json;
-      
+
       final response = UploadResult(
         success: true,
         filePath: path.join(destinationPath, fileName),
         fileName: fileName,
       );
-      request.response.write(
-        session.serializationManager.encodeWithType(response),
-      );
+      request.response.write(jsonEncode(response.toJson()));
 
       return true;
     } catch (e, stackTrace) {

@@ -46,6 +46,13 @@ class FilesEndpoint extends Endpoint {
     return hostUri.replace(path: [privateShareLinkPrefix, file.path].join());
   }
 
+  Future<Uri> getUploadUrl(Session session) async {
+    await _validateAccess(session, '/');
+
+    final webServerUri = _getWebServerUri(session);
+    return webServerUri.replace(path: '${webServerUri.path}$uploadLinkPrefix');
+  }
+
   Future<void> deleteFile(Session session, String serverFilePath) async {
     await _validateAccess(session, serverFilePath);
 
@@ -251,11 +258,7 @@ class FilesEndpoint extends Endpoint {
       orElse: () => FsEntryContentType.binary,
     );
 
-    final webServerUri = Uri(
-      scheme: session.serverpod.config.webServer?.publicScheme,
-      host: session.serverpod.config.webServer?.publicHost,
-      port: session.serverpod.config.webServer?.publicPort,
-    );
+    final webServerUri = _getWebServerUri(session);
     final privateSharePath = [privateShareLinkPrefix, serverFullpath].join();
     final privateShareUrl = webServerUri
         .replace(
@@ -277,10 +280,19 @@ class FilesEndpoint extends Endpoint {
     );
   }
 
+  Uri _getWebServerUri(Session session) {
+    return Uri(
+      scheme: session.serverpod.config.webServer?.publicScheme,
+      host: session.serverpod.config.webServer?.publicHost,
+      port: session.serverpod.config.webServer?.publicPort,
+    );
+  }
+
   /// List files in a publicly shared folder (no authentication required)
   Stream<FsEntry> listPublic(
     Session session, {
     required String linkPrefix,
+    String? subPath,
     FsEntryType? filterByType,
   }) async* {
     // Get the shared link
@@ -294,20 +306,30 @@ class FilesEndpoint extends Endpoint {
     }
 
     // Check if link has expired
-    if (link.deleteAfter != null && link.deleteAfter!.isBefore(DateTime.now())) {
+    if (link.deleteAfter != null &&
+        link.deleteAfter!.isBefore(DateTime.now())) {
       throw const NotFoundException();
     }
 
-    // Check if canUpload is true (meaning it's a folder meant for public access)
+    // Check if canUpload is true
+    // (meaning it's a folder meant for public access)
     if (!link.canUpload) {
       throw const UnAuthorizedException();
     }
 
-    final directory = Directory([filesDirectoryPath, link.serverPath].join()).absolute;
+    // Build the directory path with optional subPath
+    final directoryPath = [
+      filesDirectoryPath,
+      link.serverPath,
+      if (subPath != null && subPath.isNotEmpty) subPath,
+    ].join();
+
+    final directory = Directory(directoryPath).absolute;
     _validatePath(directory);
 
     // Verify it's a directory
-    if (!directory.existsSync() || directory.statSync().type != FileSystemEntityType.directory) {
+    if (!directory.existsSync() ||
+        directory.statSync().type != FileSystemEntityType.directory) {
       throw const NotFoundException();
     }
 

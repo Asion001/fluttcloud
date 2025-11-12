@@ -41,7 +41,7 @@ abstract class SharedLink
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['deleteAfter']),
-      canUpload: jsonSerialization['canUpload'] as bool? ?? false,
+      canUpload: jsonSerialization['canUpload'] as bool,
     );
   }
 
@@ -198,6 +198,7 @@ class SharedLinkTable extends _i1.Table<int?> {
     canUpload = _i1.ColumnBool(
       'canUpload',
       this,
+      hasDefault: true,
     );
   }
 

@@ -40,7 +40,7 @@ abstract class SharedLink implements _i1.SerializableModel {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['deleteAfter']),
-      canUpload: jsonSerialization['canUpload'] as bool? ?? false,
+      canUpload: jsonSerialization['canUpload'] as bool,
     );
   }
 
