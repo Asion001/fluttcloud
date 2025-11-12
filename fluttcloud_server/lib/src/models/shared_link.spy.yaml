@@ -13,6 +13,9 @@ fields:
   ### If set - link will be delete after this date
   deleteAfter: DateTime?
 
+  ### If true - allows uploading files to the shared folder
+  canUpload: bool, !default
+
 indexes:
   shared_link_created_by_idx:
     fields: createdBy

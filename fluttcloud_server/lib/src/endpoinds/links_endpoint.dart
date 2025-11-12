@@ -12,6 +12,7 @@ class LinksEndpoint extends Endpoint {
     Session session, {
     required String serverPath,
     DateTime? deleteAfter,
+    bool canUpload = false,
   }) async {
     final auth = await _validateAccess(session);
 
@@ -24,6 +25,7 @@ class LinksEndpoint extends Endpoint {
         serverPath: serverPath,
         linkPrefix: linkPrefix,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       ),
     );
 
@@ -59,6 +61,7 @@ class LinksEndpoint extends Endpoint {
     required String serverPath,
     required DateTime? deleteAfter,
     required String? linkPrefix,
+    required bool canUpload,
   }) async {
     final auth = await _validateAccess(session);
 
@@ -79,6 +82,7 @@ class LinksEndpoint extends Endpoint {
         serverPath: serverPath,
         linkPrefix: linkPrefix ?? link.linkPrefix,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       ),
     );
   }
