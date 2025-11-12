@@ -30,6 +30,7 @@ export 'src/core/utils/extensions.dart';
 export 'src/core/utils/utils.dart';
 export 'src/features/file_download/controllers/file_download_controller.dart';
 export 'src/features/file_upload/controllers/file_upload_controller.dart';
+export 'src/features/file_upload/view/public_shared_folder_screen.dart';
 export 'src/features/file_upload/view/upload_progress_dialog.dart';
 export 'src/features/file_list/controllers/file_list_controller.dart';
 export 'src/features/file_list/view/file_list.dart';
