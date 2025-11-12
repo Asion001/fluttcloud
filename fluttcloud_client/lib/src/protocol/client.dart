@@ -10,7 +10,262 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'protocol.dart' as _i2;
+import 'dart:async' as _i2;
+import 'package:fluttcloud_client/src/protocol/paginated_users_result.dart'
+    as _i3;
+import 'package:fluttcloud_client/src/protocol/user_info_with_folders.dart'
+    as _i4;
+import 'package:fluttcloud_client/src/protocol/fs_entry.dart' as _i5;
+import 'package:fluttcloud_client/src/protocol/fs_entry_type.dart' as _i6;
+import 'package:fluttcloud_client/src/protocol/shared_link_with_url.dart'
+    as _i7;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
+import 'protocol.dart' as _i9;
+
+/// {@category Endpoint}
+class EndpointAdmin extends _i1.EndpointRef {
+  EndpointAdmin(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'admin';
+
+  /// Lists all users with their folder access permissions with pagination
+  /// Admin only
+  _i2.Future<_i3.PaginatedUsersResult> listUsers({
+    required int page,
+    required int pageSize,
+  }) =>
+      caller.callServerEndpoint<_i3.PaginatedUsersResult>(
+        'admin',
+        'listUsers',
+        {
+          'page': page,
+          'pageSize': pageSize,
+        },
+      );
+
+  /// Creates a new user with email and password
+  /// Admin only
+  _i2.Future<_i4.UserInfoWithFolders> createUser({
+    required String email,
+    required String userName,
+    required bool isAdmin,
+    String? fullName,
+    required List<String> folderPaths,
+  }) =>
+      caller.callServerEndpoint<_i4.UserInfoWithFolders>(
+        'admin',
+        'createUser',
+        {
+          'email': email,
+          'userName': userName,
+          'isAdmin': isAdmin,
+          'fullName': fullName,
+          'folderPaths': folderPaths,
+        },
+      );
+
+  /// Updates user information
+  /// Admin only
+  _i2.Future<_i4.UserInfoWithFolders> updateUser({
+    required int userId,
+    String? userName,
+    String? fullName,
+    bool? isAdmin,
+    List<String>? folderPaths,
+  }) =>
+      caller.callServerEndpoint<_i4.UserInfoWithFolders>(
+        'admin',
+        'updateUser',
+        {
+          'userId': userId,
+          'userName': userName,
+          'fullName': fullName,
+          'isAdmin': isAdmin,
+          'folderPaths': folderPaths,
+        },
+      );
+
+  /// Initiates password reset for user
+  /// Admin only - sends validation email to user
+  _i2.Future<void> initiatePasswordReset({required int userId}) =>
+      caller.callServerEndpoint<void>(
+        'admin',
+        'initiatePasswordReset',
+        {'userId': userId},
+      );
+
+  /// Deletes a user (admin only, cannot delete self)
+  _i2.Future<void> deleteUser(int userId) => caller.callServerEndpoint<void>(
+        'admin',
+        'deleteUser',
+        {'userId': userId},
+      );
+
+  /// Gets allowed folder paths for the current user
+  /// Returns all paths if user is admin, otherwise returns
+  /// user's allowed folders
+  _i2.Future<List<String>> getAllowedFolders() =>
+      caller.callServerEndpoint<List<String>>(
+        'admin',
+        'getAllowedFolders',
+        {},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointFiles extends _i1.EndpointRef {
+  EndpointFiles(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'files';
+
+  _i2.Stream<_i5.FsEntry> list({
+    String? serverFolderPath,
+    _i6.FsEntryType? filterByType,
+  }) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i5.FsEntry>, _i5.FsEntry>(
+        'files',
+        'list',
+        {
+          'serverFolderPath': serverFolderPath,
+          'filterByType': filterByType,
+        },
+        {},
+      );
+
+  _i2.Future<Uri> getPrivateUri(String serverFilePath) =>
+      caller.callServerEndpoint<Uri>(
+        'files',
+        'getPrivateUri',
+        {'serverFilePath': serverFilePath},
+      );
+
+  _i2.Future<void> deleteFile(String serverFilePath) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'deleteFile',
+        {'serverFilePath': serverFilePath},
+      );
+
+  _i2.Future<void> copyFile(
+    String sourceServerPath,
+    String destinationServerPath,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'copyFile',
+        {
+          'sourceServerPath': sourceServerPath,
+          'destinationServerPath': destinationServerPath,
+        },
+      );
+
+  _i2.Future<void> renameFile(
+    String serverFilePath,
+    String newName,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'renameFile',
+        {
+          'serverFilePath': serverFilePath,
+          'newName': newName,
+        },
+      );
+
+  _i2.Future<void> moveFile(
+    String sourceServerPath,
+    String destinationServerPath,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'files',
+        'moveFile',
+        {
+          'sourceServerPath': sourceServerPath,
+          'destinationServerPath': destinationServerPath,
+        },
+      );
+}
+
+/// {@category Endpoint}
+class EndpointLinks extends _i1.EndpointRef {
+  EndpointLinks(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'links';
+
+  /// Returns full share url
+  _i2.Future<String> create({
+    required String serverPath,
+    DateTime? deleteAfter,
+    bool canUpload = false,
+  }) =>
+      caller.callServerEndpoint<String>(
+        'links',
+        'create',
+        {
+          'serverPath': serverPath,
+          'deleteAfter': deleteAfter,
+          'canUpload': canUpload,
+        },
+      );
+
+  _i2.Future<List<_i7.SharedLinkWithUrl>> list({int? userId}) =>
+      caller.callServerEndpoint<List<_i7.SharedLinkWithUrl>>(
+        'links',
+        'list',
+        {'userId': userId},
+      );
+
+  _i2.Future<void> update({
+    required int linkId,
+    required String serverPath,
+    required DateTime? deleteAfter,
+    required String? linkPrefix,
+    required bool canUpload,
+  }) =>
+      caller.callServerEndpoint<void>(
+        'links',
+        'update',
+        {
+          'linkId': linkId,
+          'serverPath': serverPath,
+          'deleteAfter': deleteAfter,
+          'linkPrefix': linkPrefix,
+          'canUpload': canUpload,
+        },
+      );
+
+  _i2.Future<void> delete(int linkId) => caller.callServerEndpoint<void>(
+        'links',
+        'delete',
+        {'linkId': linkId},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointUser extends _i1.EndpointRef {
+  EndpointUser(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'user';
+
+  _i2.Future<bool> deleteMyUserProfile([int? userId]) =>
+      caller.callServerEndpoint<bool>(
+        'user',
+        'deleteMyUserProfile',
+        {'userId': userId},
+      );
+}
+
+class Modules {
+  Modules(Client client) {
+    auth = _i8.Caller(client);
+  }
+
+  late final _i8.Caller auth;
+}
 
 class Client extends _i1.ServerpodClientShared {
   Client(
@@ -28,7 +283,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i2.Protocol(),
+          _i9.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -37,11 +292,33 @@ class Client extends _i1.ServerpodClientShared {
           onSucceededCall: onSucceededCall,
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
-        ) {}
+        ) {
+    admin = EndpointAdmin(this);
+    files = EndpointFiles(this);
+    links = EndpointLinks(this);
+    user = EndpointUser(this);
+    modules = Modules(this);
+  }
+
+  late final EndpointAdmin admin;
+
+  late final EndpointFiles files;
+
+  late final EndpointLinks links;
+
+  late final EndpointUser user;
+
+  late final Modules modules;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'admin': admin,
+        'files': files,
+        'links': links,
+        'user': user,
+      };
 
   @override
-  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>
+      {'auth': modules.auth};
 }
