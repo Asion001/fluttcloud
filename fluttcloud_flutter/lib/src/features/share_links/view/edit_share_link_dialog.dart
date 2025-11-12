@@ -170,7 +170,7 @@ class _EditShareLinkDialogState extends State<EditShareLinkDialog> {
               value: _canUpload,
               onChanged: (value) {
                 setState(() {
-                  _canUpload = value ?? false,
+                  _canUpload = value ?? false;
                 });
               },
               title: Text(
