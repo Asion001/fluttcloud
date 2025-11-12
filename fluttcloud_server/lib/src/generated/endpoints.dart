@@ -228,6 +228,15 @@ class Endpoints extends _i1.EndpointDispatch {
             params['serverFilePath'],
           ),
         ),
+        'getUploadUrl': _i1.MethodConnector(
+          name: 'getUploadUrl',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['files'] as _i3.FilesEndpoint).getUploadUrl(session),
+        ),
         'deleteFile': _i1.MethodConnector(
           name: 'deleteFile',
           params: {
@@ -345,6 +354,39 @@ class Endpoints extends _i1.EndpointDispatch {
             filterByType: params['filterByType'],
           ),
         ),
+        'listPublic': _i1.MethodStreamConnector(
+          name: 'listPublic',
+          params: {
+            'linkPrefix': _i1.ParameterDescription(
+              name: 'linkPrefix',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'subPath': _i1.ParameterDescription(
+              name: 'subPath',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'filterByType': _i1.ParameterDescription(
+              name: 'filterByType',
+              type: _i1.getType<_i6.FsEntryType?>(),
+              nullable: true,
+            ),
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['files'] as _i3.FilesEndpoint).listPublic(
+            session,
+            linkPrefix: params['linkPrefix'],
+            subPath: params['subPath'],
+            filterByType: params['filterByType'],
+          ),
+        ),
       },
     );
     connectors['links'] = _i1.EndpointConnector(
@@ -364,6 +406,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<DateTime?>(),
               nullable: true,
             ),
+            'canUpload': _i1.ParameterDescription(
+              name: 'canUpload',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -373,6 +420,7 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             serverPath: params['serverPath'],
             deleteAfter: params['deleteAfter'],
+            canUpload: params['canUpload'],
           ),
         ),
         'list': _i1.MethodConnector(
@@ -416,6 +464,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String?>(),
               nullable: true,
             ),
+            'canUpload': _i1.ParameterDescription(
+              name: 'canUpload',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -427,6 +480,7 @@ class Endpoints extends _i1.EndpointDispatch {
             serverPath: params['serverPath'],
             deleteAfter: params['deleteAfter'],
             linkPrefix: params['linkPrefix'],
+            canUpload: params['canUpload'],
           ),
         ),
         'delete': _i1.MethodConnector(
@@ -445,6 +499,24 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['links'] as _i4.LinksEndpoint).delete(
             session,
             params['linkId'],
+          ),
+        ),
+        'getPublicLinkInfo': _i1.MethodConnector(
+          name: 'getPublicLinkInfo',
+          params: {
+            'linkPrefix': _i1.ParameterDescription(
+              name: 'linkPrefix',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['links'] as _i4.LinksEndpoint).getPublicLinkInfo(
+            session,
+            params['linkPrefix'],
           ),
         ),
       },

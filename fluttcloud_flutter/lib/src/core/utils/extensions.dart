@@ -67,3 +67,14 @@ extension BrightnessX on Brightness {
   Brightness get reverse =>
       this == Brightness.light ? Brightness.dark : Brightness.light;
 }
+
+extension UriX on Uri {
+  Uri getDownloadUri() {
+    return replace(
+      queryParameters: {
+        ...queryParameters,
+        'download': '1',
+      },
+    );
+  }
+}

@@ -4,13 +4,16 @@ import 'package:flutter/services.dart';
 
 @singleton
 class ShareLinksController {
-  Future<void> create(FsEntry entry, {DateTime? deleteAfter}) async {
-    if (entry.type != FsEntryType.file) return;
-
+  Future<void> create(
+    FsEntry entry, {
+    DateTime? deleteAfter,
+    bool canUpload = false,
+  }) async {
     try {
       final link = await Serverpod.I.client.links.create(
         serverPath: entry.serverFullpath,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       );
 
       await Clipboard.setData(ClipboardData(text: link));
@@ -39,6 +42,7 @@ class ShareLinksController {
     required String serverPath,
     required String linkPrefix,
     required DateTime? deleteAfter,
+    required bool canUpload,
   }) async {
     try {
       await Serverpod.I.client.links.update(
@@ -46,6 +50,7 @@ class ShareLinksController {
         serverPath: serverPath,
         linkPrefix: linkPrefix,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       );
     } catch (e) {
       logger.e(e);

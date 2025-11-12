@@ -13,6 +13,9 @@ final String privateShareLinkPrefix =
 final String publicShareLinkPrefix =
     Platform.environment['PUBLIC_SHARE_LINK_PREFIX'] ?? '/share';
 
+final String uploadLinkPrefix =
+    Platform.environment['UPLOAD_LINK_PREFIX'] ?? '/upload';
+
 /// Allows registration of new users,
 /// if its false registration allowed only for first user who will become admin
 ///

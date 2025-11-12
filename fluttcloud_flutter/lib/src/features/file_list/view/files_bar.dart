@@ -8,10 +8,13 @@ class FilesBar extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final controller = watchIt<FileListController>();
+    final uploadController = watchIt<FileUploadController>();
     final currentPath = controller.currentPath;
     final fetchFiles = controller.fetchFiles;
     final fileCount = controller.files.length;
     final backBtnVisible = currentPath != '/';
+    final hasActiveUploads = uploadController.hasActiveUploads;
+    final activeUploadCount = uploadController.activeUploadCount;
 
     return Row(
       children: [
@@ -36,6 +39,22 @@ class FilesBar extends WatchingWidget {
           icon: const Icon(Icons.refresh),
           onPressed: () => fetchFiles(useCache: false),
         ),
+        IconButton(
+          icon: const Icon(Icons.upload_file),
+          onPressed: () async {
+            await FileUploadController.I.pickAndUploadFiles(currentPath);
+          },
+          tooltip: LocaleKeys.file_upload_upload.tr(),
+        ),
+        if (hasActiveUploads)
+          Badge(
+            label: Text('$activeUploadCount'),
+            child: IconButton(
+              icon: const Icon(Icons.upload),
+              onPressed: () => const UploadProgressDialog().show(context),
+              tooltip: LocaleKeys.file_upload_view_progress.tr(),
+            ),
+          ),
         TextButton(
           onPressed: () {
             Clipboard.setData(ClipboardData(text: currentPath));

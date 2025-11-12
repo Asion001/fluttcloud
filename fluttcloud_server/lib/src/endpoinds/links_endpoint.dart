@@ -12,6 +12,7 @@ class LinksEndpoint extends Endpoint {
     Session session, {
     required String serverPath,
     DateTime? deleteAfter,
+    bool canUpload = false,
   }) async {
     final auth = await _validateAccess(session);
 
@@ -24,6 +25,7 @@ class LinksEndpoint extends Endpoint {
         serverPath: serverPath,
         linkPrefix: linkPrefix,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       ),
     );
 
@@ -59,6 +61,7 @@ class LinksEndpoint extends Endpoint {
     required String serverPath,
     required DateTime? deleteAfter,
     required String? linkPrefix,
+    required bool canUpload,
   }) async {
     final auth = await _validateAccess(session);
 
@@ -79,6 +82,7 @@ class LinksEndpoint extends Endpoint {
         serverPath: serverPath,
         linkPrefix: linkPrefix ?? link.linkPrefix,
         deleteAfter: deleteAfter,
+        canUpload: canUpload,
       ),
     );
   }
@@ -123,5 +127,25 @@ class LinksEndpoint extends Endpoint {
     final auth = await session.authenticated;
     if (auth == null) throw const UnAuthorizedException();
     return auth;
+  }
+
+  /// Get public link information (no authentication required)
+  Future<SharedLink?> getPublicLinkInfo(
+    Session session,
+    String linkPrefix,
+  ) async {
+    final link = await SharedLink.db.findFirstRow(
+      session,
+      where: (p0) => p0.linkPrefix.equals(linkPrefix),
+    );
+
+    // Check if link exists and hasn't expired
+    if (link != null &&
+        link.deleteAfter != null &&
+        link.deleteAfter!.isBefore(DateTime.now())) {
+      return null; // Link expired
+    }
+
+    return link;
   }
 }

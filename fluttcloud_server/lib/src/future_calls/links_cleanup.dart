@@ -20,6 +20,7 @@ class SharedLinksCleanupFutureCall extends FutureCall<SharedLink> {
       FutureCallsList.sharedLinkCleanup.name,
       null,
       const Duration(minutes: 5),
+      identifier: 'shared_links_cleanup',
     );
   }
 }

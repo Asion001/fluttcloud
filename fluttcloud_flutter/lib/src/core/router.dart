@@ -34,6 +34,10 @@ class AppRouter extends RootStackRouter {
         path: '/user-management',
         guards: _privateGuards,
       ),
+      AutoRoute(
+        page: PublicSharedFolderRoute.page,
+        path: '/public-shared-folder',
+      ),
       AutoRoute(page: LoginRoute.page, path: '/login'),
       AutoRoute(page: ServerPickerRoute.page, path: '/server-config'),
     ];

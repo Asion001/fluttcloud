@@ -15,6 +15,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import '../features/file_download/controllers/file_download_controller.dart'
     as _i632;
 import '../features/file_list/controllers/file_list_controller.dart' as _i677;
+import '../features/file_upload/controllers/file_upload_controller.dart'
+    as _i157;
 import '../features/server_config/controllers/server_config_controller.dart'
     as _i138;
 import '../features/share_links/controller/share_links_controller.dart'
@@ -50,6 +52,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i941.UserManagementController>(
       () => _i941.UserManagementController(),
+    );
+    gh.singleton<_i157.FileUploadController>(
+      () => _i157.FileUploadController(),
     );
     return this;
   }

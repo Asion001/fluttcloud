@@ -33,12 +33,17 @@
     "url_invalid": "Please enter a valid server URL."
   },
   "download": "Download",
+  "fullscreen": "Fullscreen",
+  "exit_fullscreen": "Exit Fullscreen",
   "file_type_not_supported": "File type not supported for preview",
   "modified": "Modified",
   "created": "Created",
   "size": "Size",
   "downloading": "Downloading",
   "file": "File",
+  "path": "Path",
+  "type": "Type",
+  "content_type": "Content Type",
   "download_finished": "Download finished",
   "items": {
     "one": "{} item",
@@ -67,7 +72,9 @@
   "share_link": {
     "create_title": "Create Share Link",
     "create_description": "Create a shareable link for '{}'",
-    "create": "Create Link"
+    "create": "Create Link",
+    "allow_upload": "Allow upload",
+    "allow_upload_description": "Allow others to upload files to this folder via the shared link"
   },
   "share_links": {
     "title": "Share Links",
@@ -133,5 +140,27 @@
       "other": "{} folders"
     },
     "all_folders": "All folders (Admin)"
-  }
+  },
+  "file_upload": {
+    "title": "Upload Files",
+    "upload": "Upload",
+    "uploading": "Uploading",
+    "upload_progress": "Upload Progress",
+    "select_files": "Select Files",
+    "select_folder": "Select Folder",
+    "no_files_selected": "No files selected",
+    "no_files_in_folder": "No files in this folder",
+    "upload_complete": "Upload complete",
+    "upload_failed": "Upload failed",
+    "upload_cancelled": "Upload cancelled",
+    "cancel_upload": "Cancel Upload",
+    "files_uploaded": "{} files uploaded successfully",
+    "upload_in_progress": "Upload in progress...",
+    "view_progress": "View Progress",
+    "upload_not_allowed": "This link does not allow uploads",
+    "no_file_data_available": "No file data available",
+    "upload_failed_server_side": "Upload failed on server side",
+    "clear": "Clear uploads"
+  },
+  "something_went_wrong": "Something went wrong"
 }

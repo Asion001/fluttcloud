@@ -19,7 +19,8 @@ abstract class SharedLink
     required this.serverPath,
     required this.linkPrefix,
     this.deleteAfter,
-  });
+    bool? canUpload,
+  }) : canUpload = canUpload ?? false;
 
   factory SharedLink({
     int? id,
@@ -27,6 +28,7 @@ abstract class SharedLink
     required String serverPath,
     required String linkPrefix,
     DateTime? deleteAfter,
+    bool? canUpload,
   }) = _SharedLinkImpl;
 
   factory SharedLink.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +41,7 @@ abstract class SharedLink
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['deleteAfter']),
+      canUpload: jsonSerialization['canUpload'] as bool,
     );
   }
 
@@ -61,6 +64,9 @@ abstract class SharedLink
   /// If set - link will be delete after this date
   DateTime? deleteAfter;
 
+  /// If true - allows uploading files to the shared folder
+  bool canUpload;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -73,6 +79,7 @@ abstract class SharedLink
     String? serverPath,
     String? linkPrefix,
     DateTime? deleteAfter,
+    bool? canUpload,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -82,6 +89,7 @@ abstract class SharedLink
       'serverPath': serverPath,
       'linkPrefix': linkPrefix,
       if (deleteAfter != null) 'deleteAfter': deleteAfter?.toJson(),
+      'canUpload': canUpload,
     };
   }
 
@@ -93,6 +101,7 @@ abstract class SharedLink
       'serverPath': serverPath,
       'linkPrefix': linkPrefix,
       if (deleteAfter != null) 'deleteAfter': deleteAfter?.toJson(),
+      'canUpload': canUpload,
     };
   }
 
@@ -135,12 +144,14 @@ class _SharedLinkImpl extends SharedLink {
     required String serverPath,
     required String linkPrefix,
     DateTime? deleteAfter,
+    bool? canUpload,
   }) : super._(
           id: id,
           createdBy: createdBy,
           serverPath: serverPath,
           linkPrefix: linkPrefix,
           deleteAfter: deleteAfter,
+          canUpload: canUpload,
         );
 
   /// Returns a shallow copy of this [SharedLink]
@@ -153,6 +164,7 @@ class _SharedLinkImpl extends SharedLink {
     String? serverPath,
     String? linkPrefix,
     Object? deleteAfter = _Undefined,
+    bool? canUpload,
   }) {
     return SharedLink(
       id: id is int? ? id : this.id,
@@ -160,6 +172,7 @@ class _SharedLinkImpl extends SharedLink {
       serverPath: serverPath ?? this.serverPath,
       linkPrefix: linkPrefix ?? this.linkPrefix,
       deleteAfter: deleteAfter is DateTime? ? deleteAfter : this.deleteAfter,
+      canUpload: canUpload ?? this.canUpload,
     );
   }
 }
@@ -182,6 +195,11 @@ class SharedLinkTable extends _i1.Table<int?> {
       'deleteAfter',
       this,
     );
+    canUpload = _i1.ColumnBool(
+      'canUpload',
+      this,
+      hasDefault: true,
+    );
   }
 
   /// User id
@@ -196,6 +214,9 @@ class SharedLinkTable extends _i1.Table<int?> {
   /// If set - link will be delete after this date
   late final _i1.ColumnDateTime deleteAfter;
 
+  /// If true - allows uploading files to the shared folder
+  late final _i1.ColumnBool canUpload;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -203,6 +224,7 @@ class SharedLinkTable extends _i1.Table<int?> {
         serverPath,
         linkPrefix,
         deleteAfter,
+        canUpload,
       ];
 }
 

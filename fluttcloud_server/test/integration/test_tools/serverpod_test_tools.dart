@@ -23,6 +23,7 @@ import 'package:fluttcloud_server/src/generated/fs_entry_type.dart' as _i7;
 import 'dart:convert' as _i8;
 import 'package:fluttcloud_server/src/generated/shared_link_with_url.dart'
     as _i9;
+import 'package:fluttcloud_server/src/generated/shared_link.dart' as _i10;
 import 'package:fluttcloud_server/src/generated/protocol.dart';
 import 'package:fluttcloud_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -427,6 +428,32 @@ class _FilesEndpoint {
     });
   }
 
+  _i3.Future<Uri> getUploadUrl(_i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'files',
+        method: 'getUploadUrl',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'getUploadUrl',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<Uri>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<void> deleteFile(
     _i1.TestSessionBuilder sessionBuilder,
     String serverFilePath,
@@ -554,6 +581,45 @@ class _FilesEndpoint {
       }
     });
   }
+
+  _i3.Stream<_i6.FsEntry> listPublic(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required String linkPrefix,
+    String? subPath,
+    _i7.FsEntryType? filterByType,
+  }) {
+    var _localTestStreamManager = _i1.TestStreamManager<_i6.FsEntry>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+          endpoint: 'files',
+          method: 'listPublic',
+        );
+        var _localCallContext =
+            await _endpointDispatch.getMethodStreamCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'files',
+          methodName: 'listPublic',
+          arguments: {
+            'linkPrefix': linkPrefix,
+            'subPath': subPath,
+            'filterByType':
+                _i8.jsonDecode(_i2.SerializationManager.encode(filterByType)),
+          },
+          requestedInputStreams: [],
+          serializationManager: _serializationManager,
+        );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
 }
 
 class _LinksEndpoint {
@@ -570,6 +636,7 @@ class _LinksEndpoint {
     _i1.TestSessionBuilder sessionBuilder, {
     required String serverPath,
     DateTime? deleteAfter,
+    required bool canUpload,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -585,6 +652,7 @@ class _LinksEndpoint {
           parameters: _i1.testObjectToJson({
             'serverPath': serverPath,
             'deleteAfter': deleteAfter,
+            'canUpload': canUpload,
           }),
           serializationManager: _serializationManager,
         );
@@ -634,6 +702,7 @@ class _LinksEndpoint {
     required String serverPath,
     required DateTime? deleteAfter,
     required String? linkPrefix,
+    required bool canUpload,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -651,6 +720,7 @@ class _LinksEndpoint {
             'serverPath': serverPath,
             'deleteAfter': deleteAfter,
             'linkPrefix': linkPrefix,
+            'canUpload': canUpload,
           }),
           serializationManager: _serializationManager,
         );
@@ -687,6 +757,35 @@ class _LinksEndpoint {
           _localUniqueSession,
           _localCallContext.arguments,
         ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i10.SharedLink?> getPublicLinkInfo(
+    _i1.TestSessionBuilder sessionBuilder,
+    String linkPrefix,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'links',
+        method: 'getPublicLinkInfo',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'links',
+          methodName: 'getPublicLinkInfo',
+          parameters: _i1.testObjectToJson({'linkPrefix': linkPrefix}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i10.SharedLink?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
