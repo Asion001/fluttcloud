@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:fluttcloud_client/fluttcloud_client.dart';
 import 'package:fluttcloud_flutter/common_imports.dart';
@@ -18,18 +19,18 @@ class FileListController extends ChangeNotifier {
   String? errorMessage;
 
   Future<void> fetchFiles({bool useCache = true, String? path}) async {
-    files.clear();
-
     final lastPath = currentPath;
     currentPath = path ?? currentPath;
     if (currentPath.isEmptyOrNull) currentPath = '/';
 
-    notifyListeners();
+    files.clear();
 
     final cachedFiles = _cachedFiles[currentPath];
     if (useCache && cachedFiles != null) {
       files.addAll(cachedFiles);
       _sortFiles();
+      notifyListeners();
+    } else if (currentPath != lastPath) {
       notifyListeners();
     }
 
@@ -65,7 +66,9 @@ class FileListController extends ChangeNotifier {
       notifyListeners();
     }
 
-    _cachedFiles[lastPath] = List<FsEntry>.from(files);
+    _cachedFiles[currentPath] = List<FsEntry>.from(
+      files.sublist(0, min(files.length, 50)),
+    );
   }
 
   StreamSubscription<FsEntry> _listenToStream({

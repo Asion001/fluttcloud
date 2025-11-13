@@ -102,10 +102,16 @@ class FileUploadRoute extends Route {
 
       final response = UploadResult(
         success: true,
-        filePath: path.join(destinationPath, fileName),
+        filePath: filePath,
         fileName: fileName,
       );
-      request.response.write(jsonEncode(response.toJson()));
+
+      final responseJson = response.toJson();
+      session.log(
+        'File uploaded: $filePath by userId: ${auth.userId}',
+        level: LogLevel.debug,
+      );
+      request.response.write(jsonEncode(responseJson));
 
       return true;
     } catch (e, stackTrace) {
