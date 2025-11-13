@@ -1,7 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:fluttcloud_flutter/fluttcloud_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:universal_io/io.dart';
 import 'package:video_player/video_player.dart';
 
 class MediaPreview extends StatefulWidget {
